@@ -1,10 +1,16 @@
-import 'package:ds_game/views/dashboard/screens/home_page.dart';
-import 'package:ds_game/widgets/animation_route.dart';
-import 'package:ds_game/widgets/app_button.dart';
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:ds_game/widgets/app_input_text_outline.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
+import 'package:ds_game/widgets/screen_container.dart';
+import 'package:fade_and_translate/fade_and_translate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:network_info_plus/network_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SuccessPage extends StatefulWidget {
   const SuccessPage({Key? key}) : super(key: key);
@@ -14,49 +20,216 @@ class SuccessPage extends StatefulWidget {
 }
 
 class _SuccessPageState extends State<SuccessPage> {
+  TextEditingController playerNameController = TextEditingController();
+  final keyIsFirstLoaded = 'is_first_loaded';
+
+  late final focusNameNode = FocusNode()
+    ..addListener(() {
+      setState(() {});
+    });
+
+  bool isVisible = false;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.purple, Colors.blue],
-          begin: Alignment.bottomLeft,
-          end: Alignment.topRight,
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Container(
-          padding: EdgeInsets.fromLTRB(20.sp, 20.sp, 20.sp, 20.sp),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+    Future.delayed(const Duration(milliseconds: 1),
+        () => showDialogIfFirstLoaded(context));
+    return WillPopScope(
+      onWillPop: () async {
+        setState(() {
+          isVisible = !isVisible;
+        });
+        return Future.value(isVisible);
+      },
+      child: ScreenContainer(
+        bodyWidget: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.asset(
+              'assets/images/home_bg.jpg',
+              fit: BoxFit.cover,
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.sp, 20.sp, 20.sp, 20.sp),
+              child: Stack(
                 children: [
-                  Lottie.asset('assets/lottie_images/success.json'),
-                  SizedBox(height: 25.sp),
-                  Text(
-                    'Let\'s play a game !',
-                    style: AppTextStyles.instance.playGame,
-                  ),
-                  SizedBox(height: 25.sp),
-                  SizedBox(
-                    width: 200.sp,
-                    child: AppButton(
-                      label: 'Get Started',
-                      onPressed: () {
-                        NavigationRoute()
-                            .animationRoute(context, const HomePage());
-                      },
-                    ),
-                  ),
+                  enterNameWidget(),
+                  hostAndJoinWidget(),
                 ],
               ),
-            ),
-          ),
+            )
+          ],
         ),
       ),
     );
+  }
+
+  /// initial success pop
+  showDialogIfFirstLoaded(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? isFirstLoaded = prefs.getBool(keyIsFirstLoaded);
+    if (isFirstLoaded == null) {
+      showDialog(
+        barrierColor: Colors.transparent,
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          Future.delayed(const Duration(seconds: 1), () {
+            Navigator.of(context).pop(true);
+            prefs.setBool(keyIsFirstLoaded, false);
+          });
+          return AlertDialog(
+            elevation: 100,
+            clipBehavior: Clip.none,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.sp)),
+            ),
+            backgroundColor: Colors.blue,
+            title: Lottie.asset('assets/lottie_images/success.json',
+                width: 100, height: 100),
+            content: Text(
+              'Let\'s play a game !',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.instance.playGame,
+            ),
+          );
+        },
+      );
+    }
+  }
+
+  /// player name widget
+  enterNameWidget() {
+    return FadeAndTranslate(
+      visible: !isVisible,
+      curve: Curves.bounceInOut,
+      translate: const Offset(0.0, 20.0),
+      delay: const Duration(milliseconds: 120),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 250.sp,
+              child: AppInputTextOutline(
+                  focusNode: focusNameNode,
+                  fillColor: focusNameNode.hasFocus
+                      ? Colors.white
+                      : Colors.white.withOpacity(0.3),
+                  inputController: playerNameController,
+                  hintText: 'Your Name'),
+            ),
+            SizedBox(height: 30.sp),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  isVisible = !isVisible;
+                });
+                // NavigationRoute()
+                //     .animationRoute(context, const HostJoinPage());
+              },
+              child: ClipPath(
+                clipper: ShapeBorderClipper(
+                    shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.all(Radius.circular(10.sp)))),
+                child: Container(
+                  width: 250.sp,
+                  padding: EdgeInsets.fromLTRB(15.sp, 10.sp, 15.sp, 10.sp),
+                  decoration: const BoxDecoration(
+                      color: Colors.blue,
+                      border: Border(
+                          top: BorderSide(color: Colors.white, width: 7.0))),
+                  child: Text(
+                    'OK',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.actor(
+                        color: Colors.white,
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20.sp),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// host and join widget
+  hostAndJoinWidget() {
+    return FadeAndTranslate(
+        visible: isVisible,
+        translate: const Offset(0.0, 20.0),
+        duration: const Duration(milliseconds: 240),
+        delay: const Duration(milliseconds: 120),
+        curve: Curves.bounceInOut,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 20.sp),
+              GestureDetector(
+                onTap: () async {
+                  final info = NetworkInfo();
+
+                  final wifiIP = await info.getWifiIP();
+                  log(wifiIP.toString());
+                },
+                child: ClipPath(
+                  clipper: ShapeBorderClipper(
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.sp)))),
+                  child: Container(
+                    width: 250.sp,
+                    padding: EdgeInsets.fromLTRB(15.sp, 10.sp, 15.sp, 10.sp),
+                    decoration: const BoxDecoration(
+                        color: Colors.green,
+                        border: Border(
+                            top: BorderSide(color: Colors.white, width: 7.0))),
+                    child: Text(
+                      'Host'.toUpperCase(),
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.actor(
+                          color: Colors.white,
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20.sp),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 30.sp),
+              ClipPath(
+                clipper: ShapeBorderClipper(
+                    shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.all(Radius.circular(10.sp)))),
+                child: Container(
+                  width: 250.sp,
+                  padding: EdgeInsets.fromLTRB(15.sp, 10.sp, 15.sp, 10.sp),
+                  decoration: const BoxDecoration(
+                      color: Colors.blue,
+                      border: Border(
+                          top: BorderSide(color: Colors.white, width: 7.0))),
+                  child: Text(
+                    'Join'.toUpperCase(),
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.actor(
+                        color: Colors.white,
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20.sp),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 }

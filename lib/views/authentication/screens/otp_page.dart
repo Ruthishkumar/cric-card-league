@@ -1,9 +1,11 @@
 import 'dart:developer';
 
 import 'package:ds_game/views/authentication/screens/success_page.dart';
+import 'package:ds_game/views/dashboard/screens/my_widget.dart';
 import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_button.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
+import 'package:ds_game/widgets/screen_container.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,98 +38,87 @@ class _OtpPageState extends State<OtpPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.purple, Colors.blue],
-          begin: Alignment.bottomLeft,
-          end: Alignment.topRight,
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        resizeToAvoidBottomInset: false,
-        body: Container(
-          padding: EdgeInsets.fromLTRB(20.sp, 10.sp, 20.sp, 100.sp),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(),
-              Center(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/images/otp_success.png'),
-                      Text(
-                        'Enter Verification Code',
-                        style: AppTextStyles.instance.otpHeader,
-                      ),
-                      SizedBox(height: 20.sp),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'OTP Sent to',
-                            style: GoogleFonts.openSans(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w600,
-                                fontStyle: FontStyle.normal,
-                                color: Colors.white),
-                          ),
-                          SizedBox(width: 5.w),
-                          Text(
-                            '+91 ${widget.mobileNumber}',
-                            style: GoogleFonts.openSans(
-                                fontSize: 14.sp,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white),
-                          )
-                        ],
-                      ),
-                      SizedBox(height: 20.sp),
-                      Pinput(
-                        showCursor: true,
-                        length: 6,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(6),
-                        ],
-                        androidSmsAutofillMethod:
-                            AndroidSmsAutofillMethod.smsUserConsentApi,
-                        defaultPinTheme: defaultPinTheme,
-                        focusNode: otpFocusNode,
-                        focusedPinTheme: defaultPinTheme.copyDecorationWith(
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(12),
+    return ScreenContainer(
+      bodyWidget: Container(
+        padding: EdgeInsets.fromLTRB(20.sp, 10.sp, 20.sp, 100.sp),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(),
+            Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/images/otp_success.png'),
+                    Text(
+                      'Enter Verification Code',
+                      style: AppTextStyles.instance.otpHeader,
+                    ),
+                    SizedBox(height: 20.sp),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'OTP Sent to',
+                          style: GoogleFonts.openSans(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FontStyle.normal,
+                              color: Colors.white),
                         ),
-                        onChanged: (value) {
-                          setState(() {
-                            _otp = value;
-                          });
-                        },
-                        controller: otpController,
-                        autofillHints: const [AutofillHints.oneTimeCode],
-                        pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-                        submittedPinTheme: defaultPinTheme.copyWith(
-                            decoration: defaultPinTheme.decoration?.copyWith(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                    color: const Color(0xff1E1E26)))),
+                        SizedBox(width: 5.w),
+                        Text(
+                          '+91 ${widget.mobileNumber}',
+                          style: GoogleFonts.openSans(
+                              fontSize: 14.sp,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 20.sp),
+                    Pinput(
+                      showCursor: true,
+                      length: 6,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(6),
+                      ],
+                      androidSmsAutofillMethod:
+                          AndroidSmsAutofillMethod.smsUserConsentApi,
+                      defaultPinTheme: defaultPinTheme,
+                      focusNode: otpFocusNode,
+                      focusedPinTheme: defaultPinTheme.copyDecorationWith(
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    ],
-                  ),
+                      onChanged: (value) {
+                        setState(() {
+                          _otp = value;
+                        });
+                      },
+                      controller: otpController,
+                      autofillHints: const [AutofillHints.oneTimeCode],
+                      pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+                      submittedPinTheme: defaultPinTheme.copyWith(
+                          decoration: defaultPinTheme.decoration?.copyWith(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border:
+                                  Border.all(color: const Color(0xff1E1E26)))),
+                    ),
+                  ],
                 ),
               ),
-              AppButton(
-                label: 'Verify Otp',
-                onPressed: _onVerifyOtp,
-              ),
-            ],
-          ),
+            ),
+            AppButton(
+              label: 'Verify Otp',
+              onPressed: _onVerifyOtp,
+            ),
+          ],
         ),
       ),
     );

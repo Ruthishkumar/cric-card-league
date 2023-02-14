@@ -25,7 +25,7 @@ class AppTextStyles {
     color: Colors.white,
     fontStyle: FontStyle.normal,
     fontWeight: FontWeight.normal,
-    fontSize: 25.sp,
+    fontSize: 20.sp,
   );
 
   final TextStyle? loginSubHeader = GoogleFonts.poppins(
