@@ -34,4 +34,32 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     fontSize: 15.sp,
   );
+
+  final TextStyle? cardFirstName = GoogleFonts.poppins(
+    color: Colors.white,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w200,
+    fontSize: 25.sp,
+  );
+
+  final TextStyle? cardSecondName = GoogleFonts.poppins(
+    color: Colors.white,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w700,
+    fontSize: 30.sp,
+  );
+
+  final TextStyle? countryName = GoogleFonts.poppins(
+    color: Colors.white70,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w300,
+    fontSize: 15.sp,
+  );
+
+  final TextStyle? playersStats = GoogleFonts.robotoSerif(
+    color: Colors.white70,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w300,
+    fontSize: 15.sp,
+  );
 }

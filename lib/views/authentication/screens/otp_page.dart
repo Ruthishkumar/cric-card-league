@@ -52,6 +52,7 @@ class _OtpPageState extends State<OtpPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.asset('assets/images/otp_success.png'),
+                    SizedBox(height: 25.sp),
                     Text(
                       'Enter Verification Code',
                       style: AppTextStyles.instance.otpHeader,

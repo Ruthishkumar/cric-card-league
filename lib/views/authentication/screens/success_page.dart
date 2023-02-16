@@ -1,15 +1,20 @@
 import 'dart:developer';
-import 'dart:io';
-
+import 'dart:math';
+import 'package:ds_game/views/authentication/provider/name_provider.dart';
+import 'package:ds_game/views/dashboard/screens/card_template_page.dart';
+import 'package:ds_game/views/dashboard/screens/players_details_page.dart';
+import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_input_text_outline.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:fade_and_translate/fade_and_translate.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:network_info_plus/network_info_plus.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SuccessPage extends StatefulWidget {
@@ -22,7 +27,6 @@ class SuccessPage extends StatefulWidget {
 class _SuccessPageState extends State<SuccessPage> {
   TextEditingController playerNameController = TextEditingController();
   final keyIsFirstLoaded = 'is_first_loaded';
-
   late final focusNameNode = FocusNode()
     ..addListener(() {
       setState(() {});
@@ -126,8 +130,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 setState(() {
                   isVisible = !isVisible;
                 });
-                // NavigationRoute()
-                //     .animationRoute(context, const HostJoinPage());
+                _validatePlayerNameSummit();
               },
               child: ClipPath(
                 clipper: ShapeBorderClipper(
@@ -176,9 +179,13 @@ class _SuccessPageState extends State<SuccessPage> {
               GestureDetector(
                 onTap: () async {
                   final info = NetworkInfo();
-
                   final wifiIP = await info.getWifiIP();
-                  log(wifiIP.toString());
+                  if (!mounted) {
+                    return;
+                  }
+                  NavigationRoute()
+                      .animationRoute(context, const PlayersDetailsPage());
+                  // log(wifiIP.toString());
                 },
                 child: ClipPath(
                   clipper: ShapeBorderClipper(
@@ -231,5 +238,18 @@ class _SuccessPageState extends State<SuccessPage> {
             ],
           ),
         ));
+  }
+
+  /// save player name
+  _validatePlayerNameSummit() {
+    Provider.of<NameProvider>(context, listen: false)
+        .addPlayerName(value: playerNameController.text);
+    var rng = Random();
+    var k = rng.nextInt(10000);
+    DatabaseReference ref =
+        FirebaseDatabase.instance.ref().child('playerName/$k');
+    ref.set({
+      "names": playerNameController.text,
+    }).asStream();
   }
 }

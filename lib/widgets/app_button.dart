@@ -17,7 +17,7 @@ class AppButton extends StatelessWidget {
           enabledMouseCursor: MouseCursor.defer,
           surfaceTintColor: Colors.white,
           primary: Colors.black,
-          minimumSize: Size.fromHeight(45.sp),
+          minimumSize: Size.fromHeight(50.sp),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           shadowColor: Colors.black),

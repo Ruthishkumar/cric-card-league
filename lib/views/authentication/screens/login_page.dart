@@ -41,9 +41,8 @@ class _LoginPageState extends State<LoginPage> {
         fontStyle: FontStyle.normal);
     const colorizeColors = [
       Colors.white,
-      Color(0xff67B26F),
-      Colors.orange,
-      Colors.red,
+      Color(0x0fd76d77),
+      Color(0xffffaf7b),
     ];
     return ScreenContainer(
         bodyWidget: Container(
