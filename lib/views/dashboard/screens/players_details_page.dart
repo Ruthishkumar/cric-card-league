@@ -1,9 +1,16 @@
+import 'dart:developer';
+
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
+import 'package:ds_game/views/dashboard/screens/card_template_page.dart';
+import 'package:ds_game/views/dashboard/screens/coin_flip_page.dart';
+import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_button.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class PlayersDetailsPage extends StatefulWidget {
@@ -14,6 +21,13 @@ class PlayersDetailsPage extends StatefulWidget {
 }
 
 class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
+  final List<String> cardItems = [
+    '10',
+    '20',
+    '30',
+    '40',
+  ];
+  String? selectedValue;
   @override
   Widget build(BuildContext context) {
     return ScreenContainer(
@@ -62,15 +76,15 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                                       builder: (context, data, value) {
                                     return Text(
                                       data.playerName,
-                                      style:
-                                          AppTextStyles.instance.loginSubHeader,
+                                      style: AppTextStyles
+                                          .instance.hostAndJoinName,
                                     );
                                   }),
                                   SizedBox(height: 5.sp),
                                   Text(
                                     '(You)',
                                     style:
-                                        AppTextStyles.instance.loginSubHeader,
+                                        AppTextStyles.instance.hostAndJoinName,
                                   ),
                                 ],
                               ),
@@ -119,32 +133,96 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                         borderRadius: BorderRadius.all(Radius.circular(8.sp))),
                     child: Container(
                       margin: EdgeInsets.fromLTRB(4.sp, 10.sp, 4.sp, 4.sp),
-                      padding: EdgeInsets.fromLTRB(6.sp, 12.sp, 6.sp, 4.sp),
+                      padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(8.sp)),
                           color: const Color(0xff237a57)),
                       child: Center(
-                        child: Row(
-                          children: [
-                            Text(
-                              'Your IP: 192.168.1.182',
-                              style: AppTextStyles.instance.loginSubHeader,
-                            ),
-                            SizedBox(width: 4.sp),
-                            Icon(
-                              Icons.copy_all_outlined,
-                              color: Colors.white,
-                              size: 20.sp,
-                            )
-                          ],
+                        child: Text(
+                          'Your IP: 192.168.1.182',
+                          style: AppTextStyles.instance.ipAddress,
                         ),
                       ),
                     ),
                   ),
                   SizedBox(height: 20.sp),
-                  SizedBox(
-                      width: 200.sp,
-                      child: AppButton(label: 'Start Game', onPressed: () {}))
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 50.sp,
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton2(
+                            icon: Icon(
+                              Icons.arrow_drop_down_outlined,
+                              color: Colors.white,
+                              size: 25.sp,
+                            ),
+                            hint: Text(
+                              'Cards',
+                              style: GoogleFonts.prompt(
+                                  color: Colors.white,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            buttonPadding: const EdgeInsets.only(
+                              left: 14,
+                              right: 14,
+                            ),
+                            itemPadding:
+                                EdgeInsets.only(left: 14.sp, right: 14.sp),
+                            itemHighlightColor: Colors.blue,
+                            items: cardItems
+                                .map((item) => DropdownMenuItem<String>(
+                                      value: item,
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            item,
+                                            style: GoogleFonts.prompt(
+                                                color: Colors.white,
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          // Icon(Icons.add)
+                                        ],
+                                      ),
+                                    ))
+                                .toList(),
+                            value: selectedValue,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedValue = value;
+                              });
+                            },
+                            buttonHeight: 40,
+                            buttonWidth: 140,
+                            buttonDecoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.sp),
+                              border: Border.all(
+                                color: const Color(0xff093028),
+                              ),
+                              color: const Color(0xff093028),
+                            ),
+                            dropdownDecoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.sp),
+                              color: const Color(0xff093028),
+                            ),
+                            itemHeight: 40,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 5.sp),
+                      SizedBox(
+                          width: 150.sp,
+                          child: AppButton(
+                              label: 'New Game',
+                              onPressed: () {
+                                NavigationRoute()
+                                    .animationRoute(context, CoinFlipScreen());
+                              }))
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -153,32 +231,4 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
       ),
     );
   }
-}
-
-class Chevron extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    const Gradient gradient = LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      colors: [Color(0xffc33764), Color(0xff1d2671)],
-      tileMode: TileMode.clamp,
-    );
-
-    final Rect colorBounds = Rect.fromLTRB(0, 0, size.width, size.height);
-    final Paint paint = Paint()..shader = gradient.createShader(colorBounds);
-
-    Path path = Path();
-    path.moveTo(0, 0);
-    path.lineTo(0, size.height);
-    path.lineTo(size.width / 2, size.height - size.height / 3);
-    path.lineTo(size.width, size.height);
-    path.lineTo(size.width, 0);
-    path.close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

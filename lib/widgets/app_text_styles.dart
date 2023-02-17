@@ -28,11 +28,32 @@ class AppTextStyles {
     fontSize: 20.sp,
   );
 
-  final TextStyle? loginSubHeader = GoogleFonts.poppins(
+  final TextStyle? loginSubHeader = GoogleFonts.prompt(
     color: Colors.white,
     fontStyle: FontStyle.normal,
     fontWeight: FontWeight.w500,
     fontSize: 15.sp,
+  );
+
+  final TextStyle? hostAndJoinName = GoogleFonts.prompt(
+    color: Colors.white,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w500,
+    fontSize: 20.sp,
+  );
+
+  final TextStyle? ipAddress = GoogleFonts.prompt(
+    color: Colors.white,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w500,
+    fontSize: 15.sp,
+  );
+
+  final TextStyle? tossHeader = GoogleFonts.prompt(
+    color: Colors.white,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w500,
+    fontSize: 20.sp,
   );
 
   final TextStyle? cardFirstName = GoogleFonts.poppins(

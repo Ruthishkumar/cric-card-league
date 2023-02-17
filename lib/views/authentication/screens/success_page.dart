@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:math';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/dashboard/screens/card_template_page.dart';
+import 'package:ds_game/views/dashboard/screens/host_ip_page.dart';
 import 'package:ds_game/views/dashboard/screens/players_details_page.dart';
 import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_input_text_outline.dart';
@@ -212,26 +213,31 @@ class _SuccessPageState extends State<SuccessPage> {
                 ),
               ),
               SizedBox(height: 30.sp),
-              ClipPath(
-                clipper: ShapeBorderClipper(
-                    shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.all(Radius.circular(10.sp)))),
-                child: Container(
-                  width: 250.sp,
-                  padding: EdgeInsets.fromLTRB(15.sp, 10.sp, 15.sp, 10.sp),
-                  decoration: const BoxDecoration(
-                      color: Colors.blue,
-                      border: Border(
-                          top: BorderSide(color: Colors.white, width: 7.0))),
-                  child: Text(
-                    'Join'.toUpperCase(),
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.actor(
-                        color: Colors.white,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20.sp),
+              GestureDetector(
+                onTap: () {
+                  NavigationRoute().animationRoute(context, const HostIpPage());
+                },
+                child: ClipPath(
+                  clipper: ShapeBorderClipper(
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.sp)))),
+                  child: Container(
+                    width: 250.sp,
+                    padding: EdgeInsets.fromLTRB(15.sp, 10.sp, 15.sp, 10.sp),
+                    decoration: const BoxDecoration(
+                        color: Colors.blue,
+                        border: Border(
+                            top: BorderSide(color: Colors.white, width: 7.0))),
+                    child: Text(
+                      'Join'.toUpperCase(),
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.actor(
+                          color: Colors.white,
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20.sp),
+                    ),
                   ),
                 ),
               ),
