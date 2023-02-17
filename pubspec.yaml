@@ -27,6 +27,8 @@ dependencies:
   network_info_plus: ^3.0.2
   firebase_database: ^10.0.11
   provider: ^6.0.5
+  cloud_functions: ^4.0.9
+
 
 
 
