@@ -1,14 +1,23 @@
+import 'dart:developer';
+
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/authentication/screens/login_page.dart';
+import 'package:ds_game/views/authentication/screens/success_page.dart';
+import 'package:ds_game/views/authentication/services/storage_services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
+String userId = "";
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  userId = await StorageServices().getUserId();
+  log(userId.toString());
+  log('Get User Id');
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => NameProvider()),
   ], child: const MyApp()));
@@ -26,13 +35,12 @@ class MyApp extends StatelessWidget {
           DeviceOrientation.portraitDown,
         ]);
         return MaterialApp(
-          title: 'Flutter Demo',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          home: const LoginPage(),
-        );
+            title: 'Flutter Demo',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
+            home: userId == '' ? const LoginPage() : const SuccessPage());
       },
     );
   }

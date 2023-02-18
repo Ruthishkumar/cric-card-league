@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:ds_game/views/authentication/screens/success_page.dart';
-import 'package:ds_game/views/dashboard/screens/my_widget.dart';
+import 'package:ds_game/views/authentication/services/storage_services.dart';
 import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_button.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
@@ -15,8 +15,13 @@ import 'package:pinput/pinput.dart';
 
 class OtpPage extends StatefulWidget {
   final String mobileNumber;
-  final String vid;
-  const OtpPage({Key? key, required this.mobileNumber, required this.vid})
+  final String verifyId;
+  final FirebaseAuth auth;
+  const OtpPage(
+      {Key? key,
+      required this.mobileNumber,
+      required this.verifyId,
+      required this.auth})
       : super(key: key);
 
   static String verify = "";
@@ -33,8 +38,6 @@ class _OtpPageState extends State<OtpPage> {
     ..addListener(() {
       setState(() {});
     });
-
-  FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -144,21 +147,16 @@ class _OtpPageState extends State<OtpPage> {
   /// verify otp summit
   _onVerifyOtp() async {
     try {
-      NavigationRoute().animationRoute(context, const SuccessPage());
-      // PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      //     verificationId: widget.vid, smsCode: otpController.text);
-      // await auth.signInWithCredential(credential).then((value) {
-      //   if (value.user != null) {
-      //     setState(() {
-      //       log('Authentication Successful');
-      //
-      //     });
-      //   } else {
-      //     setState(() {
-      //       log('Authentication Failed');
-      //     });
-      //   }
-      // });
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: widget.verifyId, smsCode: otpController.text);
+      await widget.auth.signInWithCredential(credential).then((value) async {
+        log(FirebaseAuth.instance.currentUser!.uid.toString());
+        await StorageServices()
+            .setUserId(FirebaseAuth.instance.currentUser!.uid.toString());
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const SuccessPage()),
+            (route) => false);
+      });
     } on FirebaseAuthException catch (e, stack) {
       log(e.toString());
       log(stack.toString());

@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:math';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
-import 'package:ds_game/views/dashboard/screens/card_template_page.dart';
 import 'package:ds_game/views/dashboard/screens/host_ip_page.dart';
 import 'package:ds_game/views/dashboard/screens/players_details_page.dart';
 import 'package:ds_game/widgets/animation_route.dart';
@@ -9,6 +8,7 @@ import 'package:ds_game/widgets/app_input_text_outline.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:fade_and_translate/fade_and_translate.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -32,6 +32,16 @@ class _SuccessPageState extends State<SuccessPage> {
     ..addListener(() {
       setState(() {});
     });
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
+  getData() {
+    Provider.of<NameProvider>(context, listen: false).emailName;
+  }
 
   bool isVisible = false;
 
@@ -58,6 +68,9 @@ class _SuccessPageState extends State<SuccessPage> {
               padding: EdgeInsets.fromLTRB(20.sp, 20.sp, 20.sp, 20.sp),
               child: Stack(
                 children: [
+                  // Consumer<NameProvider>(builder: (child, data, widget) {
+                  //   return Text(data.emailName);
+                  // }),
                   enterNameWidget(),
                   hostAndJoinWidget(),
                 ],
@@ -79,8 +92,10 @@ class _SuccessPageState extends State<SuccessPage> {
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
-          Future.delayed(const Duration(seconds: 1), () {
+          Future.delayed(const Duration(seconds: 1), () async {
             Navigator.of(context).pop(true);
+            // await StorageServices()
+            //     .setUserId(FirebaseAuth.instance.currentUser!.uid);
             prefs.setBool(keyIsFirstLoaded, false);
           });
           return AlertDialog(

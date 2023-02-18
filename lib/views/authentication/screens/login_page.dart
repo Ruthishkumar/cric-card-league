@@ -1,7 +1,10 @@
 import 'dart:developer';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/authentication/screens/otp_page.dart';
+import 'package:ds_game/views/authentication/screens/success_page.dart';
+import 'package:ds_game/views/authentication/services/storage_services.dart';
 import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_button.dart';
 import 'package:ds_game/widgets/app_input_text_outline.dart';
@@ -15,6 +18,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -30,8 +34,6 @@ class _LoginPageState extends State<LoginPage> {
     ..addListener(() {
       setState(() {});
     });
-
-  static String verify = "";
 
   @override
   Widget build(BuildContext context) {
@@ -142,32 +144,45 @@ class _LoginPageState extends State<LoginPage> {
     ));
   }
 
+  FirebaseAuth auth = FirebaseAuth.instance;
+
+  String verificationID = "";
+
   /// LogIn Summit function
   _onSummitLogin() async {
-    FirebaseAuth auth = FirebaseAuth.instance;
     if (validate()) {
-      log('Success');
-      // await FirebaseAuth.instance.verifyPhoneNumber(
-      //   phoneNumber: '+91 ${phoneNumberController.text}',
-      //   verificationCompleted: (PhoneAuthCredential credential) async {
-      //     await auth.signInWithCredential(credential);
-      //   },
-      //   verificationFailed: (FirebaseAuthException e) {
-      //     log(e.toString());
-      //   },
-      //   codeSent: (String verificationId, int? resendToken) {
-      //     verify = verificationId.toString();
-      //     log('Code Sent');
-      //   },
-      //   codeAutoRetrievalTimeout: (String verificationId) {},
-      // );
-      // if (!mounted) {
-      //   return;
-      // }
-      NavigationRoute().animationRoute(context,
-          OtpPage(mobileNumber: phoneNumberController.text, vid: verify));
+      try {
+        await FirebaseAuth.instance.verifyPhoneNumber(
+          phoneNumber: '+91 ${phoneNumberController.text}',
+          verificationCompleted: (PhoneAuthCredential credential) async {
+            await auth.signInWithCredential(credential).then((value) {
+              log("You are logged in successfully");
+            });
+          },
+          verificationFailed: (FirebaseAuthException e) {
+            log(e.toString());
+          },
+          codeSent: (String verificationId, int? resendToken) {
+            verificationID = verificationId;
+            log('Code Sent');
+            NavigationRoute().animationRoute(
+                context,
+                OtpPage(
+                  mobileNumber: phoneNumberController.text,
+                  verifyId: verificationID,
+                  auth: auth,
+                ));
+          },
+          codeAutoRetrievalTimeout: (String verificationId) {},
+        );
+      } catch (e, stack) {
+        log(e.toString());
+        log(stack.toString());
+      }
     }
   }
+
+  User? user;
 
   /// google auth
   _googleLogin() async {
@@ -179,7 +194,19 @@ class _LoginPageState extends State<LoginPage> {
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
-      return await FirebaseAuth.instance.signInWithCredential(credential);
+      final UserCredential userCredential =
+          await auth.signInWithCredential(credential);
+      user = userCredential.user;
+      log(user!.uid);
+      log('Google Uid');
+      log(user!.email.toString());
+      log(user!.displayName.toString());
+      Provider.of<NameProvider>(context, listen: false)
+          .addEmailId(value: user!.email.toString());
+      await StorageServices().setUserId(user!.uid);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const SuccessPage()),
+          (route) => false);
     } catch (e, stack) {
       log(e.toString());
       log(stack.toString());
