@@ -1,11 +1,13 @@
 import 'dart:developer';
 import 'dart:math';
+import 'package:delayed_display/delayed_display.dart';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/dashboard/screens/host_ip_page.dart';
 import 'package:ds_game/views/dashboard/screens/players_details_page.dart';
 import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_input_text_outline.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
+import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:fade_and_translate/fade_and_translate.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -130,46 +132,33 @@ class _SuccessPageState extends State<SuccessPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
-              width: 250.sp,
-              child: AppInputTextOutline(
-                  focusNode: focusNameNode,
-                  fillColor: focusNameNode.hasFocus
-                      ? Colors.white
-                      : Colors.white.withOpacity(0.3),
-                  inputController: playerNameController,
-                  hintText: 'Your Name'),
+            DelayedDisplay(
+              slidingBeginOffset: const Offset(-1, 0),
+              delay: const Duration(microseconds: 1),
+              child: SizedBox(
+                width: 250.sp,
+                child: AppInputTextOutline(
+                    focusNode: focusNameNode,
+                    fillColor: focusNameNode.hasFocus
+                        ? Colors.white
+                        : Colors.white.withOpacity(0.3),
+                    inputController: playerNameController,
+                    hintText: 'Your Name'),
+              ),
             ),
             SizedBox(height: 30.sp),
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  isVisible = !isVisible;
-                });
-                _validatePlayerNameSummit();
-              },
-              child: ClipPath(
-                clipper: ShapeBorderClipper(
-                    shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.all(Radius.circular(10.sp)))),
-                child: Container(
-                  width: 250.sp,
-                  padding: EdgeInsets.fromLTRB(15.sp, 10.sp, 15.sp, 10.sp),
-                  decoration: const BoxDecoration(
-                      color: Colors.blue,
-                      border: Border(
-                          top: BorderSide(color: Colors.white, width: 7.0))),
-                  child: Text(
-                    'OK',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.actor(
-                        color: Colors.white,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20.sp),
-                  ),
-                ),
+            DelayedDisplay(
+              slidingBeginOffset: const Offset(1, -1),
+              delay: const Duration(microseconds: 1),
+              child: HostingButton(
+                text: 'OK',
+                color: const Color(0xff12c2e9),
+                onPressed: () {
+                  setState(() {
+                    isVisible = !isVisible;
+                  });
+                  _validatePlayerNameSummit();
+                },
               ),
             ),
           ],
@@ -192,68 +181,34 @@ class _SuccessPageState extends State<SuccessPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: 20.sp),
-              GestureDetector(
-                onTap: () async {
-                  final info = NetworkInfo();
-                  final wifiIP = await info.getWifiIP();
-                  if (!mounted) {
-                    return;
-                  }
-                  NavigationRoute()
-                      .animationRoute(context, const PlayersDetailsPage());
-                  // log(wifiIP.toString());
-                },
-                child: ClipPath(
-                  clipper: ShapeBorderClipper(
-                      shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(10.sp)))),
-                  child: Container(
-                    width: 250.sp,
-                    padding: EdgeInsets.fromLTRB(15.sp, 10.sp, 15.sp, 10.sp),
-                    decoration: const BoxDecoration(
-                        color: Colors.green,
-                        border: Border(
-                            top: BorderSide(color: Colors.white, width: 7.0))),
-                    child: Text(
-                      'Host'.toUpperCase(),
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.actor(
-                          color: Colors.white,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20.sp),
-                    ),
-                  ),
+              DelayedDisplay(
+                slidingBeginOffset: const Offset(-1, 0),
+                delay: const Duration(microseconds: 1),
+                child: HostingButton(
+                  text: 'Host'.toUpperCase(),
+                  color: Colors.green,
+                  onPressed: () async {
+                    final info = NetworkInfo();
+                    final wifiIP = await info.getWifiIP();
+                    if (!mounted) {
+                      return;
+                    }
+                    NavigationRoute()
+                        .animationRoute(context, const PlayersDetailsPage());
+                  },
                 ),
               ),
               SizedBox(height: 30.sp),
-              GestureDetector(
-                onTap: () {
-                  NavigationRoute().animationRoute(context, const HostIpPage());
-                },
-                child: ClipPath(
-                  clipper: ShapeBorderClipper(
-                      shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(10.sp)))),
-                  child: Container(
-                    width: 250.sp,
-                    padding: EdgeInsets.fromLTRB(15.sp, 10.sp, 15.sp, 10.sp),
-                    decoration: const BoxDecoration(
-                        color: Colors.blue,
-                        border: Border(
-                            top: BorderSide(color: Colors.white, width: 7.0))),
-                    child: Text(
-                      'Join'.toUpperCase(),
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.actor(
-                          color: Colors.white,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20.sp),
-                    ),
-                  ),
+              DelayedDisplay(
+                slidingBeginOffset: const Offset(1, -1),
+                delay: const Duration(milliseconds: 1),
+                child: HostingButton(
+                  text: 'Join'.toUpperCase(),
+                  color: const Color(0xff12c2e9),
+                  onPressed: () {
+                    NavigationRoute()
+                        .animationRoute(context, const HostIpPage());
+                  },
                 ),
               ),
             ],

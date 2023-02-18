@@ -164,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
     ));
   }
 
-  FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseAuth auth1 = FirebaseAuth.instance;
 
   String verificationID = "";
 
@@ -175,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
         await FirebaseAuth.instance.verifyPhoneNumber(
           phoneNumber: '+91 ${phoneNumberController.text}',
           verificationCompleted: (PhoneAuthCredential credential) async {
-            await auth.signInWithCredential(credential).then((value) {
+            await auth1.signInWithCredential(credential).then((value) {
               log("You are logged in successfully");
             });
           },
@@ -185,12 +185,13 @@ class _LoginPageState extends State<LoginPage> {
           codeSent: (String verificationId, int? resendToken) {
             verificationID = verificationId;
             log('Code Sent');
+            auth1.setSettings(appVerificationDisabledForTesting: true);
             NavigationRoute().animationRoute(
                 context,
                 OtpPage(
                   mobileNumber: phoneNumberController.text,
                   verifyId: verificationID,
-                  auth: auth,
+                  auth: auth1,
                 ));
           },
           codeAutoRetrievalTimeout: (String verificationId) {},
@@ -215,7 +216,7 @@ class _LoginPageState extends State<LoginPage> {
         idToken: googleAuth?.idToken,
       );
       final UserCredential userCredential =
-          await auth.signInWithCredential(credential);
+          await auth1.signInWithCredential(credential);
       user = userCredential.user;
       log(user!.uid);
       log('Google Uid');
