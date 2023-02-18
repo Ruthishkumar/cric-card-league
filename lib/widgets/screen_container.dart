@@ -8,7 +8,7 @@ class ScreenContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: const Color(0xff0f0c29),
+      backgroundColor: Colors.white,
       body: bodyWidget,
     );
   }

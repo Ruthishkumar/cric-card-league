@@ -5,12 +5,14 @@ import 'package:ds_game/views/authentication/services/storage_services.dart';
 import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_button.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
+import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pinput/pinput.dart';
 
 class OtpPage extends StatefulWidget {
@@ -54,7 +56,7 @@ class _OtpPageState extends State<OtpPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Image.asset('assets/images/otp_success.png'),
+                    Image.asset('assets/images/cricket_fever.jpg'),
                     SizedBox(height: 25.sp),
                     Text(
                       'Enter Verification Code',
@@ -66,20 +68,22 @@ class _OtpPageState extends State<OtpPage> {
                       children: [
                         Text(
                           'OTP Sent to',
-                          style: GoogleFonts.openSans(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FontStyle.normal,
-                              color: Colors.white),
+                          style: GoogleFonts.prompt(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FontStyle.normal,
+                            color: const Color(0xff2c3e50),
+                          ),
                         ),
                         SizedBox(width: 5.w),
                         Text(
                           '+91 ${widget.mobileNumber}',
-                          style: GoogleFonts.openSans(
-                              fontSize: 14.sp,
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white),
+                          style: GoogleFonts.prompt(
+                            fontSize: 14.sp,
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xff2c3e50),
+                          ),
                         )
                       ],
                     ),
@@ -109,7 +113,7 @@ class _OtpPageState extends State<OtpPage> {
                       pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
                       submittedPinTheme: defaultPinTheme.copyWith(
                           decoration: defaultPinTheme.decoration?.copyWith(
-                              color: Colors.white,
+                              color: Colors.grey,
                               borderRadius: BorderRadius.circular(12),
                               border:
                                   Border.all(color: const Color(0xff1E1E26)))),
@@ -118,8 +122,9 @@ class _OtpPageState extends State<OtpPage> {
                 ),
               ),
             ),
-            AppButton(
-              label: 'Verify Otp',
+            LoginFancyButton(
+              text: 'Verify Otp',
+              color: const Color(0xffFF951A),
               onPressed: _onVerifyOtp,
             ),
           ],
@@ -135,11 +140,11 @@ class _OtpPageState extends State<OtpPage> {
     textStyle: GoogleFonts.openSans(
         fontSize: 16.sp,
         fontStyle: FontStyle.normal,
-        color: const Color(0xff1E1E26),
+        color: Colors.white,
         fontWeight: FontWeight.w400),
     decoration: BoxDecoration(
       border: Border.all(color: const Color(0xffD2D2D4)),
-      color: Colors.white70.withOpacity(0.7),
+      color: Colors.grey.withOpacity(0.8),
       borderRadius: BorderRadius.circular(12),
     ),
   );

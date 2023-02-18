@@ -7,15 +7,15 @@ class AppTextStyles {
   AppTextStyles._internal();
   static AppTextStyles get instance => _singleton;
 
-  final TextStyle? loginHeader = GoogleFonts.openSans(
-    color: Colors.white,
+  final TextStyle? loginHeader = GoogleFonts.prompt(
+    color: const Color(0xff2c3e50),
     fontStyle: FontStyle.normal,
     fontWeight: FontWeight.w700,
     fontSize: 20.sp,
   );
 
-  final TextStyle? otpHeader = GoogleFonts.openSans(
-    color: Colors.white,
+  final TextStyle? otpHeader = GoogleFonts.prompt(
+    color: const Color(0xff2c3e50),
     fontStyle: FontStyle.normal,
     fontWeight: FontWeight.normal,
     fontSize: 20.sp,
@@ -29,7 +29,7 @@ class AppTextStyles {
   );
 
   final TextStyle? loginSubHeader = GoogleFonts.prompt(
-    color: Colors.white,
+    color: const Color(0xff2c3e50),
     fontStyle: FontStyle.normal,
     fontWeight: FontWeight.w500,
     fontSize: 15.sp,

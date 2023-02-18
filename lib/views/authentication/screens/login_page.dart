@@ -9,6 +9,7 @@ import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_button.dart';
 import 'package:ds_game/widgets/app_input_text_outline.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
+import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:ds_game/widgets/string_validation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -42,9 +43,9 @@ class _LoginPageState extends State<LoginPage> {
         fontWeight: FontWeight.bold,
         fontStyle: FontStyle.normal);
     const colorizeColors = [
-      Colors.white,
-      Color(0x0fd76d77),
-      Color(0xffffaf7b),
+      Color(0xff12c2e9),
+      Color(0xffc471ed),
+      Color(0xfff64f59),
     ];
     return ScreenContainer(
         bodyWidget: Container(
@@ -95,19 +96,38 @@ class _LoginPageState extends State<LoginPage> {
                   style: AppTextStyles.instance.loginSubHeader),
               SizedBox(height: 30.sp),
               AppInputTextOutline(
+                  hintTextStyle: myFocusNode.hasFocus
+                      ? GoogleFonts.openSans(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white)
+                      : GoogleFonts.openSans(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black),
+                  hintFontStyle: myFocusNode.hasFocus
+                      ? GoogleFonts.openSans(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white)
+                      : GoogleFonts.openSans(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black),
                   inputController: phoneNumberController,
                   hintText: 'Enter Your Phone Number',
                   focusNode: myFocusNode,
                   isNumber: true,
                   fillColor: myFocusNode.hasFocus
-                      ? Colors.white
-                      : Colors.white70.withOpacity(0.7),
+                      ? Colors.grey
+                      : Colors.black.withOpacity(0.2),
                   textInputAction: TextInputAction.done,
                   validator: (value) =>
                       value!.isEmpty ? 'Enter Valid name' : null),
-              SizedBox(height: 20.sp),
-              AppButton(
-                label: 'Send the code',
+              SizedBox(height: 40.sp),
+              LoginFancyButton(
+                text: 'Send the Code',
+                color: const Color(0xffFF951A),
                 onPressed: _onSummitLogin,
               ),
               SizedBox(height: 20.sp),
@@ -117,12 +137,12 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 20.sp),
               Row(
                 children: [
-                  Container(height: 1.sp, width: 100.sp, color: Colors.white),
+                  Container(height: 1.sp, width: 100.sp, color: Colors.grey),
                   SizedBox(width: 10.sp),
                   Text('Continue with',
                       style: AppTextStyles.instance.loginSubHeader),
                   SizedBox(width: 10.sp),
-                  Container(height: 1.sp, width: 100.sp, color: Colors.white),
+                  Container(height: 1.sp, width: 100.sp, color: Colors.grey),
                 ],
               ),
               SizedBox(height: 20.sp),

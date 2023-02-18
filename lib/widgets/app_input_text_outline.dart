@@ -13,6 +13,8 @@ class AppInputTextOutline extends StatelessWidget {
   final TextInputType? keyBoardType;
   final TextInputAction? textInputAction;
   final bool? isNumber;
+  final TextStyle? hintTextStyle;
+  final TextStyle? hintFontStyle;
   final List<TextInputFormatter>? inputFormatters;
 
   const AppInputTextOutline(
@@ -26,7 +28,8 @@ class AppInputTextOutline extends StatelessWidget {
       this.keyBoardType,
       this.textInputAction,
       this.isNumber,
-      this.inputFormatters})
+      this.inputFormatters,
+      this.hintTextStyle, this.hintFontStyle})
       : super(key: key);
 
   @override
@@ -48,6 +51,7 @@ class AppInputTextOutline extends StatelessWidget {
         onChanged: onChanged,
         focusNode: focusNode,
         validator: validator,
+        style: hintFontStyle,
         decoration: InputDecoration(
             fillColor: fillColor,
             filled: true,
@@ -77,10 +81,7 @@ class AppInputTextOutline extends StatelessWidget {
                 fontWeight: FontWeight.w400,
                 fontStyle: FontStyle.normal,
                 fontSize: 16.sp),
-            hintStyle: GoogleFonts.openSans(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w400,
-                color: Colors.grey),
+            hintStyle: hintTextStyle,
             hintText: hintText));
   }
 }
