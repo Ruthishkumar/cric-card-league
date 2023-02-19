@@ -13,6 +13,7 @@ import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:ds_game/widgets/string_validation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -225,6 +226,9 @@ class _LoginPageState extends State<LoginPage> {
       Provider.of<NameProvider>(context, listen: false)
           .addEmailId(value: user!.email.toString());
       await StorageServices().setUserId(user!.uid);
+      final referenceDatabase = FirebaseDatabase.instance;
+      final ref = referenceDatabase.reference();
+      ref.child('users').push().child('id').set(user!.uid).asStream();
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const SuccessPage()),
           (route) => false);

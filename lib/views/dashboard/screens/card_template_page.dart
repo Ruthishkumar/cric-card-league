@@ -1,7 +1,9 @@
+import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class CardTemplatePage extends StatefulWidget {
   const CardTemplatePage({Key? key}) : super(key: key);
@@ -35,10 +37,26 @@ class _CardTemplatePageState extends State<CardTemplatePage> {
         ),
         Center(
           child: Container(
-            padding: EdgeInsets.fromLTRB(20.sp, 20.sp, 20.sp, 20.sp),
+            padding: EdgeInsets.fromLTRB(20.sp, 10.sp, 20.sp, 20.sp),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Container(
+                  padding: EdgeInsets.all(15.sp),
+                  decoration: BoxDecoration(
+                    color: const Color(0xffF2C94C),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.5), blurRadius: 12)
+                    ],
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(100.sp),
+                      bottomRight: Radius.circular(100.sp),
+                    ),
+                  ),
+                  child: scorePoints(),
+                ),
+                SizedBox(height: 30.sp),
                 Container(
                   width: 250.sp,
                   decoration: BoxDecoration(
@@ -164,5 +182,33 @@ class _CardTemplatePageState extends State<CardTemplatePage> {
         ),
       ],
     ));
+  }
+
+  scorePoints() {
+    if (Provider.of<NameProvider>(context, listen: false).noOfCards == '5') {
+      return Text(
+        '500\nPoints',
+        style: AppTextStyles.instance.points,
+      );
+    } else if (Provider.of<NameProvider>(context, listen: false).noOfCards ==
+        '10') {
+      return Text(
+        '100\nPoints',
+        style: AppTextStyles.instance.points,
+      );
+    } else if (Provider.of<NameProvider>(context, listen: false).noOfCards ==
+        '15') {
+      return Text(
+        '1500\nPoints',
+        style: AppTextStyles.instance.points,
+      );
+    } else if (Provider.of<NameProvider>(context, listen: false).noOfCards ==
+        '20') {
+      return Text(
+        '2000\nPoints',
+        style: AppTextStyles.instance.points,
+      );
+    }
+    return const Text('No Points');
   }
 }

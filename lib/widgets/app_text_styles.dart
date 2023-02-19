@@ -56,6 +56,13 @@ class AppTextStyles {
     fontSize: 20.sp,
   );
 
+  final TextStyle? points = GoogleFonts.prompt(
+    color: Colors.white,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w500,
+    fontSize: 20.sp,
+  );
+
   final TextStyle? cardFirstName = GoogleFonts.poppins(
     color: Colors.white,
     fontStyle: FontStyle.normal,

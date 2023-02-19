@@ -154,9 +154,6 @@ class _SuccessPageState extends State<SuccessPage> {
                 text: 'OK',
                 color: const Color(0xff12c2e9),
                 onPressed: () {
-                  setState(() {
-                    isVisible = !isVisible;
-                  });
                   _validatePlayerNameSummit();
                 },
               ),
@@ -218,14 +215,28 @@ class _SuccessPageState extends State<SuccessPage> {
 
   /// save player name
   _validatePlayerNameSummit() {
-    Provider.of<NameProvider>(context, listen: false)
-        .addPlayerName(value: playerNameController.text);
-    var rng = Random();
-    var k = rng.nextInt(10000);
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref().child('playerName/$k');
-    ref.set({
-      "names": playerNameController.text,
-    }).asStream();
+    if (validate()) {
+      setState(() {
+        isVisible = !isVisible;
+      });
+      Provider.of<NameProvider>(context, listen: false)
+          .addPlayerName(value: playerNameController.text);
+      final referenceDatabase = FirebaseDatabase.instance;
+      final ref = referenceDatabase.reference();
+      ref
+          .child('playerName')
+          .push()
+          .child('names')
+          .set(playerNameController.text)
+          .asStream();
+    }
+  }
+
+  bool validate() {
+    if (playerNameController.text == '') {
+      return false;
+    } else {
+      return true;
+    }
   }
 }

@@ -4,6 +4,8 @@ class NameProvider extends ChangeNotifier {
   String playerName = "";
   String emailName = "";
 
+  String noOfCards = "";
+
   void addPlayerName({required String value}) {
     playerName = value;
     notifyListeners();
@@ -11,6 +13,11 @@ class NameProvider extends ChangeNotifier {
 
   void addEmailId({required String value}) {
     emailName = value;
+    notifyListeners();
+  }
+
+  void addCards({required String value}) {
+    noOfCards = value;
     notifyListeners();
   }
 }

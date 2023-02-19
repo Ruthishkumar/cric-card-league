@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
+import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/screens/card_template_page.dart';
 import 'package:ds_game/views/dashboard/screens/coin_flip_page.dart';
 import 'package:ds_game/widgets/animation_route.dart';
@@ -22,10 +23,10 @@ class PlayersDetailsPage extends StatefulWidget {
 
 class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
   final List<String> cardItems = [
+    '5',
     '10',
+    '15',
     '20',
-    '30',
-    '40',
   ];
   String? selectedValue;
   @override
@@ -125,25 +126,31 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                     ),
                   ),
                   SizedBox(height: 20.sp),
-                  Container(
-                    width: 200.sp,
-                    padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
-                    decoration: BoxDecoration(
-                        color: const Color(0xff093028),
-                        borderRadius: BorderRadius.all(Radius.circular(8.sp))),
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(4.sp, 10.sp, 4.sp, 4.sp),
-                      padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(8.sp)),
-                          color: const Color(0xff237a57)),
-                      child: Center(
-                        child: Text(
-                          'Your IP: 192.168.1.182',
-                          style: AppTextStyles.instance.ipAddress,
+                  Consumer<GameProvider>(
+                    builder: (widget, game, child) {
+                      return Container(
+                        width: 200.sp,
+                        padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
+                        decoration: BoxDecoration(
+                            color: const Color(0xff093028),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.sp))),
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(4.sp, 10.sp, 4.sp, 4.sp),
+                          padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.sp)),
+                              color: const Color(0xff237a57)),
+                          child: Center(
+                            child: Text(
+                              'Your IP: ${game.gameModel?.id}',
+                              style: AppTextStyles.instance.ipAddress,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
                   SizedBox(height: 20.sp),
                   Row(
@@ -193,6 +200,9 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                             onChanged: (value) {
                               setState(() {
                                 selectedValue = value;
+                                Provider.of<NameProvider>(context,
+                                        listen: false)
+                                    .addCards(value: selectedValue.toString());
                               });
                             },
                             buttonHeight: 40,
