@@ -76,3 +76,77 @@ class HostingButton extends StatelessWidget {
     );
   }
 }
+
+class GameStartButton extends StatelessWidget {
+  final String text;
+  final Color color;
+  final Function onPressed;
+
+  const GameStartButton({
+    Key? key,
+    required this.text,
+    required this.color,
+    required this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FancyButton(
+      child: SizedBox(
+        width: 150.sp,
+        child: Center(
+          child: Text(
+            text,
+            style: GoogleFonts.prompt(
+                color: Colors.white,
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w500,
+                fontStyle: FontStyle.normal),
+          ),
+        ),
+      ),
+      size: 45,
+      color: color,
+      onPressed: () {
+        onPressed();
+      },
+    );
+  }
+}
+
+class HeadTailsButton extends StatelessWidget {
+  final String text;
+  final Color color;
+  final Function onPressed;
+
+  const HeadTailsButton({
+    Key? key,
+    required this.text,
+    required this.color,
+    required this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FancyButton(
+      child: SizedBox(
+        width: 80.sp,
+        child: Center(
+          child: Text(
+            text,
+            style: GoogleFonts.prompt(
+                color: Colors.white,
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w500,
+                fontStyle: FontStyle.normal),
+          ),
+        ),
+      ),
+      size: 45,
+      color: color,
+      onPressed: () {
+        onPressed();
+      },
+    );
+  }
+}

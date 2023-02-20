@@ -1,4 +1,5 @@
 import 'package:ds_game/views/dashboard/model/game_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class Repository {
@@ -10,6 +11,7 @@ class Repository {
 
   static Repository get instance => _singleton;
   final FirebaseDatabase reference = FirebaseDatabase.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   Future<String> createRoom(GameModel gameModel) async {
     final DatabaseReference _messagesRef =

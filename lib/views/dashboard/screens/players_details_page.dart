@@ -8,6 +8,7 @@ import 'package:ds_game/views/dashboard/screens/coin_flip_page.dart';
 import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_button.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
+import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,6 +32,11 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
   String? selectedValue;
   @override
   Widget build(BuildContext context) {
+    var deckCardsTotal = [
+      {'cardValue': '10', 'cardId': 0},
+      {'cardValue': '20', 'cardId': 1},
+      {'cardValue': '30', 'cardId': 2},
+    ];
     return ScreenContainer(
       bodyWidget: Stack(
         fit: StackFit.expand,
@@ -152,85 +158,31 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                       );
                     },
                   ),
-                  SizedBox(height: 20.sp),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 50.sp,
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton2(
-                            icon: Icon(
-                              Icons.arrow_drop_down_outlined,
-                              color: Colors.white,
-                              size: 25.sp,
-                            ),
-                            hint: Text(
-                              'Cards',
-                              style: GoogleFonts.prompt(
-                                  color: Colors.white,
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            buttonPadding: const EdgeInsets.only(
-                              left: 14,
-                              right: 14,
-                            ),
-                            itemPadding:
-                                EdgeInsets.only(left: 14.sp, right: 14.sp),
-                            itemHighlightColor: Colors.blue,
-                            items: cardItems
-                                .map((item) => DropdownMenuItem<String>(
-                                      value: item,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            item,
-                                            style: GoogleFonts.prompt(
-                                                color: Colors.white,
-                                                fontSize: 16.sp,
-                                                fontWeight: FontWeight.w500),
-                                          ),
-                                          // Icon(Icons.add)
-                                        ],
-                                      ),
-                                    ))
-                                .toList(),
-                            value: selectedValue,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedValue = value;
-                                Provider.of<NameProvider>(context,
-                                        listen: false)
-                                    .addCards(value: selectedValue.toString());
-                              });
-                            },
-                            buttonHeight: 40,
-                            buttonWidth: 140,
-                            buttonDecoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.sp),
-                              border: Border.all(
-                                color: const Color(0xff093028),
-                              ),
-                              color: const Color(0xff093028),
-                            ),
-                            dropdownDecoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.sp),
-                              color: const Color(0xff093028),
-                            ),
-                            itemHeight: 40,
-                          ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/images/ribbon_green.png',
+                          height: 150,
                         ),
-                      ),
-                      SizedBox(width: 5.sp),
-                      SizedBox(
-                          width: 150.sp,
-                          child: AppButton(
-                              label: 'New Game',
-                              onPressed: () {
-                                NavigationRoute()
-                                    .animationRoute(context, CoinFlipScreen());
-                              }))
+                        Text(
+                          'Select deck of cards',
+                          style: GoogleFonts.prompt(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FontStyle.normal,
+                              fontSize: 14.sp),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      for (int i = 0; i < deckCardsTotal.length; i++)
+                        _cardDetails(deckCardsTotal[i])
                     ],
                   ),
                 ],
@@ -240,5 +192,63 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
         ],
       ),
     );
+  }
+
+  int selectCardValue = -1;
+
+  _cardDetails(options) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectCardValue = options['cardId'];
+          Provider.of<NameProvider>(context, listen: false)
+              .addCards(value: selectCardValue);
+          log(selectCardValue.toString());
+        });
+        NavigationRoute().animationRoute(context, CoinFlipScreen());
+      },
+      child: Stack(
+        children: [
+          RotationTransition(
+            turns: const AlwaysStoppedAnimation(12 / 360),
+            child: Container(
+              height: 60,
+              width: 60,
+              decoration: BoxDecoration(
+                  color: const Color(0xff243b55),
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black, blurRadius: 5)
+                  ],
+                  border: Border.all(color: Colors.white, width: 1.5),
+                  borderRadius: BorderRadius.all(Radius.circular(8.sp))),
+            ),
+          ),
+          Container(
+            height: 60,
+            width: 60,
+            decoration: BoxDecoration(
+                color: const Color(0xff243b55),
+                border: Border.all(color: Colors.white, width: 1.5),
+                borderRadius: BorderRadius.all(Radius.circular(8.sp))),
+            child: Center(
+                child: Text(options['cardValue'],
+                    style: GoogleFonts.prompt(
+                        color: Colors.white,
+                        fontSize: 15.sp,
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w500))),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _cardValidate() {
+    if (selectedValue == null) {
+      return false;
+    } else {
+      NavigationRoute().animationRoute(context, CoinFlipScreen());
+      return true;
+    }
   }
 }

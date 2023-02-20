@@ -32,6 +32,8 @@ dependencies:
   pushable_button: ^0.0.3
   audioplayers: ^0.20.0
   delayed_display: ^2.0.0
+  flip_card: ^0.7.0
+
 
 
 

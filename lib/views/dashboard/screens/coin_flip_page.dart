@@ -1,16 +1,18 @@
-import 'dart:developer';
 import 'dart:math';
 
 import 'package:ds_game/views/dashboard/screens/card_template_page.dart';
 import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_button.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
+import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CoinFlipScreen extends StatefulWidget {
+  const CoinFlipScreen({super.key});
+
   @override
   _CoinFlipScreenState createState() => _CoinFlipScreenState();
 }
@@ -43,80 +45,116 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () {
-        if (!isActive) {
-          isActive = true;
-          int faceIndex = Random().nextInt(faces.length);
-          _flipCoin(faces[faceIndex]);
-        }
-      },
-      child: ScreenContainer(
-        bodyWidget: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.asset(
-              'assets/images/home_bg.jpg',
-              fit: BoxFit.cover,
-            ),
-            isActive == false
-                ? Align(
-                    alignment: const Alignment(-0.01, 0.15),
-                    child: AnimatedOpacity(
-                      child: Text(
-                        'Let\'s have a Toss and\nclick the toss button',
-                        style: AppTextStyles.instance.tossHeader,
-                      ),
-                      duration: const Duration(seconds: 1),
-                      opacity: isActive == false
-                          ? beforeTossOpacity
-                          : afterTossOpacity,
+    return ScreenContainer(
+      bodyWidget: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            'assets/images/home_bg.jpg',
+            fit: BoxFit.cover,
+          ),
+          isActive == false
+              ? Align(
+                  alignment: const Alignment(-0.01, 0.15),
+                  child: AnimatedOpacity(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Choose the call',
+                          style: AppTextStyles.instance.tossHeader,
+                        ),
+                        SizedBox(height: 40.sp),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            HeadTailsButton(
+                              text: 'Heads',
+                              color: Colors.green,
+                              onPressed: () {
+                                if (!isActive) {
+                                  isActive = true;
+                                  int faceIndex =
+                                      Random().nextInt(faces.length);
+                                  _flipCoin(faces[faceIndex]);
+                                }
+                              },
+                            ),
+                            HeadTailsButton(
+                              text: 'Tails',
+                              color: Colors.red,
+                              onPressed: () {
+                                if (!isActive) {
+                                  isActive = true;
+                                  int faceIndex =
+                                      Random().nextInt(faces.length);
+                                  _flipCoin(faces[faceIndex]);
+                                }
+                              },
+                            )
+                          ],
+                        )
+                      ],
                     ),
-                  )
-                : Container(),
-            AnimatedPositioned(
-              duration: const Duration(seconds: 2),
-              curve: Curves.bounceOut,
-              bottom: _distanceFromBottom,
-              right: MediaQuery.of(context).size.width * 0.31,
-              child: AnimatedSwitcher(
-                duration: Duration(milliseconds: _flip_duration),
-                transitionBuilder: __transitionBuilder,
-                child: _showFrontSide ? _buildHeads() : _buildTails(),
-                switchOutCurve: Curves.easeIn.flipped,
-              ),
+                    duration: const Duration(seconds: 1),
+                    opacity: isActive == false
+                        ? beforeTossOpacity
+                        : afterTossOpacity,
+                  ),
+                )
+              : Container(),
+          AnimatedPositioned(
+            duration: const Duration(seconds: 2),
+            curve: Curves.bounceOut,
+            bottom: _distanceFromBottom,
+            right: MediaQuery.of(context).size.width * 0.31,
+            child: AnimatedSwitcher(
+              duration: Duration(milliseconds: _flip_duration),
+              transitionBuilder: __transitionBuilder,
+              child: _showFrontSide ? _buildHeads() : _buildTails(),
+              switchOutCurve: Curves.easeIn.flipped,
             ),
-            SizedBox(height: 100.sp),
-            Align(
-              alignment: const Alignment(-0.01, 0.20),
-              child: AnimatedOpacity(
-                child: Text(
-                  _face.toUpperCase(),
-                  style: AppTextStyles.instance.tossHeader,
-                ),
-                duration: const Duration(seconds: 1),
-                opacity: afterTossOpacity,
+          ),
+          SizedBox(height: 100.sp),
+          Align(
+            alignment: const Alignment(-0.01, 0.20),
+            child: AnimatedOpacity(
+              child: Text(
+                _face.toUpperCase(),
+                style: AppTextStyles.instance.tossHeader,
               ),
+              duration: const Duration(seconds: 1),
+              opacity: afterTossOpacity,
             ),
-            Align(
-              alignment: const Alignment(-0.01, 0.40),
-              child: AnimatedOpacity(
-                child: SizedBox(
-                  width: 200.sp,
-                  child: AppButton(
-                      label: 'Start Game',
-                      onPressed: () {
-                        NavigationRoute()
-                            .animationRoute(context, const CardTemplatePage());
-                      }),
-                ),
-                duration: const Duration(seconds: 1),
-                opacity: afterTossOpacity,
+          ),
+          Align(
+            alignment: const Alignment(-0.01, 0.40),
+            child: AnimatedOpacity(
+              child: Text(
+                'jdj',
+                style: AppTextStyles.instance.tossHeader,
               ),
+              duration: const Duration(seconds: 1),
+              opacity: afterTossOpacity,
             ),
-          ],
-        ),
+          ),
+          Align(
+            alignment: const Alignment(-0.01, 0.60),
+            child: AnimatedOpacity(
+              child: SizedBox(
+                width: 200.sp,
+                child: AppButton(
+                    label: 'Start Game',
+                    onPressed: () {
+                      NavigationRoute()
+                          .animationRoute(context, const CardTemplatePage());
+                    }),
+              ),
+              duration: const Duration(seconds: 1),
+              opacity: afterTossOpacity,
+            ),
+          ),
+        ],
       ),
     );
   }

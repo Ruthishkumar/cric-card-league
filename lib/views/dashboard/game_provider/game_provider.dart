@@ -21,11 +21,9 @@ class GameProvider extends ChangeNotifier {
   initRoom() async {
     isLoading = true;
     notifyListeners();
-    if (isHost) {
-      String id = await repository.createRoom(gameModel!);
-      gameModel?.id = id;
-      log(gameModel!.id.toString());
-    }
+    String id = await repository.createRoom(gameModel!);
+    gameModel?.id = id;
+    log(gameModel!.id.toString());
     isLoading = false;
     notifyListeners();
   }
