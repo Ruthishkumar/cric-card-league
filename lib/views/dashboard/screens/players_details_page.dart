@@ -158,31 +158,30 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                       );
                     },
                   ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/ribbon_green.png',
-                          height: 150,
-                        ),
-                        Text(
-                          'Select deck of cards',
-                          style: GoogleFonts.prompt(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FontStyle.normal,
-                              fontSize: 14.sp),
-                        ),
-                      ],
-                    ),
+                  SizedBox(height: 20.sp),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/images/ribbon_green.png',
+                        height: 150,
+                      ),
+                      Text(
+                        'Select deck of cards',
+                        style: GoogleFonts.prompt(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 14.sp),
+                      ),
+                    ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       for (int i = 0; i < deckCardsTotal.length; i++)
-                        _cardDetails(deckCardsTotal[i])
+                        _cardDetails(deckCardsTotal[i]),
                     ],
                   ),
                 ],
@@ -196,16 +195,22 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
 
   int selectCardValue = -1;
 
+  String selectCardNumbers = "";
+
   _cardDetails(options) {
     return GestureDetector(
       onTap: () {
         setState(() {
           selectCardValue = options['cardId'];
+          selectCardNumbers = options['cardValue'];
+          log(selectCardNumbers);
           Provider.of<NameProvider>(context, listen: false)
               .addCards(value: selectCardValue);
+          Provider.of<NameProvider>(context, listen: false)
+              .cardTotalValue(value: selectCardNumbers);
           log(selectCardValue.toString());
         });
-        NavigationRoute().animationRoute(context, CoinFlipScreen());
+        NavigationRoute().animationRoute(context, const CoinFlipScreen());
       },
       child: Stack(
         children: [
@@ -241,14 +246,5 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
         ],
       ),
     );
-  }
-
-  _cardValidate() {
-    if (selectedValue == null) {
-      return false;
-    } else {
-      NavigationRoute().animationRoute(context, CoinFlipScreen());
-      return true;
-    }
   }
 }

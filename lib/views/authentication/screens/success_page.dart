@@ -138,10 +138,28 @@ class _SuccessPageState extends State<SuccessPage> {
               child: SizedBox(
                 width: 250.sp,
                 child: AppInputTextOutline(
+                    hintTextStyle: focusNameNode.hasFocus
+                        ? GoogleFonts.openSans(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black)
+                        : GoogleFonts.openSans(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white),
+                    hintFontStyle: focusNameNode.hasFocus
+                        ? GoogleFonts.openSans(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black)
+                        : GoogleFonts.openSans(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white),
                     focusNode: focusNameNode,
                     fillColor: focusNameNode.hasFocus
                         ? Colors.white
-                        : Colors.white.withOpacity(0.3),
+                        : Colors.white54.withOpacity(0.3),
                     inputController: playerNameController,
                     hintText: 'Your Name'),
               ),

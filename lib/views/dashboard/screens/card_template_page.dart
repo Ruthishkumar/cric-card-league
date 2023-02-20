@@ -4,6 +4,7 @@ import 'package:ds_game/widgets/screen_container.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class CardTemplatePage extends StatefulWidget {
@@ -44,20 +45,83 @@ class _CardTemplatePageState extends State<CardTemplatePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  padding: EdgeInsets.all(15.sp),
-                  decoration: BoxDecoration(
-                    color: const Color(0xffF2C94C),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black.withOpacity(0.5), blurRadius: 12)
-                    ],
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(100.sp),
-                      bottomRight: Radius.circular(100.sp),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      alignment: Alignment.bottomLeft,
+                      children: [
+                        Container(
+                            decoration: BoxDecoration(
+                                color: const Color(0xffF2C94C),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(16.sp))),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                    width: 57,
+                                    height: 57,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(16.sp)),
+                                        color: Colors.white),
+                                    child: const Icon(
+                                      Icons.person,
+                                      color: Colors.black,
+                                    )),
+                                Container(
+                                  padding: EdgeInsets.all(16.sp),
+                                  child: Text(
+                                    'Your Cards',
+                                    style: GoogleFonts.prompt(
+                                        fontWeight: FontWeight.w600,
+                                        fontStyle: FontStyle.normal,
+                                        fontSize: 15.sp,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                                Container(
+                                  width: 57,
+                                  height: 57,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(16.sp)),
+                                  ),
+                                  child: Center(child: Consumer<NameProvider>(
+                                    builder: (widget, data, child) {
+                                      return Text(data.cardTotal.toString(),
+                                          style: GoogleFonts.prompt(
+                                              fontWeight: FontWeight.w600,
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 15.sp,
+                                              color: Colors.black));
+                                    },
+                                  )),
+                                )
+                              ],
+                            )),
+                      ],
                     ),
-                  ),
-                  child: scorePoints(),
+                    Container(
+                      padding: EdgeInsets.all(15.sp),
+                      decoration: BoxDecoration(
+                        color: const Color(0xffF2C94C),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.5),
+                              blurRadius: 12)
+                        ],
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(100.sp),
+                          bottomRight: Radius.circular(100.sp),
+                        ),
+                      ),
+                      child: scorePoints(),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 30.sp),
                 FlipCard(

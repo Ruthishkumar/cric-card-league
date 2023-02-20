@@ -28,6 +28,7 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
   double afterTossOpacity = 0;
   double beforeTossOpacity = 1;
   int _flip_duration = 1800;
+  String coinSpin = "";
 
   final player = AudioCache();
 
@@ -73,6 +74,7 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                               color: Colors.green,
                               onPressed: () {
                                 if (!isActive) {
+                                  coinSpin = "Heads";
                                   isActive = true;
                                   int faceIndex =
                                       Random().nextInt(faces.length);
@@ -82,9 +84,10 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                             ),
                             HeadTailsButton(
                               text: 'Tails',
-                              color: Colors.red,
+                              color: Colors.blue,
                               onPressed: () {
                                 if (!isActive) {
+                                  coinSpin = "Tails";
                                   isActive = true;
                                   int faceIndex =
                                       Random().nextInt(faces.length);
@@ -127,28 +130,43 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
               opacity: afterTossOpacity,
             ),
           ),
-          Align(
-            alignment: const Alignment(-0.01, 0.40),
-            child: AnimatedOpacity(
-              child: Text(
-                'jdj',
-                style: AppTextStyles.instance.tossHeader,
-              ),
-              duration: const Duration(seconds: 1),
-              opacity: afterTossOpacity,
-            ),
-          ),
+          coinSpin == "Heads"
+              ? Align(
+                  alignment: const Alignment(-0.01, 0.40),
+                  child: AnimatedOpacity(
+                    child: Text(
+                      _face == "heads"
+                          ? 'You Won the Toss'
+                          : "You Loss the Toss",
+                      style: AppTextStyles.instance.tossHeader,
+                    ),
+                    duration: const Duration(seconds: 1),
+                    opacity: afterTossOpacity,
+                  ),
+                )
+              : Align(
+                  alignment: const Alignment(-0.01, 0.40),
+                  child: AnimatedOpacity(
+                    child: Text(
+                      _face == "tails"
+                          ? 'You Won the Toss'
+                          : "You Loss the Toss",
+                      style: AppTextStyles.instance.tossHeader,
+                    ),
+                    duration: const Duration(seconds: 1),
+                    opacity: afterTossOpacity,
+                  ),
+                ),
           Align(
             alignment: const Alignment(-0.01, 0.60),
             child: AnimatedOpacity(
-              child: SizedBox(
-                width: 200.sp,
-                child: AppButton(
-                    label: 'Start Game',
-                    onPressed: () {
-                      NavigationRoute()
-                          .animationRoute(context, const CardTemplatePage());
-                    }),
+              child: HostingButton(
+                text: 'Start Game',
+                color: Colors.green,
+                onPressed: () {
+                  NavigationRoute()
+                      .animationRoute(context, const CardTemplatePage());
+                },
               ),
               duration: const Duration(seconds: 1),
               opacity: afterTossOpacity,

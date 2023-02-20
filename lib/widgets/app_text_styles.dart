@@ -84,7 +84,7 @@ class AppTextStyles {
     fontSize: 15.sp,
   );
 
-  final TextStyle? playersStats = GoogleFonts.robotoSerif(
+  final TextStyle? playersStats = GoogleFonts.prompt(
     color: Colors.white70,
     fontStyle: FontStyle.normal,
     fontWeight: FontWeight.w300,
