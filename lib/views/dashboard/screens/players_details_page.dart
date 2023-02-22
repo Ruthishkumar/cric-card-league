@@ -1,14 +1,11 @@
 import 'dart:developer';
 
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
+import 'package:ds_game/views/authentication/services/storage_services.dart';
 import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
-import 'package:ds_game/views/dashboard/screens/card_template_page.dart';
 import 'package:ds_game/views/dashboard/screens/coin_flip_page.dart';
 import 'package:ds_game/widgets/animation_route.dart';
-import 'package:ds_game/widgets/app_button.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
-import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,6 +26,22 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
     '15',
     '20',
   ];
+
+  @override
+  void initState() {
+    getUid();
+    super.initState();
+  }
+
+  String firebaseUid = "";
+
+  getUid() async {
+    firebaseUid = await StorageServices().getUserId();
+    log(firebaseUid.toString());
+    log('CurrentUserId');
+    setState(() {});
+  }
+
   String? selectedValue;
   @override
   Widget build(BuildContext context) {
@@ -150,7 +163,7 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                               color: const Color(0xff237a57)),
                           child: Center(
                             child: Text(
-                              'Your IP: ${game.gameModel?.id}',
+                              'Your IP: ${firebaseUid.toString()}',
                               style: AppTextStyles.instance.ipAddress,
                             ),
                           ),

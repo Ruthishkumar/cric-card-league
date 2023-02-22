@@ -103,57 +103,65 @@ class _HostIpPageState extends State<HostIpPage> {
                   ),
                 ),
                 SizedBox(height: 20.sp),
-                Container(
-                    width: 200.sp,
-                    padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
-                    decoration: BoxDecoration(
-                        color: const Color(0xff093028),
-                        borderRadius: BorderRadius.all(Radius.circular(8.sp))),
-                    child: TextFormField(
-                        controller: hostIpController,
-                        style: GoogleFonts.openSans(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.normal,
-                            fontSize: 16.sp),
-                        decoration: InputDecoration(
-                            fillColor: const Color(0xff237a57),
-                            filled: true,
-                            errorStyle: GoogleFonts.openSans(
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
-                                fontSize: 12.sp,
-                                color: const Color(0xffF15252)),
-                            errorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.sp),
-                              borderSide:
-                                  const BorderSide(color: Color(0xffF15252)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.sp),
-                                borderSide: const BorderSide(
-                                    color: Color(0xffD2D2D4), width: 1)),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.sp),
-                                borderSide: const BorderSide(
-                                    color: Colors.black87, width: 1)),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.sp),
-                                borderSide: const BorderSide(
-                                    color: Color(0xffD2D2D4), width: 1)),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(10.sp, 15.sp, 0.sp, 0.sp),
-                            labelStyle: GoogleFonts.openSans(
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    Container(
+                        width: 200.sp,
+                        padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
+                        decoration: BoxDecoration(
+                            color: const Color(0xff093028),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.sp))),
+                        child: TextFormField(
+                            controller: hostIpController,
+                            keyboardType: TextInputType.text,
+                            style: GoogleFonts.openSans(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
                                 fontStyle: FontStyle.normal,
                                 fontSize: 16.sp),
-                            hintStyle: GoogleFonts.openSans(
-                                fontSize: 16.sp,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white),
-                            hintText: 'Enter Host IP'))),
+                            decoration: InputDecoration(
+                                fillColor: const Color(0xff237a57),
+                                filled: true,
+                                errorStyle: GoogleFonts.openSans(
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 12.sp,
+                                    color: const Color(0xffF15252)),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.sp),
+                                  borderSide: const BorderSide(
+                                      color: Color(0xffF15252)),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.sp),
+                                    borderSide: const BorderSide(
+                                        color: Color(0xffD2D2D4), width: 1)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.sp),
+                                    borderSide: const BorderSide(
+                                        color: Colors.black87, width: 1)),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.sp),
+                                    borderSide: const BorderSide(
+                                        color: Color(0xffD2D2D4), width: 1)),
+                                contentPadding: EdgeInsets.fromLTRB(
+                                    10.sp, 15.sp, 0.sp, 0.sp),
+                                labelStyle: GoogleFonts.openSans(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 16.sp),
+                                hintStyle: GoogleFonts.openSans(
+                                    fontSize: 16.sp,
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white),
+                                hintText: 'Enter Host IP'))),
+                  ],
+                ),
                 SizedBox(height: 20.sp),
                 SizedBox(
                     width: 200.sp,

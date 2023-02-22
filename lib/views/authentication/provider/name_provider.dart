@@ -6,6 +6,7 @@ class NameProvider extends ChangeNotifier {
 
   int noOfCards = -1;
   String cardTotal = "";
+  String userUid = "";
 
   void addPlayerName({required String value}) {
     playerName = value;
@@ -24,6 +25,11 @@ class NameProvider extends ChangeNotifier {
 
   void cardTotalValue({required String value}) {
     cardTotal = value;
+    notifyListeners();
+  }
+
+  void firebaseUserId({required String value}) {
+    userUid = value;
     notifyListeners();
   }
 }

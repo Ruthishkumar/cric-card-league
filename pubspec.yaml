@@ -28,7 +28,6 @@ dependencies:
   firebase_database: ^10.0.11
   provider: ^6.0.5
   cloud_functions: ^4.0.9
-  dropdown_button2: ^1.9.2
   pushable_button: ^0.0.3
   audioplayers: ^0.20.0
   delayed_display: ^2.0.0
