@@ -28,11 +28,12 @@ dependencies:
   firebase_database: ^10.0.11
   provider: ^6.0.5
   cloud_functions: ^4.0.9
-  pushable_button: ^0.0.3
   audioplayers: ^0.20.0
   delayed_display: ^2.0.0
   flip_card: ^0.7.0
   firebase_ui_database: ^1.0.16
+  flutter_share: ^2.0.0
+
 
 
 

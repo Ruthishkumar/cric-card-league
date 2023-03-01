@@ -6,9 +6,11 @@ import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/screens/coin_flip_page.dart';
 import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
+import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -172,6 +174,19 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                     },
                   ),
                   SizedBox(height: 20.sp),
+                  ShareIdButton(
+                    text: 'Click To Share Id',
+                    color: Colors.blue,
+                    onPressed: () async {
+                      log(firebaseUid.toString());
+                      await FlutterShare.share(
+                          title: 'Cric Card League',
+                          text: firebaseUid.toString(),
+                          linkUrl: '',
+                          chooserTitle: 'Cric Card League');
+                    },
+                  ),
+                  SizedBox(height: 10.sp),
                   Stack(
                     alignment: Alignment.center,
                     children: [

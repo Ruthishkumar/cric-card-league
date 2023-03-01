@@ -329,37 +329,6 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                           ),
                         )),
                   ),
-                  SizedBox(height: 30.sp),
-                  StreamBuilder<DatabaseEvent>(
-                      stream: mainList,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          final myUser = snapshot.data!.snapshot;
-                          myUser.children.forEach((element) {
-                            element.children.forEach((element2) {
-                              if (element2.key == "runs") {}
-                            });
-                          });
-                          return GridView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      childAspectRatio: (1 / .3),
-                                      mainAxisSpacing: 10,
-                                      crossAxisSpacing: 10),
-                              itemCount: myUser.children.length,
-                              itemBuilder: (context, index) {
-                                return Text(
-                                  "",
-                                  style: AppTextStyles.instance.playersStats,
-                                );
-                              });
-                        }
-                        return const CircularProgressIndicator();
-                      }),
                 ],
               ),
             ),
