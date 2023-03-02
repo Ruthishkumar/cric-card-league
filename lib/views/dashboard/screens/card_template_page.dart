@@ -65,7 +65,7 @@ class _CardTemplatePageState extends State<CardTemplatePage>
     final mainList = database.onValue;
 
     var gridList = [
-      {'statsHeader': 'Bat Avg :', 'Value': '${mainList.toString()}'},
+      {'statsHeader': 'Bat Avg :', 'Value': '1'},
       {'statsHeader': 'Bowl Avg : ', 'Value': '1'},
       {'statsHeader': 'Runs :', 'Value': '1'},
       {'statsHeader': 'Wickets :', 'Value': '1'},

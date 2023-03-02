@@ -8,6 +8,7 @@ import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_share/flutter_share.dart';
@@ -32,6 +33,7 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
   @override
   void initState() {
     getUid();
+    getData();
     super.initState();
   }
 
@@ -42,6 +44,12 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
     log(firebaseUid.toString());
     log('CurrentUserId');
     setState(() {});
+  }
+
+  getData() {
+    String userId = (FirebaseAuth.instance.currentUser)!.uid;
+    log(userId);
+    log('firebase UserID');
   }
 
   String? selectedValue;

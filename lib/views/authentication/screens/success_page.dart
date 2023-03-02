@@ -161,7 +161,7 @@ class _SuccessPageState extends State<SuccessPage> {
                         ? Colors.white
                         : Colors.white54.withOpacity(0.3),
                     inputController: playerNameController,
-                    hintText: 'Your Name'),
+                    hintText: 'Enter Your Nick Name'),
               ),
             ),
             SizedBox(height: 30.sp),
