@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "cric-card-league"
-  }
+    "default": "cric-card-league",
+    "staging": "cric-card-league"
+  },
+  "targets": {},
+  "etags": {}
 }
