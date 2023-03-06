@@ -16,8 +16,20 @@ class StorageServices {
     }
   }
 
+  Future<void> setUserActive(bool status) async {
+    if (status != false) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('userStatus', status);
+    }
+  }
+
   Future<String> getUserId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('userId') ?? '';
+  }
+
+  Future<bool> getUserActive() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('userStatus') ?? false;
   }
 }

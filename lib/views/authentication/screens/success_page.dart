@@ -1,7 +1,7 @@
 import 'dart:developer';
-import 'dart:math';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
+import 'package:ds_game/views/authentication/services/storage_services.dart';
 import 'package:ds_game/views/dashboard/screens/host_ip_page.dart';
 import 'package:ds_game/views/dashboard/screens/players_details_page.dart';
 import 'package:ds_game/widgets/animation_route.dart';
@@ -38,7 +38,15 @@ class _SuccessPageState extends State<SuccessPage> {
   @override
   void initState() {
     getData();
+    getStatusChecking();
     super.initState();
+  }
+
+  bool userStatus = false;
+
+  getStatusChecking() async {
+    userStatus = await StorageServices().getUserActive();
+    log(userStatus.toString());
   }
 
   getData() {

@@ -158,7 +158,7 @@ class _HostIpPageState extends State<HostIpPage> {
                 SizedBox(height: 20.sp),
                 SizedBox(
                     width: 200.sp,
-                    child: AppButton(label: 'Join', onPressed: () {}))
+                    child: AppButton(label: 'Join', onPressed: _onJoinSummit))
               ],
             ),
           ),
@@ -166,4 +166,7 @@ class _HostIpPageState extends State<HostIpPage> {
       ],
     ));
   }
+
+  /// join game button
+  _onJoinSummit() {}
 }

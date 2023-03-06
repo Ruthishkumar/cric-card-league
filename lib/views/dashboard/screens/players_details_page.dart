@@ -33,16 +33,17 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
   @override
   void initState() {
     getUid();
-    getData();
+    // getData();
     super.initState();
   }
 
   String firebaseUid = "";
+  bool userStatus = false;
 
   getUid() async {
     firebaseUid = await StorageServices().getUserId();
-    log(firebaseUid.toString());
-    log('CurrentUserId');
+    userStatus = await StorageServices().getUserActive();
+    log(userStatus.toString());
     setState(() {});
   }
 
