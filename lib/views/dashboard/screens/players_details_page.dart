@@ -156,31 +156,25 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                     ),
                   ),
                   SizedBox(height: 20.sp),
-                  Consumer<GameProvider>(
-                    builder: (widget, game, child) {
-                      return Container(
-                        width: 200.sp,
-                        padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
-                        decoration: BoxDecoration(
-                            color: const Color(0xff093028),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.sp))),
-                        child: Container(
-                          margin: EdgeInsets.fromLTRB(4.sp, 10.sp, 4.sp, 4.sp),
-                          padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.sp)),
-                              color: const Color(0xff237a57)),
-                          child: Center(
-                            child: Text(
-                              'Your IP: ${firebaseUid.toString()}',
-                              style: AppTextStyles.instance.ipAddress,
-                            ),
-                          ),
+                  Container(
+                    width: 200.sp,
+                    padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
+                    decoration: BoxDecoration(
+                        color: const Color(0xff093028),
+                        borderRadius: BorderRadius.all(Radius.circular(8.sp))),
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(4.sp, 10.sp, 4.sp, 4.sp),
+                      padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8.sp)),
+                          color: const Color(0xff237a57)),
+                      child: Center(
+                        child: Text(
+                          'Your IP: ${firebaseUid.toString()}',
+                          style: AppTextStyles.instance.ipAddress,
                         ),
-                      );
-                    },
+                      ),
+                    ),
                   ),
                   SizedBox(height: 20.sp),
                   ShareIdButton(

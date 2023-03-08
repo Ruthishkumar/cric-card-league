@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "528984224025",
+    "firebase_url": "https://cric-card-league-default-rtdb.firebaseio.com",
     "project_id": "cric-card-league",
     "storage_bucket": "cric-card-league.appspot.com"
   },
@@ -14,7 +15,23 @@
       },
       "oauth_client": [
         {
-          "client_id": "528984224025-rkdjm074ltk34a7odbctk0ln8s18d3o6.apps.googleusercontent.com",
+          "client_id": "528984224025-9u38o10uq0gliaduvfc2er18ep70ul6j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ds_game",
+            "certificate_hash": "8b923547cb93d3cd7db977769d4ec36363f2a61f"
+          }
+        },
+        {
+          "client_id": "528984224025-ot3ijfa3qcti5snjk6925afl3es9ec57.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ds_game",
+            "certificate_hash": "543757b7c1a8d34b9379d394659ced2934cd94e5"
+          }
+        },
+        {
+          "client_id": "528984224025-shaqp4pmqvl1g2ma1b5lrjef7b31hjqn.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

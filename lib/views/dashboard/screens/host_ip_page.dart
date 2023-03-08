@@ -1,5 +1,7 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:ds_game/widgets/app_button.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
+import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -112,6 +114,7 @@ class _HostIpPageState extends State<HostIpPage> {
                     child: TextFormField(
                         controller: hostIpController,
                         keyboardType: TextInputType.text,
+                        textAlign: TextAlign.center,
                         style: GoogleFonts.openSans(
                             color: Colors.white,
                             fontWeight: FontWeight.w400,
@@ -156,9 +159,10 @@ class _HostIpPageState extends State<HostIpPage> {
                                 color: Colors.white),
                             hintText: 'Enter Host IP'))),
                 SizedBox(height: 20.sp),
-                SizedBox(
-                    width: 200.sp,
-                    child: AppButton(label: 'Join', onPressed: _onJoinSummit))
+                GameStartButton(
+                    text: 'Begin',
+                    color: Colors.blue,
+                    onPressed: _onJoinSummit),
               ],
             ),
           ),
@@ -168,5 +172,6 @@ class _HostIpPageState extends State<HostIpPage> {
   }
 
   /// join game button
+
   _onJoinSummit() {}
 }

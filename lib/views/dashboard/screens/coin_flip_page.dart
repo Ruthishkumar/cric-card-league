@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:ds_game/views/dashboard/screens/card_template_page.dart';
 import 'package:ds_game/widgets/animation_route.dart';
-import 'package:ds_game/widgets/app_button.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
@@ -19,15 +18,14 @@ class CoinFlipScreen extends StatefulWidget {
 
 class _CoinFlipScreenState extends State<CoinFlipScreen> {
   late bool _showFrontSide;
-  double _distanceFromBottom =
-      90; // controls coin's distance from bottom of screen
-  bool isActive = false; // is the coin being flipped right now
-  bool _soundOn = true;
+  double _distanceFromBottom = 90;
+  bool isActive = false;
+  bool soundOn = true;
   String _face = ''; // initialize string face
   final List<String> faces = ['heads', 'tails'];
   double afterTossOpacity = 0;
   double beforeTossOpacity = 1;
-  int _flip_duration = 1800;
+  int flipDuration = 1800;
   String coinSpin = "";
 
   final player = AudioCache();
@@ -87,6 +85,8 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                               color: Colors.blue,
                               onPressed: () {
                                 if (!isActive) {
+                                  // final player = AudioCache();
+                                  // player.play('images/Toss.mp3');
                                   coinSpin = "Tails";
                                   isActive = true;
                                   int faceIndex =
@@ -112,7 +112,7 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
             bottom: _distanceFromBottom,
             right: MediaQuery.of(context).size.width * 0.31,
             child: AnimatedSwitcher(
-              duration: Duration(milliseconds: _flip_duration),
+              duration: Duration(milliseconds: flipDuration),
               transitionBuilder: __transitionBuilder,
               child: _showFrontSide ? _buildHeads() : _buildTails(),
               switchOutCurve: Curves.easeIn.flipped,
@@ -179,17 +179,14 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
 
   void _flipCoin(String face) async {
     setState(() {
-      if (_soundOn) {
-        player.play('assets/images/Toss.mp3');
+      if (soundOn) {
+        player.play('images/Toss.mp3');
       }
       _distanceFromBottom = 380;
       _showFrontSide = !_showFrontSide;
       _face = face;
     });
     Future.delayed(const Duration(milliseconds: 3000)).then((value) {
-      if (_soundOn) {
-        player.play('assets/images/Toss.mp3');
-      }
       setState(() {
         afterTossOpacity = 1.0;
       });

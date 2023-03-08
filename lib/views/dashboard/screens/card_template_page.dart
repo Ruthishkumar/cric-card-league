@@ -5,14 +5,12 @@ import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 class CardTemplatePage extends StatefulWidget {
   const CardTemplatePage({Key? key}) : super(key: key);
@@ -35,9 +33,7 @@ class _CardTemplatePageState extends State<CardTemplatePage>
   void initState() {
     getData();
     _resizableController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1000),
-    );
+        vsync: this, duration: const Duration(milliseconds: 1000));
     _resizableController.addStatusListener((animationStatus) {
       switch (animationStatus) {
         case AnimationStatus.completed:
@@ -54,6 +50,12 @@ class _CardTemplatePageState extends State<CardTemplatePage>
     });
     _resizableController.forward();
     super.initState();
+  }
+
+  @override
+  dispose() {
+    _resizableController.dispose();
+    super.dispose();
   }
 
   getData() {
@@ -226,11 +228,15 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                                         StreamBuilder(
                                             stream: refDb.onValue,
                                             builder: (context, snapShot) {
-                                              return Text(
-                                                  snapShot.data!.snapshot.value
-                                                      .toString(),
-                                                  style: AppTextStyles
-                                                      .instance.cardFirstName);
+                                              return snapShot.data != null
+                                                  ? Text(
+                                                      snapShot
+                                                          .data!.snapshot.value
+                                                          .toString(),
+                                                      style: AppTextStyles
+                                                          .instance
+                                                          .cardFirstName)
+                                                  : Text('');
                                             }),
                                         Text(
                                           'Kohli',
