@@ -47,6 +47,7 @@ class _SuccessPageState extends State<SuccessPage> {
   getStatusChecking() async {
     userStatus = await StorageServices().getUserActive();
     log(userStatus.toString());
+    setState(() {});
   }
 
   getData() {
@@ -248,13 +249,12 @@ class _SuccessPageState extends State<SuccessPage> {
       Provider.of<NameProvider>(context, listen: false)
           .addPlayerName(value: playerNameController.text);
       final referenceDatabase = FirebaseDatabase.instance;
-      final ref = referenceDatabase.reference();
-      ref
-          .child('playerName')
-          .push()
-          .child('names')
-          .set(playerNameController.text)
-          .asStream();
+      final ref = referenceDatabase.reference().child('players');
+      Map<String, dynamic> playerValue = {
+        'name': playerNameController.text,
+        'status': userStatus
+      };
+      ref.push().set(playerValue).asStream();
     }
   }
 
