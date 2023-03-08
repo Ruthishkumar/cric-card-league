@@ -158,7 +158,8 @@ class _OtpPageState extends State<OtpPage> {
         log(FirebaseAuth.instance.currentUser!.uid.toString());
         await StorageServices()
             .setUserId(FirebaseAuth.instance.currentUser!.uid.toString());
-        await StorageServices().setUserActive(true);
+        await StorageServices().setUserActive(
+            FirebaseAuth.instance.currentUser!.uid != '' ? true : false);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => const SuccessPage()),
             (route) => false);
