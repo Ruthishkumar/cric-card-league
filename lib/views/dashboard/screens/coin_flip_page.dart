@@ -164,8 +164,10 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                 text: 'Start Game',
                 color: Colors.green,
                 onPressed: () {
-                  NavigationRoute()
-                      .animationRoute(context, const CardTemplatePage());
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) => const CardTemplatePage()),
+                      (route) => false);
                 },
               ),
               duration: const Duration(seconds: 1),

@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:ds_game/widgets/app_button.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -61,7 +64,7 @@ class _HostIpPageState extends State<HostIpPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Enter Host IP address and press join button',
+                                  'Enter Host IP address and press begin button',
                                   style: AppTextStyles.instance.hostAndJoinName,
                                   textAlign: TextAlign.center,
                                 ),
@@ -173,5 +176,12 @@ class _HostIpPageState extends State<HostIpPage> {
 
   /// join game button
 
-  _onJoinSummit() {}
+  _onJoinSummit() {
+    if (FirebaseAuth.instance.currentUser!.uid == '') {
+      log('Not Crendentials');
+      return false;
+    } else {
+      log('Login Credentials');
+    }
+  }
 }

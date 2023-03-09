@@ -2,6 +2,7 @@ import 'dart:developer' as developer;
 import 'dart:math';
 
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
+import 'package:ds_game/views/dashboard/services/database_service.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -49,6 +50,7 @@ class _CardTemplatePageState extends State<CardTemplatePage>
       }
     });
     _resizableController.forward();
+    DatabaseService().getData();
     super.initState();
   }
 

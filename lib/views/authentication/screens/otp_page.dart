@@ -11,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pinput/pinput.dart';
@@ -152,18 +153,20 @@ class _OtpPageState extends State<OtpPage> {
   /// verify otp summit
   _onVerifyOtp() async {
     try {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: widget.verifyId, smsCode: otpController.text);
-      await widget.auth.signInWithCredential(credential).then((value) async {
-        log(FirebaseAuth.instance.currentUser!.uid.toString());
-        await StorageServices()
-            .setUserId(FirebaseAuth.instance.currentUser!.uid.toString());
-        await StorageServices().setUserActive(
-            FirebaseAuth.instance.currentUser!.uid != '' ? true : false);
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const SuccessPage()),
-            (route) => false);
-      });
+      if (validate()) {
+        PhoneAuthCredential credential = PhoneAuthProvider.credential(
+            verificationId: widget.verifyId, smsCode: otpController.text);
+        await widget.auth.signInWithCredential(credential).then((value) async {
+          log(FirebaseAuth.instance.currentUser!.uid.toString());
+          await StorageServices()
+              .setUserId(FirebaseAuth.instance.currentUser!.uid.toString());
+          await StorageServices().setUserActive(
+              FirebaseAuth.instance.currentUser!.uid != '' ? true : false);
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const SuccessPage()),
+              (route) => false);
+        });
+      }
     } on FirebaseAuthException catch (e, stack) {
       log(e.toString());
       log(stack.toString());
@@ -173,6 +176,14 @@ class _OtpPageState extends State<OtpPage> {
   /// validate otp
   bool validate() {
     if (otpController.text == '') {
+      Fluttertoast.showToast(
+          msg: "Invalid Otp",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black87,
+          textColor: Colors.white,
+          fontSize: 16.0);
       return false;
     } else {
       return true;

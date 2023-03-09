@@ -33,6 +33,8 @@ dependencies:
   flip_card: ^0.7.0
   firebase_ui_database: ^1.0.16
   flutter_share: ^2.0.0
+  fluttertoast: ^8.2.1
+
 
 
 

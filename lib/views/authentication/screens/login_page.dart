@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -254,14 +255,14 @@ class _LoginPageState extends State<LoginPage> {
   /// controller validation
   bool validate() {
     if (phoneNumberController.text == '') {
-      // Fluttertoast.showToast(
-      //     msg: "New features is coming",
-      //     toastLength: Toast.LENGTH_SHORT,
-      //     gravity: ToastGravity.BOTTOM,
-      //     timeInSecForIosWeb: 1,
-      //     backgroundColor: const Color(0xff22BBB0),
-      //     textColor: Colors.white,
-      //     fontSize: 16.0);
+      Fluttertoast.showToast(
+          msg: "Please enter mobile number",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black87,
+          textColor: Colors.white,
+          fontSize: 16.0);
       return false;
     } else if (!phoneNumberController.text.hasValidPhoneNumber()) {
       return false;

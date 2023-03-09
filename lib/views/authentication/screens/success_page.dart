@@ -14,6 +14,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:network_info_plus/network_info_plus.dart';
@@ -105,8 +106,6 @@ class _SuccessPageState extends State<SuccessPage> {
         builder: (BuildContext context) {
           Future.delayed(const Duration(seconds: 1), () async {
             Navigator.of(context).pop(true);
-            // await StorageServices()
-            //     .setUserId(FirebaseAuth.instance.currentUser!.uid);
             prefs.setBool(keyIsFirstLoaded, false);
           });
           return AlertDialog(
@@ -248,18 +247,29 @@ class _SuccessPageState extends State<SuccessPage> {
       });
       Provider.of<NameProvider>(context, listen: false)
           .addPlayerName(value: playerNameController.text);
+
+      // final user = Provider.of<FirebaseAuth>(context, listen: false);
+      // log(user.currentUser!.uid);
       final referenceDatabase = FirebaseDatabase.instance;
       final ref = referenceDatabase.reference().child('players');
       Map<String, dynamic> playerValue = {
         'name': playerNameController.text,
         'status': userStatus
       };
-      ref.push().set(playerValue).asStream();
+      ref.push().set(playerValue);
     }
   }
 
   bool validate() {
     if (playerNameController.text == '') {
+      Fluttertoast.showToast(
+          msg: "Enter Your Name",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.blueGrey,
+          textColor: Colors.white,
+          fontSize: 16.0);
       return false;
     } else {
       return true;
