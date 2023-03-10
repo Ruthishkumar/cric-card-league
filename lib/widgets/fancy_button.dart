@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// source: https://gist.github.com/mkiisoft/0d5c013114a2101d69f5d4a780d936cd
 class FancyButton extends StatefulWidget {
   const FancyButton({
     Key? key,

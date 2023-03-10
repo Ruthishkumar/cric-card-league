@@ -247,9 +247,6 @@ class _SuccessPageState extends State<SuccessPage> {
       });
       Provider.of<NameProvider>(context, listen: false)
           .addPlayerName(value: playerNameController.text);
-
-      // final user = Provider.of<FirebaseAuth>(context, listen: false);
-      // log(user.currentUser!.uid);
       final referenceDatabase = FirebaseDatabase.instance;
       final ref = referenceDatabase.reference().child('players');
       Map<String, dynamic> playerValue = {

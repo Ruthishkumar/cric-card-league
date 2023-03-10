@@ -182,13 +182,16 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
   void _flipCoin(String face) async {
     setState(() {
       if (soundOn) {
-        player.play('images/Toss.mp3');
+        player.play('images/flip.wav');
       }
       _distanceFromBottom = 380;
       _showFrontSide = !_showFrontSide;
       _face = face;
     });
     Future.delayed(const Duration(milliseconds: 3000)).then((value) {
+      if (soundOn) {
+        player.play('images/$face.mp3');
+      }
       setState(() {
         afterTossOpacity = 1.0;
       });
