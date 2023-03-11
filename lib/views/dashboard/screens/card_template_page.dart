@@ -9,6 +9,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -51,13 +52,18 @@ class _CardTemplatePageState extends State<CardTemplatePage>
     _resizableController.forward();
     DatabaseService().getData();
     super.initState();
+    getPlayersData();
   }
+
+  getPlayersData() async {}
 
   @override
   dispose() {
     _resizableController.dispose();
     super.dispose();
   }
+
+  final FirebaseDatabase db = FirebaseDatabase.instance;
 
   getData() {
     var user = FirebaseAuth.instance.currentUser!;
@@ -69,15 +75,6 @@ class _CardTemplatePageState extends State<CardTemplatePage>
   Widget build(BuildContext context) {
     final mainList = database.onValue;
 
-    var gridList = [
-      {'statsHeader': 'Bat Avg :', 'Value': '1', 'setValue': 0},
-      {'statsHeader': 'Bowl Avg : ', 'Value': '1', 'setValue': 1},
-      {'statsHeader': 'Runs :', 'Value': '1', 'setValue': 2},
-      {'statsHeader': 'Wickets :', 'Value': '1', 'setValue': 3},
-      {'statsHeader': 'Strike rate :', 'Value': '1', 'setValue': 4},
-      {'statsHeader': 'Eco. rate :', 'Value': '1', 'setValue': 5},
-      {'statsHeader': 'Top Score :', 'Value': '1', 'setValue': 6},
-    ];
     return ScreenContainer(
         bodyWidget: Stack(
       fit: StackFit.expand,
@@ -174,6 +171,7 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                   ),
                   SizedBox(height: 30.sp),
                   Container(
+                    width: 250.sp,
                     decoration: BoxDecoration(
                         color: const Color(0xff243b55),
                         boxShadow: [
@@ -226,64 +224,131 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                             ],
                           ),
                         ),
-                        Container(
-                          width: double.infinity,
-                          padding:
-                              EdgeInsets.fromLTRB(12.sp, 12.sp, 12.sp, 12.sp),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16.sp))),
-                          child: Column(
-                            children: [
-                              GridView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: gridList.length,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          childAspectRatio: (1 / .3),
-                                          mainAxisSpacing: 10,
-                                          crossAxisSpacing: 10),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    Map data = gridList[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          selectIndex = data['setValue'];
-                                        });
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color:
-                                                selectIndex == data['setValue']
-                                                    ? Colors.amberAccent
-                                                    : const Color(0xff243b55),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(12.sp))),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              data['statsHeader'],
-                                              style: AppTextStyles
-                                                  .instance.playersStats,
+                        StreamBuilder(
+                          stream: db
+                              .reference()
+                              .child('playerStats')
+                              .child('0')
+                              .orderByKey()
+                              .onValue,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<DatabaseEvent> snapshot) {
+                            if (snapshot.data!.snapshot.value != null) {
+                              Map<dynamic, dynamic> map =
+                                  snapshot.data!.snapshot.value as Map;
+                              List<dynamic> list = map.values.toList();
+                              print("list is : $list");
+                              var gridList = [
+                                {
+                                  'statsHeader': 'Bat Avg :',
+                                  'Value': '1',
+                                  'setValue': 0
+                                },
+                                {
+                                  'statsHeader': 'Bowl Avg : ',
+                                  'Value': '1',
+                                  'setValue': 1
+                                },
+                                {
+                                  'statsHeader': 'Runs :',
+                                  'Value': '10000',
+                                  'setValue': 2
+                                },
+                                {
+                                  'statsHeader': 'Wickets :',
+                                  'Value': '1',
+                                  'setValue': 3
+                                },
+                                {
+                                  'statsHeader': 'Strike rate :',
+                                  'Value': '1',
+                                  'setValue': 4
+                                },
+                                {
+                                  'statsHeader': 'Eco. rate :',
+                                  'Value': '1',
+                                  'setValue': 5
+                                },
+                                {
+                                  'statsHeader': 'Top Score :',
+                                  'Value': '1',
+                                  'setValue': 6
+                                },
+                              ];
+                              return Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.fromLTRB(
+                                    12.sp, 12.sp, 12.sp, 12.sp),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(16.sp))),
+                                child: Column(
+                                  children: [
+                                    StaggeredGridView.countBuilder(
+                                        shrinkWrap: true,
+                                        itemCount: list.length,
+                                        crossAxisSpacing: 20,
+                                        mainAxisSpacing: 10,
+                                        crossAxisCount: 4,
+                                        itemBuilder: (context, index) {
+                                          Map data = gridList[index];
+
+                                          return GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                selectIndex = data['setValue'];
+                                              });
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: selectIndex ==
+                                                          data['setValue']
+                                                      ? Colors.green
+                                                      : const Color(0xff243b55),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              12.sp))),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    data['statsHeader'],
+                                                    style: AppTextStyles
+                                                        .instance.playersStats,
+                                                  ),
+                                                  Text(
+                                                    data['Value'],
+                                                    style: AppTextStyles
+                                                        .instance.playersStats,
+                                                  )
+                                                ],
+                                              ),
                                             ),
-                                            Text(data['Value'])
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                            ],
-                          ),
+                                          );
+                                        },
+                                        staggeredTileBuilder: (index) {
+                                          if (gridList.length % 2 != 0 &&
+                                              gridList.length - 1 == index) {
+                                            return const StaggeredTile.count(
+                                                4, 1);
+                                          }
+                                          return const StaggeredTile.count(
+                                              2, 1);
+                                        }),
+                                  ],
+                                ),
+                              );
+                            } else {
+                              return const CircularProgressIndicator();
+                            }
+                          },
                         )
                       ],
                     ),
-                  )
+                  ),
                   // SizedBox(
                   //   height: 390.sp,
                   //   width: 250.sp,
@@ -558,7 +623,11 @@ class _WidgetFlipperState extends State<WidgetFlipper>
       fit: StackFit.expand,
       children: <Widget>[
         GestureDetector(
-          onTap: _leftRotation,
+          onTap: () {
+            setState(() {
+              _leftRotation();
+            });
+          },
           child: FractionallySizedBox(
             widthFactor: 0.5,
             heightFactor: 1.0,
@@ -569,7 +638,11 @@ class _WidgetFlipperState extends State<WidgetFlipper>
           ),
         ),
         GestureDetector(
-          onTap: _rightRotation,
+          onTap: () {
+            setState(() {
+              _rightRotation();
+            });
+          },
           child: FractionallySizedBox(
             widthFactor: 0.5,
             heightFactor: 1.0,
