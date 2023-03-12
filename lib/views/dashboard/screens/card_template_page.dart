@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
-import 'package:ds_game/views/dashboard/services/database_service.dart';
+import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,7 +25,6 @@ class _CardTemplatePageState extends State<CardTemplatePage>
 
   DatabaseReference refDb =
       FirebaseDatabase.instance.ref('playerStats/0/firstName');
-
   final database = FirebaseDatabase.instance.ref("playerStats");
 
   @override
@@ -48,7 +47,6 @@ class _CardTemplatePageState extends State<CardTemplatePage>
       }
     });
     _resizableController.forward();
-    DatabaseService().getData();
     super.initState();
     getPlayersData();
   }
