@@ -239,27 +239,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.1+23"
-  firebase_ui_database:
-    dependency: "direct main"
-    description:
-      name: firebase_ui_database
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.16"
-  firebase_ui_localizations:
-    dependency: transitive
-    description:
-      name: firebase_ui_localizations
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.2.0"
-  flip_card:
-    dependency: "direct main"
-    description:
-      name: flip_card
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.7.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -300,11 +279,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
-  flutter_localizations:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   flutter_screenutil:
     dependency: "direct main"
     description:

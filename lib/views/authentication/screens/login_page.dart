@@ -223,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
       log(user!.uid);
       log('Google Uid');
       log(user!.email.toString());
-      log(user!.displayName.toString());
+      log(user!.phoneNumber.toString());
       Provider.of<NameProvider>(context, listen: false)
           .addEmailId(value: user!.email.toString());
       await StorageServices().setUserId(user!.uid);

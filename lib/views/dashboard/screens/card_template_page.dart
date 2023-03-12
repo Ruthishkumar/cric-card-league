@@ -6,7 +6,6 @@ import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -24,7 +23,6 @@ class _CardTemplatePageState extends State<CardTemplatePage>
     with SingleTickerProviderStateMixin {
   late AnimationController _resizableController;
 
-  GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
   DatabaseReference refDb =
       FirebaseDatabase.instance.ref('playerStats/0/firstName');
 
@@ -274,6 +272,21 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                                   'Value': '1',
                                   'setValue': 6
                                 },
+                                {
+                                  'statsHeader': 'Top Score :',
+                                  'Value': '1',
+                                  'setValue': 6
+                                },
+                                {
+                                  'statsHeader': 'Top Score :',
+                                  'Value': '1',
+                                  'setValue': 6
+                                },
+                                {
+                                  'statsHeader': 'Top Score :',
+                                  'Value': '1',
+                                  'setValue': 6
+                                },
                               ];
                               return Container(
                                 width: double.infinity,
@@ -292,8 +305,9 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                                         mainAxisSpacing: 10,
                                         crossAxisCount: 4,
                                         itemBuilder: (context, index) {
-                                          Map data = gridList[index];
-
+                                          Map data = list[index];
+                                          print(list[index]['country']
+                                              .toString());
                                           return GestureDetector(
                                             onTap: () {
                                               setState(() {

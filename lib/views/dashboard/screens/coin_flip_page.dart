@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:ds_game/views/dashboard/screens/card_template_page.dart';
-import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
