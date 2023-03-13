@@ -228,8 +228,7 @@ class _HostIpPageState extends State<HostIpPage> {
           textColor: Colors.white,
           fontSize: 16.0);
       return false;
-    } else if (hostIpController.text ==
-        Provider.of<GameProvider>(context, listen: false).game.gameId) {
+    } else {
       GameModel game = GameModel(
           userId: FirebaseAuth.instance.currentUser!.uid,
           phoneNumber: FirebaseAuth.instance.currentUser?.phoneNumber ?? '',
@@ -238,32 +237,37 @@ class _HostIpPageState extends State<HostIpPage> {
           gameId: hostIpController.text);
       Provider.of<GameProvider>(context, listen: false).joinRoom(game);
       log('Log Success');
-    } else {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.sp))),
-              clipBehavior: Clip.none,
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text('Invalid Code', style: AppTextStyles.instance.popError),
-                  SizedBox(height: 4.sp),
-                  Text('Game does not exist',
-                      style: AppTextStyles.instance.popError),
-                  SizedBox(height: 15.sp),
-                  HeadTailsButton(
-                      text: 'Okay',
-                      color: Colors.red,
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      })
-                ],
-              ),
-            );
-          });
     }
+    // else {
+    //   log(Provider.of<GameProvider>(context, listen: false)
+    //       .game
+    //       .gameId
+    //       .toString());
+    //   showDialog(
+    //       context: context,
+    //       builder: (BuildContext context) {
+    //         return AlertDialog(
+    //           shape: RoundedRectangleBorder(
+    //               borderRadius: BorderRadius.all(Radius.circular(10.sp))),
+    //           clipBehavior: Clip.none,
+    //           title: Column(
+    //             crossAxisAlignment: CrossAxisAlignment.center,
+    //             children: [
+    //               Text('Invalid Code', style: AppTextStyles.instance.popError),
+    //               SizedBox(height: 4.sp),
+    //               Text('Game does not exist',
+    //                   style: AppTextStyles.instance.popError),
+    //               SizedBox(height: 15.sp),
+    //               HeadTailsButton(
+    //                   text: 'Okay',
+    //                   color: Colors.red,
+    //                   onPressed: () {
+    //                     Navigator.of(context).pop();
+    //                   })
+    //             ],
+    //           ),
+    //         );
+    //       });
+    // }
   }
 }

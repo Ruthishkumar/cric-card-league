@@ -25,7 +25,7 @@ class GameServices {
         FirebaseDatabase.instance.ref('JoinRoom').child('playerB');
     Map<String, dynamic> playerValue = {
       'gameId': roomId,
-      'user': userId,
+      'userId': userId,
       "playerName": playerName
     };
     await databaseReference.push().set(playerValue);
