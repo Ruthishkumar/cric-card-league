@@ -170,7 +170,7 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                           color: const Color(0xff237a57)),
                       child: Center(
                         child: Text(
-                          'Your IP: ${firebaseUid.toString()}',
+                          'Your IP: ${Provider.of<GameProvider>(context, listen: false).gameId}',
                           style: AppTextStyles.instance.ipAddress,
                         ),
                       ),

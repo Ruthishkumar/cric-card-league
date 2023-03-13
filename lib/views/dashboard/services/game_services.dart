@@ -1,4 +1,5 @@
 import 'package:ds_game/views/dashboard/model/game_model.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class GameServices {
@@ -10,13 +11,15 @@ class GameServices {
 
   static GameServices get instance => _singleton;
 
-  DatabaseReference ref = FirebaseDatabase.instance.ref("jjjj");
+  FirebaseDatabase ref = FirebaseDatabase.instance;
 
-  Future createRoom(GameModel gameModel) async {
-    await ref.set({
-      "userId": gameModel.userId,
-      "playerName": gameModel.playerName,
-      "phoneNumber": gameModel.phoneNumber
-    });
+  Future createRoom(GameModel? gameModel) async {
+    DatabaseReference reference =
+        FirebaseDatabase.instance.ref('HostRoom').child('playerA');
+    await reference.push().set(gameModel?.toJson());
+  }
+
+  Future joinRoom(String roomId) async {
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref('');
   }
 }

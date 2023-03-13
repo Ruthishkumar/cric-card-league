@@ -8,7 +8,11 @@ class GameModel {
   String playerName;
   String? gameId;
 
-  GameModel(this.userId, this.phoneNumber, this.playerName, this.gameId);
+  GameModel(
+      {required this.userId,
+      required this.phoneNumber,
+      required this.playerName,
+      this.gameId});
 
   factory GameModel.fromJson(Map<String, dynamic> json) =>
       _$GameModelFromJson(json);

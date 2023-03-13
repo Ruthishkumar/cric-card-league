@@ -3,6 +3,7 @@ import 'package:delayed_display/delayed_display.dart';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/authentication/services/storage_services.dart';
 import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
+import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/screens/host_ip_page.dart';
 import 'package:ds_game/views/dashboard/screens/players_details_page.dart';
 import 'package:ds_game/widgets/animation_route.dart';
@@ -11,6 +12,7 @@ import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:fade_and_translate/fade_and_translate.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,6 +22,7 @@ import 'package:lottie/lottie.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class SuccessPage extends StatefulWidget {
   const SuccessPage({Key? key}) : super(key: key);
@@ -210,15 +213,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 child: HostingButton(
                   text: 'Host'.toUpperCase(),
                   color: Colors.green,
-                  onPressed: () async {
-                    final info = NetworkInfo();
-                    final wifiIP = await info.getWifiIP();
-                    if (!mounted) {
-                      return;
-                    }
-                    NavigationRoute()
-                        .animationRoute(context, const PlayersDetailsPage());
-                  },
+                  onPressed: _createHostSummit,
                 ),
               ),
               SizedBox(height: 30.sp),
@@ -247,13 +242,15 @@ class _SuccessPageState extends State<SuccessPage> {
       });
       Provider.of<NameProvider>(context, listen: false)
           .addPlayerName(value: playerNameController.text);
-      final referenceDatabase = FirebaseDatabase.instance;
-      final ref = referenceDatabase.reference().child('players');
-      Map<String, dynamic> playerValue = {
-        'name': playerNameController.text,
-        'status': userStatus
-      };
-      ref.push().set(playerValue);
+      // final referenceDatabase = FirebaseDatabase.instance;
+      // final ref = referenceDatabase.reference().child('players');
+      // Map<String, dynamic> playerValue = {
+      //   'name': playerNameController.text,
+      //   'status': userStatus
+      // };
+      // ref.push().set(playerValue);
+      // var uuid = const Uuid();
+      // log(uuid.v4().toString());
     }
   }
 
@@ -271,5 +268,20 @@ class _SuccessPageState extends State<SuccessPage> {
     } else {
       return true;
     }
+  }
+
+  _createHostSummit() {
+    var uuid = const Uuid();
+    Provider.of<GameProvider>(context, listen: false)
+        .createGame(uuid.v4().toString());
+    GameModel gameModel = GameModel(
+        userId: FirebaseAuth.instance.currentUser!.uid,
+        phoneNumber: FirebaseAuth.instance.currentUser?.phoneNumber ?? '',
+        playerName:
+            Provider.of<NameProvider>(context, listen: false).playerName,
+        gameId: Provider.of<GameProvider>(context, listen: false).gameId);
+    log(Provider.of<GameProvider>(context, listen: false).gameId.toString());
+    Provider.of<GameProvider>(context, listen: false).hostRoom(gameModel);
+    NavigationRoute().animationRoute(context, const PlayersDetailsPage());
   }
 }
