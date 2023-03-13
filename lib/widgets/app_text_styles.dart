@@ -90,4 +90,10 @@ class AppTextStyles {
     fontWeight: FontWeight.w300,
     fontSize: 15.sp,
   );
+
+  final TextStyle? popError = GoogleFonts.prompt(
+      color: Colors.black,
+      fontSize: 20.sp,
+      fontStyle: FontStyle.normal,
+      fontWeight: FontWeight.w600);
 }

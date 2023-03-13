@@ -183,10 +183,10 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                         text: 'Click To Share Id',
                         color: Colors.blue,
                         onPressed: () async {
-                          log(firebaseUid.toString());
+                          log(gameData.game.gameId.toString());
                           await FlutterShare.share(
                               title: 'Cric Card League',
-                              text: firebaseUid.toString(),
+                              text: gameData.game.gameId,
                               linkUrl: '',
                               chooserTitle: 'Cric Card League');
                         },

@@ -282,6 +282,11 @@ class _SuccessPageState extends State<SuccessPage> {
             .playerName,
         gameId:
             Provider.of<GameProvider>(context, listen: false).gameModel.gameId);
+    log(Provider.of<GameProvider>(context, listen: false)
+        .gameModel
+        .gameId
+        .toString());
+    log('Game Id');
     Provider.of<GameProvider>(context, listen: false).hostRoom(gameModel);
     NavigationRoute().animationRoute(context, const PlayersDetailsPage());
   }

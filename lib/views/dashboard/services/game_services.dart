@@ -1,4 +1,5 @@
 import 'package:ds_game/views/dashboard/model/game_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -19,9 +20,14 @@ class GameServices {
     await reference.push().set(gameModel?.toJson());
   }
 
-  Future joinRoom(GameModel? game) async {
+  Future joinRoom(String? roomId, String userId, String playerName) async {
     DatabaseReference databaseReference =
         FirebaseDatabase.instance.ref('JoinRoom').child('playerB');
-    await databaseReference.push().set(game?.toJson());
+    Map<String, dynamic> playerValue = {
+      'gameId': roomId,
+      'user': userId,
+      "playerName": playerName
+    };
+    await databaseReference.push().set(playerValue);
   }
 }

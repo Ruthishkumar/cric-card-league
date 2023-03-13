@@ -16,7 +16,15 @@ class GameProvider extends ChangeNotifier {
   final gameServices = GameServices.instance;
 
   void hostRoom(GameModel gameModel) async {
-    await gameServices.createRoom(gameModel);
+    isLoading = true;
+    notifyListeners();
+    if (isHost = true) {
+      await gameServices.createRoom(gameModel);
+      log('AAAA');
+    }
+    // await joinRoom();
+    isLoading = false;
+    notifyListeners();
   }
 
   void createGame({required String value, required String playerName}) {
@@ -25,5 +33,9 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void joinRoom() async {}
+  Future joinRoom(GameModel gameModel) async {
+    await gameServices.joinRoom(
+        game.gameId.toString(), gameModel.userId, gameModel.playerName);
+    notifyListeners();
+  }
 }

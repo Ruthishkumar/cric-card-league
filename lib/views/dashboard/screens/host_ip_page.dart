@@ -1,12 +1,16 @@
 import 'dart:developer';
 
+import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
+import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class HostIpPage extends StatefulWidget {
   const HostIpPage({Key? key}) : super(key: key);
@@ -224,8 +228,42 @@ class _HostIpPageState extends State<HostIpPage> {
           textColor: Colors.white,
           fontSize: 16.0);
       return false;
+    } else if (hostIpController.text ==
+        Provider.of<GameProvider>(context, listen: false).game.gameId) {
+      GameModel game = GameModel(
+          userId: FirebaseAuth.instance.currentUser!.uid,
+          phoneNumber: FirebaseAuth.instance.currentUser?.phoneNumber ?? '',
+          playerName:
+              Provider.of<GameProvider>(context, listen: false).game.playerName,
+          gameId: hostIpController.text);
+      Provider.of<GameProvider>(context, listen: false).joinRoom(game);
+      log('Log Success');
     } else {
-      log('Success');
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.sp))),
+              clipBehavior: Clip.none,
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text('Invalid Code', style: AppTextStyles.instance.popError),
+                  SizedBox(height: 4.sp),
+                  Text('Game does not exist',
+                      style: AppTextStyles.instance.popError),
+                  SizedBox(height: 15.sp),
+                  HeadTailsButton(
+                      text: 'Okay',
+                      color: Colors.red,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      })
+                ],
+              ),
+            );
+          });
     }
   }
 }
