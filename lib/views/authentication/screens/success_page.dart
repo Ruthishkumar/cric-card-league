@@ -266,14 +266,14 @@ class _SuccessPageState extends State<SuccessPage> {
           fontSize: 16.0);
       return false;
     } else {
+      var uuid = const Uuid();
+      Provider.of<GameProvider>(context, listen: false).createGame(
+          value: uuid.v4().toString(), playerName: playerNameController.text);
       return true;
     }
   }
 
   _createHostSummit() {
-    var uuid = const Uuid();
-    Provider.of<GameProvider>(context, listen: false).createGame(
-        value: uuid.v4().toString(), playerName: playerNameController.text);
     GameModel gameModel = GameModel(
         userId: FirebaseAuth.instance.currentUser!.uid,
         phoneNumber: FirebaseAuth.instance.currentUser?.phoneNumber ?? '',
