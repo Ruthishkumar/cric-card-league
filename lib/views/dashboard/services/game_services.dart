@@ -19,7 +19,9 @@ class GameServices {
     await reference.push().set(gameModel?.toJson());
   }
 
-  Future joinRoom(String roomId) async {
-    DatabaseReference databaseReference = FirebaseDatabase.instance.ref('');
+  Future joinRoom(GameModel? game) async {
+    DatabaseReference databaseReference =
+        FirebaseDatabase.instance.ref('JoinRoom').child('playerB');
+    await databaseReference.push().set(game?.toJson());
   }
 }

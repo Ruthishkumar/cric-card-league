@@ -272,15 +272,16 @@ class _SuccessPageState extends State<SuccessPage> {
 
   _createHostSummit() {
     var uuid = const Uuid();
-    Provider.of<GameProvider>(context, listen: false)
-        .createGame(uuid.v4().toString());
+    Provider.of<GameProvider>(context, listen: false).createGame(
+        value: uuid.v4().toString(), playerName: playerNameController.text);
     GameModel gameModel = GameModel(
         userId: FirebaseAuth.instance.currentUser!.uid,
         phoneNumber: FirebaseAuth.instance.currentUser?.phoneNumber ?? '',
-        playerName:
-            Provider.of<NameProvider>(context, listen: false).playerName,
-        gameId: Provider.of<GameProvider>(context, listen: false).gameId);
-    log(Provider.of<GameProvider>(context, listen: false).gameId.toString());
+        playerName: Provider.of<GameProvider>(context, listen: false)
+            .gameModel
+            .playerName,
+        gameId:
+            Provider.of<GameProvider>(context, listen: false).gameModel.gameId);
     Provider.of<GameProvider>(context, listen: false).hostRoom(gameModel);
     NavigationRoute().animationRoute(context, const PlayersDetailsPage());
   }

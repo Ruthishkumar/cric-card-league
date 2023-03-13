@@ -5,8 +5,8 @@ import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:flutter/material.dart';
 
 class GameProvider extends ChangeNotifier {
-  GameModel? gameModel;
-  GameModel? get game => gameModel;
+  GameModel gameModel = GameModel(userId: '', phoneNumber: '', playerName: '');
+  GameModel get game => gameModel;
 
   String gameId = "";
 
@@ -19,8 +19,9 @@ class GameProvider extends ChangeNotifier {
     await gameServices.createRoom(gameModel);
   }
 
-  void createGame(String value) {
-    gameId = value;
+  void createGame({required String value, required String playerName}) {
+    game.gameId = value;
+    game.playerName = playerName;
     notifyListeners();
   }
 

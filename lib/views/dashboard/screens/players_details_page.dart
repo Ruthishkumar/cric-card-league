@@ -72,62 +72,79 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
           Center(
             child: Container(
               padding: EdgeInsets.fromLTRB(20.sp, 20.sp, 20.sp, 20.sp),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.white70.withOpacity(0.3), //New
-                            blurRadius: 5.0,
-                            spreadRadius: 5.0)
-                      ],
-                    ),
-                    child: Stack(
-                      alignment: Alignment.topLeft,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      children: [
-                        Stack(
-                          alignment: Alignment.bottomRight,
+              child: Consumer<GameProvider>(
+                builder: (context, gameData, child) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.white70.withOpacity(0.3), //New
+                                blurRadius: 5.0,
+                                spreadRadius: 5.0)
+                          ],
+                        ),
+                        child: Stack(
+                          alignment: Alignment.topLeft,
                           clipBehavior: Clip.antiAliasWithSaveLayer,
                           children: [
-                            Container(
-                              height: 200.sp,
-                              width: 200.sp,
-                              padding: EdgeInsets.all(16.sp),
-                              decoration: BoxDecoration(
-                                  color: const Color(0xff1d2671),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(16.sp))),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Consumer<NameProvider>(
-                                      builder: (context, data, value) {
-                                    return Text(
-                                      data.playerName,
-                                      style: AppTextStyles
-                                          .instance.hostAndJoinName,
-                                    );
-                                  }),
-                                  SizedBox(height: 5.sp),
-                                  Text(
-                                    '(You)',
-                                    style:
-                                        AppTextStyles.instance.hostAndJoinName,
+                            Stack(
+                              alignment: Alignment.bottomRight,
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              children: [
+                                Container(
+                                  height: 200.sp,
+                                  width: 200.sp,
+                                  padding: EdgeInsets.all(16.sp),
+                                  decoration: BoxDecoration(
+                                      color: const Color(0xff1d2671),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(16.sp))),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        gameData.game.playerName,
+                                        style: AppTextStyles
+                                            .instance.hostAndJoinName,
+                                      ),
+                                      SizedBox(height: 5.sp),
+                                      Text(
+                                        '(You)',
+                                        style: AppTextStyles
+                                            .instance.hostAndJoinName,
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                                Positioned(
+                                  right: -15,
+                                  child: RotationTransition(
+                                    turns:
+                                        const AlwaysStoppedAnimation(15 / 360),
+                                    child: Container(
+                                      height: 50,
+                                      width: 50,
+                                      margin: EdgeInsets.only(left: 90.sp),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.white, width: 5),
+                                          shape: BoxShape.circle),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             Positioned(
-                              right: -15,
+                              left: -15,
                               child: RotationTransition(
                                 turns: const AlwaysStoppedAnimation(15 / 360),
                                 child: Container(
                                   height: 50,
                                   width: 50,
-                                  margin: EdgeInsets.only(left: 90.sp),
+                                  margin: EdgeInsets.only(right: 90.sp),
                                   decoration: BoxDecoration(
                                       border: Border.all(
                                           color: Colors.white, width: 5),
@@ -137,85 +154,72 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                             ),
                           ],
                         ),
-                        Positioned(
-                          left: -15,
-                          child: RotationTransition(
-                            turns: const AlwaysStoppedAnimation(15 / 360),
-                            child: Container(
-                              height: 50,
-                              width: 50,
-                              margin: EdgeInsets.only(right: 90.sp),
-                              decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: Colors.white, width: 5),
-                                  shape: BoxShape.circle),
+                      ),
+                      SizedBox(height: 20.sp),
+                      Container(
+                        width: 200.sp,
+                        padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
+                        decoration: BoxDecoration(
+                            color: const Color(0xff093028),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.sp))),
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(4.sp, 10.sp, 4.sp, 4.sp),
+                          padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.sp)),
+                              color: const Color(0xff237a57)),
+                          child: Center(
+                            child: Text(
+                              'Your IP: ${gameData.game.gameId}',
+                              style: AppTextStyles.instance.ipAddress,
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 20.sp),
-                  Container(
-                    width: 200.sp,
-                    padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
-                    decoration: BoxDecoration(
-                        color: const Color(0xff093028),
-                        borderRadius: BorderRadius.all(Radius.circular(8.sp))),
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(4.sp, 10.sp, 4.sp, 4.sp),
-                      padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(8.sp)),
-                          color: const Color(0xff237a57)),
-                      child: Center(
-                        child: Text(
-                          'Your IP: ${Provider.of<GameProvider>(context, listen: false).gameId}',
-                          style: AppTextStyles.instance.ipAddress,
-                        ),
                       ),
-                    ),
-                  ),
-                  SizedBox(height: 20.sp),
-                  ShareIdButton(
-                    text: 'Click To Share Id',
-                    color: Colors.blue,
-                    onPressed: () async {
-                      log(firebaseUid.toString());
-                      await FlutterShare.share(
-                          title: 'Cric Card League',
-                          text: firebaseUid.toString(),
-                          linkUrl: '',
-                          chooserTitle: 'Cric Card League');
-                    },
-                  ),
-                  SizedBox(height: 10.sp),
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/ribbon_green.png',
-                        height: 150,
+                      SizedBox(height: 20.sp),
+                      ShareIdButton(
+                        text: 'Click To Share Id',
+                        color: Colors.blue,
+                        onPressed: () async {
+                          log(firebaseUid.toString());
+                          await FlutterShare.share(
+                              title: 'Cric Card League',
+                              text: firebaseUid.toString(),
+                              linkUrl: '',
+                              chooserTitle: 'Cric Card League');
+                        },
                       ),
-                      Text(
-                        'Select deck of cards',
-                        style: GoogleFonts.prompt(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FontStyle.normal,
-                            fontSize: 14.sp),
+                      SizedBox(height: 10.sp),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/ribbon_green.png',
+                            height: 150,
+                          ),
+                          Text(
+                            'Select deck of cards',
+                            style: GoogleFonts.prompt(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FontStyle.normal,
+                                fontSize: 14.sp),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          for (int i = 0; i < deckCardsTotal.length; i++)
+                            _cardDetails(deckCardsTotal[i]),
+                        ],
                       ),
                     ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (int i = 0; i < deckCardsTotal.length; i++)
-                        _cardDetails(deckCardsTotal[i]),
-                    ],
-                  ),
-                ],
+                  );
+                },
               ),
             ),
           ),
