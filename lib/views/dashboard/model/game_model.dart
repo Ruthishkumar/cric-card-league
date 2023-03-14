@@ -21,7 +21,7 @@ class GamePlayerModel {
   final String name;
   final int timestamp;
 
-  GamePlayerModel(this.name, this.timestamp);
+  GamePlayerModel({required this.name, required this.timestamp});
 
   factory GamePlayerModel.fromJson(Map<String, dynamic> json) =>
       _$GamePlayerModelFromJson(json);

@@ -243,9 +243,12 @@ class _SuccessPageState extends State<SuccessPage> {
       setState(() {
         isVisible = !isVisible;
       });
+      GamePlayerModel game = GamePlayerModel(
+          name: playerNameController.text,
+          timestamp: DateTime.now().millisecondsSinceEpoch);
+      GameServices().createUser(gamePlayerModel: game);
       // Provider.of<NameProvider>(context, listen: false)
       //     .addPlayerName(value: playerNameController.text);
-      GameServices().createUser(userName: playerNameController.text);
       // final referenceDatabase = FirebaseDatabase.instance;
       // final ref = referenceDatabase.reference().child('players');
       // Map<String, dynamic> playerValue = {

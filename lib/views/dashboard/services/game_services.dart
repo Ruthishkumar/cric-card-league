@@ -35,10 +35,13 @@ class GameServices {
     await databaseReference.push().set(playerValue);
   }
 
-  Future createUser({required String userName}) async {
+  Future createUser({required GamePlayerModel gamePlayerModel}) async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
     DatabaseReference ref = FirebaseDatabase.instance.ref('user').child(userId);
-    Map<String, dynamic> playerValue = {'name': userName};
+    Map<String, dynamic> playerValue = {
+      'name': gamePlayerModel.name,
+      'createdTime': gamePlayerModel.timestamp
+    };
     ref.set(playerValue).asStream();
   }
 }

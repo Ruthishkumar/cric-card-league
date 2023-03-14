@@ -24,8 +24,8 @@ Map<String, dynamic> _$GameModelToJson(GameModel instance) => <String, dynamic>{
 
 GamePlayerModel _$GamePlayerModelFromJson(Map<String, dynamic> json) =>
     GamePlayerModel(
-      json['name'] as String,
-      json['timestamp'] as int,
+      name: json['name'] as String,
+      timestamp: json['timestamp'] as int,
     );
 
 Map<String, dynamic> _$GamePlayerModelToJson(GamePlayerModel instance) =>
