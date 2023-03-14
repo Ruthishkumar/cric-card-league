@@ -5,7 +5,7 @@ import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:flutter/material.dart';
 
 class GameProvider extends ChangeNotifier {
-  GameModel gameModel = GameModel(userId: '', phoneNumber: '', playerName: '');
+  GameModel gameModel = GameModel(hostId: '', phoneNumber: '', players: []);
   GameModel get game => gameModel;
 
   String gameId = "";
@@ -22,20 +22,20 @@ class GameProvider extends ChangeNotifier {
       await gameServices.createRoom(gameModel);
       log('AAAA');
     }
-    // await joinRoom();
     isLoading = false;
     notifyListeners();
   }
 
-  void createGame({required String value, required String playerName}) {
+  void createGame(
+      {required String value, required List<GamePlayerModel> playerName}) {
     game.gameId = value;
-    game.playerName = playerName;
+    game.players = playerName;
     notifyListeners();
   }
 
   Future joinRoom(GameModel gameModel) async {
-    await gameServices.joinRoom(
-        game.gameId.toString(), gameModel.userId, gameModel.playerName);
+    // await gameServices.joinRoom(
+    //     game.gameId.toString(), gameModel.userId, gameModel.playerName);
     notifyListeners();
   }
 }

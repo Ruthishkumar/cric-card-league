@@ -106,7 +106,7 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        gameData.game.playerName,
+                                        '',
                                         style: AppTextStyles
                                             .instance.hostAndJoinName,
                                       ),

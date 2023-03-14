@@ -6,6 +6,7 @@ import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/screens/host_ip_page.dart';
 import 'package:ds_game/views/dashboard/screens/players_details_page.dart';
+import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_input_text_outline.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
@@ -13,13 +14,11 @@ import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:fade_and_translate/fade_and_translate.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:network_info_plus/network_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -224,6 +223,10 @@ class _SuccessPageState extends State<SuccessPage> {
                   text: 'Join'.toUpperCase(),
                   color: const Color(0xff12c2e9),
                   onPressed: () {
+                    log(Provider.of<GameProvider>(context, listen: false)
+                        .gameModel
+                        .gameId
+                        .toString());
                     NavigationRoute()
                         .animationRoute(context, const HostIpPage());
                   },
@@ -240,8 +243,9 @@ class _SuccessPageState extends State<SuccessPage> {
       setState(() {
         isVisible = !isVisible;
       });
-      Provider.of<NameProvider>(context, listen: false)
-          .addPlayerName(value: playerNameController.text);
+      // Provider.of<NameProvider>(context, listen: false)
+      //     .addPlayerName(value: playerNameController.text);
+      GameServices().createUser(userName: playerNameController.text);
       // final referenceDatabase = FirebaseDatabase.instance;
       // final ref = referenceDatabase.reference().child('players');
       // Map<String, dynamic> playerValue = {
@@ -266,27 +270,14 @@ class _SuccessPageState extends State<SuccessPage> {
           fontSize: 16.0);
       return false;
     } else {
-      var uuid = const Uuid();
-      Provider.of<GameProvider>(context, listen: false).createGame(
-          value: uuid.v4().toString(), playerName: playerNameController.text);
       return true;
     }
   }
 
   _createHostSummit() {
     GameModel gameModel = GameModel(
-        userId: FirebaseAuth.instance.currentUser!.uid,
-        phoneNumber: FirebaseAuth.instance.currentUser?.phoneNumber ?? '',
-        playerName: Provider.of<GameProvider>(context, listen: false)
-            .gameModel
-            .playerName,
-        gameId:
-            Provider.of<GameProvider>(context, listen: false).gameModel.gameId);
-    log(Provider.of<GameProvider>(context, listen: false)
-        .gameModel
-        .gameId
-        .toString());
-    log('Game Id');
+      hostId: FirebaseAuth.instance.currentUser!.uid,
+    );
     Provider.of<GameProvider>(context, listen: false).hostRoom(gameModel);
     NavigationRoute().animationRoute(context, const PlayersDetailsPage());
   }
