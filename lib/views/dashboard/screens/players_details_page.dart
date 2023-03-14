@@ -9,6 +9,7 @@ import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_share/flutter_share.dart';
@@ -32,19 +33,16 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
 
   @override
   void initState() {
-    getUid();
+    getCardSelect();
     // getData();
     super.initState();
   }
 
-  String firebaseUid = "";
-  bool userStatus = false;
-
-  getUid() async {
-    firebaseUid = await StorageServices().getUserId();
-    userStatus = await StorageServices().getUserActive();
-    log(userStatus.toString());
-    setState(() {});
+  getCardSelect() {
+    DatabaseReference refDb = FirebaseDatabase.instance.ref(
+        'Room/${Provider.of<GameProvider>(context, listen: false).roomId}/players}');
+    log(refDb.onValue.length.toString());
+    log('LLLLLL');
   }
 
   getData() {
@@ -159,43 +157,51 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                       ),
                       SizedBox(height: 20.sp),
                       Consumer<GameProvider>(builder: (context, ip, child) {
-                        return Container(
-                          width: 200.sp,
-                          padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
-                          decoration: BoxDecoration(
-                              color: const Color(0xff093028),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.sp))),
-                          child: Container(
-                            margin:
-                                EdgeInsets.fromLTRB(4.sp, 10.sp, 4.sp, 4.sp),
-                            padding:
-                                EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8.sp)),
-                                color: const Color(0xff237a57)),
-                            child: Center(
-                              child: Text(
-                                'Your IP: ${ip.roomId}',
-                                style: AppTextStyles.instance.ipAddress,
-                              ),
+                        return Column(
+                          children: [
+                            Consumer<GameProvider>(
+                                builder: (context, ip, child) {
+                              return Container(
+                                width: 200.sp,
+                                padding: EdgeInsets.fromLTRB(
+                                    4.sp, 12.sp, 4.sp, 4.sp),
+                                decoration: BoxDecoration(
+                                    color: const Color(0xff093028),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(8.sp))),
+                                child: Container(
+                                  margin: EdgeInsets.fromLTRB(
+                                      4.sp, 10.sp, 4.sp, 4.sp),
+                                  padding: EdgeInsets.fromLTRB(
+                                      4.sp, 12.sp, 4.sp, 4.sp),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(8.sp)),
+                                      color: const Color(0xff237a57)),
+                                  child: Center(
+                                    child: Text(
+                                      'Your IP: ${ip.roomId}',
+                                      style: AppTextStyles.instance.ipAddress,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+                            SizedBox(height: 20.sp),
+                            ShareIdButton(
+                              text: 'Click To Share Id',
+                              color: Colors.blue,
+                              onPressed: () async {
+                                await FlutterShare.share(
+                                    title: 'Cric Card League',
+                                    text: '',
+                                    linkUrl: ip.roomId,
+                                    chooserTitle: 'Cric Card League');
+                              },
                             ),
-                          ),
+                          ],
                         );
                       }),
-                      SizedBox(height: 20.sp),
-                      ShareIdButton(
-                        text: 'Click To Share Id',
-                        color: Colors.blue,
-                        onPressed: () async {
-                          await FlutterShare.share(
-                              title: 'Cric Card League',
-                              text: '',
-                              linkUrl: '',
-                              chooserTitle: 'Cric Card League');
-                        },
-                      ),
                       SizedBox(height: 10.sp),
                       Stack(
                         alignment: Alignment.center,

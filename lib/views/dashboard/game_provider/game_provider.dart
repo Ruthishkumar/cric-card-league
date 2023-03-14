@@ -12,11 +12,8 @@ class GameProvider extends ChangeNotifier {
   final gameServices = GameServices.instance;
 
   void hostRoom(GameModel gameModel) async {
-    isLoading = true;
-    notifyListeners();
     await gameServices.createHostGameService(roomModel: gameModel);
     roomId = gameModel.roomId.toString();
-    isLoading = false;
     notifyListeners();
   }
 
