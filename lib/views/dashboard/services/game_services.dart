@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:uuid/uuid.dart';
 
@@ -17,31 +16,44 @@ class GameServices {
 
   FirebaseDatabase ref = FirebaseDatabase.instance;
 
-  Future createRoom(GameModel? gameModel) async {
-    var uuid = const Uuid();
-    DatabaseReference reference =
-        FirebaseDatabase.instance.ref('Room').child(uuid.v4());
-    reference.set(gameModel?.toJson()).asStream();
-  }
-
-  Future joinRoom(String? roomId, String userId, String playerName) async {
-    DatabaseReference databaseReference =
-        FirebaseDatabase.instance.ref('Room').child('Join/$userId');
-    Map<String, dynamic> playerValue = {
-      'gameId': roomId,
-      'userId': userId,
-      "playerName": playerName
-    };
-    await databaseReference.push().set(playerValue);
-  }
-
-  Future createUser({required GamePlayerModel gamePlayerModel}) async {
+  /// For Create User
+  Future createUserGameService({GamePlayerModel? gamePlayerModel}) async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
     DatabaseReference ref = FirebaseDatabase.instance.ref('user').child(userId);
     Map<String, dynamic> playerValue = {
-      'name': gamePlayerModel.name,
-      'createdTime': gamePlayerModel.timestamp
+      'name': gamePlayerModel?.name,
+      'createdAt': gamePlayerModel?.timestamp
     };
     ref.set(playerValue).asStream();
+  }
+
+  /// For Create Room
+  Future createHostGameService({required GameModel roomModel}) async {
+    try {
+      var uuid = const Uuid();
+      String roomId = uuid.v4().toString();
+      DatabaseReference reference =
+          FirebaseDatabase.instance.ref('Room').child('/$roomId');
+      await reference.set(roomModel.toJson());
+      roomModel.roomId = roomId;
+      log(roomModel.roomId.toString());
+    } catch (e, stack) {
+      log(e.toString());
+      log(stack.toString());
+    }
+  }
+
+  /// For Join Room
+  Future joinGameService(
+      {required GamePlayerModel joinModel, required String roomId}) async {
+    try {
+      DatabaseReference databaseReference = FirebaseDatabase.instance
+          .ref('Room')
+          .child('/$roomId/players/${FirebaseAuth.instance.currentUser!.uid}');
+      await databaseReference.update(joinModel.toJson());
+    } catch (e, stack) {
+      log(e.toString());
+      log(stack.toString());
+    }
   }
 }

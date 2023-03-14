@@ -1,15 +1,24 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'game_model.g.dart';
 
+Map<String, dynamic>? mapPlayerToJson(Map<String, GamePlayerModel>? players) {
+  Map<String, dynamic> data = {};
+  players?.entries.forEach((e) {
+    data[e.key] = e.value.toJson();
+  });
+  return data;
+}
+
 @JsonSerializable()
 class GameModel {
   String hostId;
   String? phoneNumber;
-  List<GamePlayerModel>? players;
-  String? gameId;
+  @JsonKey(toJson: mapPlayerToJson)
+  Map<String, GamePlayerModel>? players;
+  String? roomId;
 
   GameModel(
-      {required this.hostId, this.phoneNumber, this.players, this.gameId});
+      {required this.hostId, this.phoneNumber, this.players, this.roomId});
 
   factory GameModel.fromJson(Map<String, dynamic> json) =>
       _$GameModelFromJson(json);
@@ -26,4 +35,20 @@ class GamePlayerModel {
   factory GamePlayerModel.fromJson(Map<String, dynamic> json) =>
       _$GamePlayerModelFromJson(json);
   Map<String, dynamic> toJson() => _$GamePlayerModelToJson(this);
+}
+
+@JsonSerializable()
+class JoinModel {
+  String name;
+  String userId;
+  int createdAt;
+  @JsonKey(toJson: mapPlayerToJson)
+  Map<String, GamePlayerModel>? players;
+
+  JoinModel(
+      {required this.name, required this.userId, required this.createdAt});
+
+  factory JoinModel.fromJson(Map<String, dynamic> json) =>
+      _$JoinModelFromJson(json);
+  Map<String, dynamic> toJson() => _$JoinModelToJson(this);
 }

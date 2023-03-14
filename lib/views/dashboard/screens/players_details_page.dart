@@ -106,7 +106,9 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        '',
+                                        Provider.of<NameProvider>(context,
+                                                listen: false)
+                                            .playerName,
                                         style: AppTextStyles
                                             .instance.hostAndJoinName,
                                       ),
@@ -156,37 +158,40 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                         ),
                       ),
                       SizedBox(height: 20.sp),
-                      Container(
-                        width: 200.sp,
-                        padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
-                        decoration: BoxDecoration(
-                            color: const Color(0xff093028),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.sp))),
-                        child: Container(
-                          margin: EdgeInsets.fromLTRB(4.sp, 10.sp, 4.sp, 4.sp),
+                      Consumer<GameProvider>(builder: (context, ip, child) {
+                        return Container(
+                          width: 200.sp,
                           padding: EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
                           decoration: BoxDecoration(
+                              color: const Color(0xff093028),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(8.sp)),
-                              color: const Color(0xff237a57)),
-                          child: Center(
-                            child: Text(
-                              'Your IP: ${gameData.game.gameId}',
-                              style: AppTextStyles.instance.ipAddress,
+                                  BorderRadius.all(Radius.circular(8.sp))),
+                          child: Container(
+                            margin:
+                                EdgeInsets.fromLTRB(4.sp, 10.sp, 4.sp, 4.sp),
+                            padding:
+                                EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8.sp)),
+                                color: const Color(0xff237a57)),
+                            child: Center(
+                              child: Text(
+                                'Your IP: ${ip.roomId}',
+                                style: AppTextStyles.instance.ipAddress,
+                              ),
                             ),
                           ),
-                        ),
-                      ),
+                        );
+                      }),
                       SizedBox(height: 20.sp),
                       ShareIdButton(
                         text: 'Click To Share Id',
                         color: Colors.blue,
                         onPressed: () async {
-                          log(gameData.game.gameId.toString());
                           await FlutterShare.share(
                               title: 'Cric Card League',
-                              text: gameData.game.gameId,
+                              text: '',
                               linkUrl: '',
                               chooserTitle: 'Cric Card League');
                         },

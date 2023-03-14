@@ -223,10 +223,6 @@ class _SuccessPageState extends State<SuccessPage> {
                   text: 'Join'.toUpperCase(),
                   color: const Color(0xff12c2e9),
                   onPressed: () {
-                    log(Provider.of<GameProvider>(context, listen: false)
-                        .gameModel
-                        .gameId
-                        .toString());
                     NavigationRoute()
                         .animationRoute(context, const HostIpPage());
                   },
@@ -243,21 +239,12 @@ class _SuccessPageState extends State<SuccessPage> {
       setState(() {
         isVisible = !isVisible;
       });
-      GamePlayerModel game = GamePlayerModel(
+      GamePlayerModel createUser = GamePlayerModel(
           name: playerNameController.text,
           timestamp: DateTime.now().millisecondsSinceEpoch);
-      GameServices().createUser(gamePlayerModel: game);
-      // Provider.of<NameProvider>(context, listen: false)
-      //     .addPlayerName(value: playerNameController.text);
-      // final referenceDatabase = FirebaseDatabase.instance;
-      // final ref = referenceDatabase.reference().child('players');
-      // Map<String, dynamic> playerValue = {
-      //   'name': playerNameController.text,
-      //   'status': userStatus
-      // };
-      // ref.push().set(playerValue);
-      // var uuid = const Uuid();
-      // log(uuid.v4().toString());
+      GameServices().createUserGameService(gamePlayerModel: createUser);
+      Provider.of<NameProvider>(context, listen: false)
+          .addPlayerName(value: playerNameController.text);
     }
   }
 
@@ -277,11 +264,21 @@ class _SuccessPageState extends State<SuccessPage> {
     }
   }
 
+  /// host summit
   _createHostSummit() {
-    GameModel gameModel = GameModel(
-      hostId: FirebaseAuth.instance.currentUser!.uid,
-    );
-    Provider.of<GameProvider>(context, listen: false).hostRoom(gameModel);
+    GameModel gameRoom =
+        GameModel(hostId: FirebaseAuth.instance.currentUser!.uid, players: {
+      FirebaseAuth.instance.currentUser!.uid: GamePlayerModel(
+          name: Provider.of<NameProvider>(context, listen: false)
+              .playerName
+              .toString(),
+          timestamp: DateTime.now().millisecondsSinceEpoch)
+    });
+    Provider.of<GameProvider>(context, listen: false).hostRoom(gameRoom);
+    Provider.of<GameProvider>(context, listen: false)
+        .createRoom(gameRoom.roomId.toString());
+    log(Provider.of<GameProvider>(context, listen: false).roomId.toString());
+    log('message');
     NavigationRoute().animationRoute(context, const PlayersDetailsPage());
   }
 }
