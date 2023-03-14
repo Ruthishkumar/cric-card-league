@@ -21,7 +21,7 @@ class GameServices {
     var uuid = const Uuid();
     DatabaseReference reference =
         FirebaseDatabase.instance.ref('Room').child(uuid.v4());
-    await reference.set(gameModel?.toJson());
+    reference.set(gameModel?.toJson()).asStream();
   }
 
   Future joinRoom(String? roomId, String userId, String playerName) async {
