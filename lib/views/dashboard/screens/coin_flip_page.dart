@@ -84,8 +84,6 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                               color: Colors.blue,
                               onPressed: () {
                                 if (!isActive) {
-                                  // final player = AudioCache();
-                                  // player.play('images/Toss.mp3');
                                   coinSpin = "Tails";
                                   isActive = true;
                                   int faceIndex =

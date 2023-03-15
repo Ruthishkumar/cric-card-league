@@ -26,12 +26,20 @@ class HostIpPage extends StatefulWidget {
 class _HostIpPageState extends State<HostIpPage> {
   TextEditingController hostIpController = TextEditingController();
 
+  @override
+  void initState() {
+    getBegin();
+    super.initState();
+  }
+
   DatabaseReference getBegin() {
     log('Room/${hostIpController.text}/selectCard');
     DatabaseReference refDb = FirebaseDatabase.instance
         .ref('Room/${hostIpController.text}/selectCard');
     return refDb;
   }
+
+  bool loader = false;
 
   @override
   Widget build(BuildContext context) {
@@ -202,13 +210,15 @@ class _HostIpPageState extends State<HostIpPage> {
                                       color: Colors.white),
                                   hintText: 'Enter Host IP'))),
                       SizedBox(height: 20.sp),
-                      StreamBuilder(
+                      StreamBuilder<DatabaseEvent>(
                         stream: getBegin().onValue,
                         builder: (context, snapShot) {
                           if (snapShot.data != null) {
                             return snapShot.data!.snapshot.value == true
-                                ? NavigationRoute().animationRoute(
-                                    context, const CoinFlipScreen())
+                                ? loader == snapShot.data!.snapshot.value
+                                    ? const CircularProgressIndicator()
+                                    : NavigationRoute().animationRoute(
+                                        context, const CoinFlipScreen())
                                 : GameStartButton(
                                     text: snapShot.data!.snapshot.value == true
                                         ? 'Let\'s Toss'

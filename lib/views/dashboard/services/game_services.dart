@@ -15,8 +15,6 @@ class GameServices {
 
   static GameServices get instance => _singleton;
 
-  FirebaseDatabase ref = FirebaseDatabase.instance;
-
   /// For Create User
   Future createUserGameService({GamePlayerModel? gamePlayerModel}) async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
@@ -65,5 +63,11 @@ class GameServices {
     DatabaseReference reference =
         FirebaseDatabase.instance.ref('Room').child('/$roomId');
     await reference.update(selectCardModel.toJson());
+  }
+
+  Future selectToss({required String roomId}) async {
+    DatabaseReference reference =
+        FirebaseDatabase.instance.ref('Room').child('/$roomId');
+    // await reference.update(value)
   }
 }
