@@ -3,10 +3,13 @@ import 'dart:developer';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
+import 'package:ds_game/views/dashboard/screens/coin_flip_page.dart';
+import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -22,6 +25,13 @@ class HostIpPage extends StatefulWidget {
 
 class _HostIpPageState extends State<HostIpPage> {
   TextEditingController hostIpController = TextEditingController();
+
+  DatabaseReference getBegin() {
+    log('Room/${hostIpController.text}');
+    DatabaseReference refDb =
+        FirebaseDatabase.instance.ref('Room/${hostIpController.text}');
+    return refDb;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,10 +202,45 @@ class _HostIpPageState extends State<HostIpPage> {
                                       color: Colors.white),
                                   hintText: 'Enter Host IP'))),
                       SizedBox(height: 20.sp),
-                      GameStartButton(
-                          text: 'Begin',
-                          color: Colors.blue,
-                          onPressed: _onSummit),
+                      StreamBuilder(
+                        stream: getBegin().onValue,
+                        builder: (context, snapShot) {
+                          if (snapShot.data != null) {
+                            return GameStartButton(
+                                text: 'Begin',
+                                color: Colors.blue,
+                                onPressed: () {
+                                  if (hostIpController.text == '') {
+                                    Fluttertoast.showToast(
+                                        msg: "Please enter host ip",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.BOTTOM,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Colors.blueGrey,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0);
+                                    return false;
+                                  } else {
+                                    GamePlayerModel joinGame = GamePlayerModel(
+                                        name: Provider.of<NameProvider>(context,
+                                                listen: false)
+                                            .playerName,
+                                        timestamp: DateTime.now()
+                                            .millisecondsSinceEpoch);
+                                    Provider.of<GameProvider>(context,
+                                            listen: false)
+                                        .joinRoom(
+                                            joinGame, hostIpController.text);
+                                    snapShot.data!.snapshot.value == true
+                                        ? NavigationRoute().animationRoute(
+                                            context, const CoinFlipScreen())
+                                        : null;
+                                  }
+                                });
+                          }
+                          return Container();
+                        },
+                      ),
                     ],
                   ),
                 ],
@@ -235,6 +280,7 @@ class _HostIpPageState extends State<HostIpPage> {
           timestamp: DateTime.now().millisecondsSinceEpoch);
       Provider.of<GameProvider>(context, listen: false)
           .joinRoom(joinGame, hostIpController.text);
+      getBegin().onValue;
     }
   }
   // else {

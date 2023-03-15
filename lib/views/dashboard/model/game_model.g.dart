@@ -50,3 +50,13 @@ Map<String, dynamic> _$JoinModelToJson(JoinModel instance) => <String, dynamic>{
       'createdAt': instance.createdAt,
       'players': mapPlayerToJson(instance.players),
     };
+
+SelectCardModel _$SelectCardModelFromJson(Map<String, dynamic> json) =>
+    SelectCardModel(
+      selectCard: json['selectCard'] as bool,
+    );
+
+Map<String, dynamic> _$SelectCardModelToJson(SelectCardModel instance) =>
+    <String, dynamic>{
+      'selectCard': instance.selectCard,
+    };

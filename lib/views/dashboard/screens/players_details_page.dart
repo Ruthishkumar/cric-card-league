@@ -1,10 +1,9 @@
 import 'dart:developer';
 
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
-import 'package:ds_game/views/authentication/services/storage_services.dart';
 import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
-import 'package:ds_game/views/dashboard/screens/coin_flip_page.dart';
-import 'package:ds_game/widgets/animation_route.dart';
+import 'package:ds_game/views/dashboard/model/game_model.dart';
+import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
@@ -240,9 +239,17 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                                         ),
                                       ],
                                     )
-                                  : Text(
-                                      'Waiting for players to join',
-                                      style: AppTextStyles.instance.countryName,
+                                  : Container(
+                                      padding: EdgeInsets.all(10.sp),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(12.sp)),
+                                          color: Colors.white),
+                                      child: Text(
+                                        'Waiting for players to join',
+                                        style: AppTextStyles
+                                            .instance.loginSubHeader,
+                                      ),
                                     );
                             }
                             return Container();
@@ -268,14 +275,18 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
         setState(() {
           selectCardValue = options['cardId'];
           selectCardNumbers = options['cardValue'];
+          SelectCardModel selectCardModel =
+              SelectCardModel(selectCard: selectCardValue != -1 ? true : false);
+          GameServices().selectCard(
+              roomId: Provider.of<GameProvider>(context, listen: false).roomId,
+              selectCardModel: selectCardModel);
           log(selectCardNumbers);
           Provider.of<NameProvider>(context, listen: false)
               .addCards(value: selectCardValue);
           Provider.of<NameProvider>(context, listen: false)
               .cardTotalValue(value: selectCardNumbers);
-          log(selectCardValue.toString());
         });
-        NavigationRoute().animationRoute(context, const CoinFlipScreen());
+        // NavigationRoute().animationRoute(context, const CoinFlipScreen());
       },
       child: Stack(
         children: [

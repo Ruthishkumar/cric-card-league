@@ -52,3 +52,14 @@ class JoinModel {
       _$JoinModelFromJson(json);
   Map<String, dynamic> toJson() => _$JoinModelToJson(this);
 }
+
+@JsonSerializable()
+class SelectCardModel {
+  bool selectCard;
+
+  SelectCardModel({required this.selectCard});
+
+  factory SelectCardModel.fromJson(Map<String, dynamic> json) =>
+      _$SelectCardModelFromJson(json);
+  Map<String, dynamic> toJson() => _$SelectCardModelToJson(this);
+}

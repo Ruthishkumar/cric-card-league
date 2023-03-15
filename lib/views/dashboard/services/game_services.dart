@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:uuid/uuid.dart';
 
@@ -55,5 +56,14 @@ class GameServices {
       log(e.toString());
       log(stack.toString());
     }
+  }
+
+  /// For Card Select
+  Future selectCard(
+      {required String roomId,
+      required SelectCardModel selectCardModel}) async {
+    DatabaseReference reference =
+        FirebaseDatabase.instance.ref('Room').child('/$roomId');
+    await reference.update(selectCardModel.toJson());
   }
 }
