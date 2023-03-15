@@ -33,16 +33,15 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
 
   @override
   void initState() {
-    getCardSelect();
     // getData();
     super.initState();
   }
 
-  getCardSelect() {
+  DatabaseReference getCardSelect() {
+    log('Room/${Provider.of<GameProvider>(context, listen: false).roomId}/players');
     DatabaseReference refDb = FirebaseDatabase.instance.ref(
-        'Room/${Provider.of<GameProvider>(context, listen: false).roomId}/players}');
-    log(refDb.onValue.length.toString());
-    log('LLLLLL');
+        'Room/${Provider.of<GameProvider>(context, listen: false).roomId}/players');
+    return refDb;
   }
 
   getData() {
@@ -159,34 +158,31 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                       Consumer<GameProvider>(builder: (context, ip, child) {
                         return Column(
                           children: [
-                            Consumer<GameProvider>(
-                                builder: (context, ip, child) {
-                              return Container(
-                                width: 200.sp,
+                            Container(
+                              width: 200.sp,
+                              padding:
+                                  EdgeInsets.fromLTRB(4.sp, 12.sp, 4.sp, 4.sp),
+                              decoration: BoxDecoration(
+                                  color: const Color(0xff093028),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.sp))),
+                              child: Container(
+                                margin: EdgeInsets.fromLTRB(
+                                    4.sp, 10.sp, 4.sp, 4.sp),
                                 padding: EdgeInsets.fromLTRB(
                                     4.sp, 12.sp, 4.sp, 4.sp),
                                 decoration: BoxDecoration(
-                                    color: const Color(0xff093028),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(8.sp))),
-                                child: Container(
-                                  margin: EdgeInsets.fromLTRB(
-                                      4.sp, 10.sp, 4.sp, 4.sp),
-                                  padding: EdgeInsets.fromLTRB(
-                                      4.sp, 12.sp, 4.sp, 4.sp),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(8.sp)),
-                                      color: const Color(0xff237a57)),
-                                  child: Center(
-                                    child: Text(
-                                      'Your IP: ${ip.roomId}',
-                                      style: AppTextStyles.instance.ipAddress,
-                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    color: const Color(0xff237a57)),
+                                child: Center(
+                                  child: Text(
+                                    'Your IP: ${ip.roomId}',
+                                    style: AppTextStyles.instance.ipAddress,
                                   ),
                                 ),
-                              );
-                            }),
+                              ),
+                            ),
                             SizedBox(height: 20.sp),
                             ShareIdButton(
                               text: 'Click To Share Id',
@@ -202,32 +198,55 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                           ],
                         );
                       }),
-                      SizedBox(height: 10.sp),
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/images/ribbon_green.png',
-                            height: 150,
-                          ),
-                          Text(
-                            'Select deck of cards',
-                            style: GoogleFonts.prompt(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontStyle: FontStyle.normal,
-                                fontSize: 14.sp),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          for (int i = 0; i < deckCardsTotal.length; i++)
-                            _cardDetails(deckCardsTotal[i]),
-                        ],
-                      ),
+                      SizedBox(height: 20.sp),
+                      StreamBuilder(
+                          stream: getCardSelect().onValue,
+                          builder: (context, snapShot) {
+                            if (snapShot.data != null) {
+                              Map<dynamic, dynamic> data = snapShot.data!
+                                  .snapshot.value as Map<dynamic, dynamic>;
+                              log(data.entries.length.toString() ?? '');
+                              return data.entries.length > 1
+                                  ? Column(
+                                      children: [
+                                        Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/ribbon_green.png',
+                                              height: 150,
+                                            ),
+                                            Text(
+                                              'Select deck of cards',
+                                              style: GoogleFonts.prompt(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontStyle: FontStyle.normal,
+                                                  fontSize: 14.sp),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            for (int i = 0;
+                                                i < deckCardsTotal.length;
+                                                i++)
+                                              _cardDetails(deckCardsTotal[i]),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  : Text(
+                                      'Waiting for players to join',
+                                      style: AppTextStyles.instance.countryName,
+                                    );
+                            }
+                            return Container();
+                          }),
                     ],
                   );
                 },
