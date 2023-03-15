@@ -26,4 +26,11 @@ class GameProvider extends ChangeNotifier {
     await gameServices.joinGameService(joinModel: joinModel, roomId: roomId);
     notifyListeners();
   }
+
+  void hostCardSelect(
+      {required String value, required SelectCardModel selectCardModel}) async {
+    await gameServices.selectCard(
+        roomId: value, selectCardModel: selectCardModel);
+    notifyListeners();
+  }
 }
