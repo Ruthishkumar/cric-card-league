@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
@@ -32,23 +33,11 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
     '20',
   ];
 
-  @override
-  void initState() {
-    // getData();
-    super.initState();
-  }
-
   DatabaseReference getCardSelect() {
     log('Room/${Provider.of<GameProvider>(context, listen: false).roomId}/players');
     DatabaseReference refDb = FirebaseDatabase.instance.ref(
         'Room/${Provider.of<GameProvider>(context, listen: false).roomId}/players');
     return refDb;
-  }
-
-  getData() {
-    String userId = (FirebaseAuth.instance.currentUser)!.uid;
-    log(userId);
-    log('firebase UserID');
   }
 
   String? selectedValue;
@@ -157,6 +146,8 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                       ),
                       SizedBox(height: 20.sp),
                       Consumer<GameProvider>(builder: (context, ip, child) {
+                        log(ip.roomId);
+                        log('ROOMID');
                         return Column(
                           children: [
                             Container(
@@ -277,10 +268,6 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
         setState(() {
           selectCardValue = options['cardId'];
           selectCardNumbers = options['cardValue'];
-          SelectCardModel selectCardModel =
-              SelectCardModel(selectCard: selectCardValue != -1 ? true : false);
-
-          log(selectCardNumbers);
           NavigationRoute().animationRoute(
               context,
               const CoinFlipScreen(
@@ -290,10 +277,12 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
               .addCards(value: selectCardValue);
           Provider.of<NameProvider>(context, listen: false)
               .cardTotalValue(value: selectCardNumbers);
-          Provider.of<GameProvider>(context, listen: false).hostCardSelect(
-              value: Provider.of<GameProvider>(context, listen: false).roomId,
-              selectCardModel: selectCardModel);
         });
+        SelectCardModel selectCardModel =
+            SelectCardModel(selectCard: selectCardValue != -1 ? true : false);
+        GameServices().selectCard(
+            roomId: Provider.of<GameProvider>(context, listen: false).roomId,
+            selectCardModel: selectCardModel);
       },
       child: Stack(
         children: [

@@ -8,7 +8,6 @@ import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,21 +26,6 @@ class _HostIpPageState extends State<HostIpPage> {
   TextEditingController hostIpController = TextEditingController();
 
   @override
-  void initState() {
-    getBegin();
-    super.initState();
-  }
-
-  DatabaseReference getBegin() {
-    log('Room/${hostIpController.text}/selectCard');
-    DatabaseReference refDb = FirebaseDatabase.instance
-        .ref('Room/${hostIpController.text}/selectCard');
-    return refDb;
-  }
-
-  bool loader = false;
-
-  @override
   Widget build(BuildContext context) {
     return ScreenContainer(
         bodyWidget: Stack(
@@ -58,25 +42,6 @@ class _HostIpPageState extends State<HostIpPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.end,
-                  //   children: [
-                  //     Image.asset(
-                  //       'assets/images/settings.png',
-                  //       height: 70.sp,
-                  //     ),
-                  //   ],
-                  // ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  //   children: [
-                  //     GestureDetector(
-                  //         onTap: _soundOnOff, child: const Icon(Icons.volume_up)),
-                  //     GestureDetector(
-                  //         onTap: _soundOnOff,
-                  //         child: const Icon(Icons.volume_off_outlined)),
-                  //   ],
-                  // ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -210,54 +175,10 @@ class _HostIpPageState extends State<HostIpPage> {
                                       color: Colors.white),
                                   hintText: 'Enter Host IP'))),
                       SizedBox(height: 20.sp),
-                      StreamBuilder(
-                        stream: getBegin().onValue,
-                        builder: (context, snapShot) {
-                          if (snapShot.data != null) {
-                            return GameStartButton(
-                                text: snapShot.data!.snapshot.value == true
-                                    ? 'Let\'s Toss'
-                                    : 'Begin',
-                                color: Colors.blue,
-                                onPressed: () {
-                                  log(snapShot.data!.snapshot.value.toString());
-                                  log('JJJJ');
-                                  if (hostIpController.text == '') {
-                                    Fluttertoast.showToast(
-                                        msg: "Please enter host ip",
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                        timeInSecForIosWeb: 1,
-                                        backgroundColor: Colors.blueGrey,
-                                        textColor: Colors.white,
-                                        fontSize: 16.0);
-                                    return false;
-                                  } else {
-                                    GamePlayerModel joinGame = GamePlayerModel(
-                                        name: Provider.of<NameProvider>(context,
-                                                listen: false)
-                                            .playerName,
-                                        timestamp: DateTime.now()
-                                            .millisecondsSinceEpoch);
-                                    Provider.of<GameProvider>(context,
-                                            listen: false)
-                                        .joinRoom(
-                                            joinGame, hostIpController.text);
-                                    log(snapShot.data!.snapshot.value
-                                        .toString());
-                                    snapShot.data!.snapshot.value == true
-                                        ? NavigationRoute().animationRoute(
-                                            context,
-                                            CoinFlipScreen(
-                                              roomId: hostIpController.text,
-                                            ))
-                                        : null;
-                                  }
-                                });
-                          }
-                          return Container();
-                        },
-                      ),
+                      GameStartButton(
+                          text: 'Begin',
+                          color: Colors.blue,
+                          onPressed: _onJoinSummit)
                     ],
                   ),
                 ],
@@ -267,20 +188,10 @@ class _HostIpPageState extends State<HostIpPage> {
         )
       ],
     ));
-
-    /// join game button
-  }
-
-  bool _soundOn = false;
-
-  void _soundOnOff() {
-    setState(() {
-      _soundOn = !_soundOn;
-    });
   }
 
   /// host ip summit button
-  _onSummit() {
+  _onJoinSummit() {
     if (hostIpController.text == '') {
       Fluttertoast.showToast(
           msg: "Please enter host ip",
@@ -297,7 +208,8 @@ class _HostIpPageState extends State<HostIpPage> {
           timestamp: DateTime.now().millisecondsSinceEpoch);
       Provider.of<GameProvider>(context, listen: false)
           .joinRoom(joinGame, hostIpController.text);
-      getBegin().onValue;
+      NavigationRoute().animationRoute(
+          context, CoinFlipScreen(roomId: hostIpController.text));
     }
   }
   // else {
