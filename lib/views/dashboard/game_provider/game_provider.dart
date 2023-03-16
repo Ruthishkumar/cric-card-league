@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 class GameProvider extends ChangeNotifier {
   String roomId = "";
 
+  String updatedRoomId = "";
+
   bool isLoading = false;
 
   final gameServices = GameServices.instance;
@@ -24,6 +26,9 @@ class GameProvider extends ChangeNotifier {
 
   void joinRoom(GamePlayerModel joinModel, String roomId) async {
     await gameServices.joinGameService(joinModel: joinModel, roomId: roomId);
+    updatedRoomId = roomId;
+    log(updatedRoomId);
+    log('JJJJJ');
     notifyListeners();
   }
 

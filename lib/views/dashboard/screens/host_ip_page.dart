@@ -26,6 +26,24 @@ class _HostIpPageState extends State<HostIpPage> {
   TextEditingController hostIpController = TextEditingController();
 
   @override
+  void initState() {
+    getBegin();
+    super.initState();
+  }
+
+  DatabaseReference getBegin() {
+    setState(() {});
+    print('Room/${hostIpController.text}/selectCard');
+    print('object');
+    print(
+        'Room/${Provider.of<GameProvider>(context, listen: false).updatedRoomId}/selectCard');
+    DatabaseReference refDb = FirebaseDatabase.instance.ref(
+        'Room/${Provider.of<GameProvider>(context, listen: false).updatedRoomId}/selectCard');
+
+    return refDb;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ScreenContainer(
         bodyWidget: Stack(
@@ -175,10 +193,49 @@ class _HostIpPageState extends State<HostIpPage> {
                                       color: Colors.white),
                                   hintText: 'Enter Host IP'))),
                       SizedBox(height: 20.sp),
-                      GameStartButton(
-                          text: 'Begin',
-                          color: Colors.blue,
-                          onPressed: _onJoinSummit)
+                      StreamBuilder(
+                        stream: getBegin().onValue,
+                        builder: (context, snapShot) {
+                          if (snapShot.data != null) {
+                            return GameStartButton(
+                                text: snapShot.data!.snapshot.value == true
+                                    ? "Let's Toss"
+                                    : 'Begin',
+                                color: Colors.blue,
+                                onPressed: () {
+                                  if (hostIpController.text == '') {
+                                    Fluttertoast.showToast(
+                                        msg: "Please enter host ip",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.BOTTOM,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Colors.blueGrey,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0);
+                                    return false;
+                                  } else {
+                                    GamePlayerModel joinGame = GamePlayerModel(
+                                        name: Provider.of<NameProvider>(context,
+                                                listen: false)
+                                            .playerName,
+                                        timestamp: DateTime.now()
+                                            .millisecondsSinceEpoch);
+                                    Provider.of<GameProvider>(context,
+                                            listen: false)
+                                        .joinRoom(
+                                            joinGame, hostIpController.text);
+                                    if (snapShot.data!.snapshot.value == true) {
+                                      NavigationRoute().animationRoute(
+                                          context,
+                                          CoinFlipScreen(
+                                              roomId: hostIpController.text));
+                                    }
+                                  }
+                                });
+                          }
+                          return Container();
+                        },
+                      )
                     ],
                   ),
                 ],
@@ -208,8 +265,7 @@ class _HostIpPageState extends State<HostIpPage> {
           timestamp: DateTime.now().millisecondsSinceEpoch);
       Provider.of<GameProvider>(context, listen: false)
           .joinRoom(joinGame, hostIpController.text);
-      NavigationRoute().animationRoute(
-          context, CoinFlipScreen(roomId: hostIpController.text));
+      log('BBBB');
     }
   }
   // else {

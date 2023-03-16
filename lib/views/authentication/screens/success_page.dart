@@ -277,8 +277,11 @@ class _SuccessPageState extends State<SuccessPage> {
     Provider.of<GameProvider>(context, listen: false).hostRoom(gameRoom);
     Provider.of<GameProvider>(context, listen: false)
         .createRoom(gameRoom.roomId.toString());
-    log(Provider.of<GameProvider>(context, listen: false).roomId.toString());
-    log('message');
+    setState(() {
+      log(Provider.of<GameProvider>(context, listen: false).roomId.toString());
+      log('message');
+    });
+
     NavigationRoute().animationRoute(context, const PlayersDetailsPage());
   }
 }
