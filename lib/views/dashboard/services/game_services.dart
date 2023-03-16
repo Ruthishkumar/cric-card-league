@@ -72,4 +72,11 @@ class GameServices {
         FirebaseDatabase.instance.ref('Room').child('/$roomId');
     await reference.update(selectTossModel.toJson());
   }
+
+  Future matchTotalCard(
+      {required String roomId, required TotalCardModel totalCardModel}) async {
+    DatabaseReference reference =
+        FirebaseDatabase.instance.ref('Room').child('/$roomId');
+    await reference.update(totalCardModel.toJson());
+  }
 }

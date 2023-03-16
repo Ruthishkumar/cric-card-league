@@ -38,4 +38,13 @@ class GameProvider extends ChangeNotifier {
         roomId: value, selectCardModel: selectCardModel);
     notifyListeners();
   }
+
+  Future<void> addCardTotal(
+      {required String value,
+      required,
+      required TotalCardModel totalCardModel}) async {
+    await gameServices.matchTotalCard(
+        roomId: value, totalCardModel: totalCardModel);
+    notifyListeners();
+  }
 }

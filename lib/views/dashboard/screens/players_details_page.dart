@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
@@ -45,9 +46,9 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
   @override
   Widget build(BuildContext context) {
     var deckCardsTotal = [
-      {'cardValue': '10', 'cardId': 0},
-      {'cardValue': '20', 'cardId': 1},
-      {'cardValue': '30', 'cardId': 2},
+      {'cardValue': '5', 'cardId': 0},
+      {'cardValue': '10', 'cardId': 1},
+      {'cardValue': '15', 'cardId': 2},
     ];
     return ScreenContainer(
       bodyWidget: Stack(
@@ -199,7 +200,7 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                               Map<dynamic, dynamic> data = snapShot.data!
                                   .snapshot.value as Map<dynamic, dynamic>;
                               log(data.entries.length.toString() ?? '');
-                              return data.entries.length > 1
+                              return data.entries.length >= 1
                                   ? Column(
                                       children: [
                                         Stack(
@@ -234,19 +235,33 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                                       ],
                                     )
                                   : Container(
+                                      width: 190.sp,
                                       padding: EdgeInsets.all(10.sp),
                                       decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black12
+                                                    .withOpacity(0.3), //New
+                                                blurRadius: 5.0,
+                                                spreadRadius: 5.0)
+                                          ],
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(12.sp)),
                                           color: Colors.white),
-                                      child: Text(
-                                        'Waiting for players to join',
-                                        style: AppTextStyles
-                                            .instance.loginSubHeader,
+                                      child: Center(
+                                        child: AnimatedTextKit(
+                                          repeatForever: true,
+                                          isRepeatingAnimation: true,
+                                          animatedTexts: [
+                                            TyperAnimatedText(
+                                                'Waiting for players to join'),
+                                            ScaleAnimatedText('Loading'),
+                                          ],
+                                        ),
                                       ),
                                     );
                             }
-                            return Container();
+                            return const RefreshProgressIndicator();
                           }),
                     ],
                   );
@@ -272,6 +287,11 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
           GameServices().selectCard(
               roomId: Provider.of<GameProvider>(context, listen: false).roomId,
               selectCardModel: selectCardModel);
+          TotalCardModel totalCardModel =
+              TotalCardModel(cardTotal: selectCardNumbers.toString());
+          Provider.of<GameProvider>(context, listen: false).addCardTotal(
+              value: Provider.of<GameProvider>(context, listen: false).roomId,
+              totalCardModel: totalCardModel);
           selectCardValue = options['cardId'];
           selectCardNumbers = options['cardValue'];
           NavigationRoute().animationRoute(

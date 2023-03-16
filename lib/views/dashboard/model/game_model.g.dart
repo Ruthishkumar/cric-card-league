@@ -72,3 +72,13 @@ Map<String, dynamic> _$SelectTossModelToJson(SelectTossModel instance) =>
       'selectToss': instance.selectToss,
       'tossFace': instance.tossFace,
     };
+
+TotalCardModel _$TotalCardModelFromJson(Map<String, dynamic> json) =>
+    TotalCardModel(
+      cardTotal: json['cardTotal'] as String,
+    );
+
+Map<String, dynamic> _$TotalCardModelToJson(TotalCardModel instance) =>
+    <String, dynamic>{
+      'cardTotal': instance.cardTotal,
+    };
