@@ -13,6 +13,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class CoinFlipScreen extends StatefulWidget {
@@ -74,13 +75,14 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                     ),
                     Center(
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Lets Start',
+                            "Let's Start",
                             style: AppTextStyles.instance.countryName,
                           ),
-                          Text(Provider.of<GameProvider>(context, listen: false)
-                              .updatedRoomId),
+                          SizedBox(height: 50.sp),
+                          startGameButton()
                         ],
                       ),
                     )
@@ -197,30 +199,50 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                               opacity: afterTossOpacity,
                             ),
                           ),
-                    Align(
-                      alignment: const Alignment(-0.01, 0.60),
-                      child: AnimatedOpacity(
-                        child: HostingButton(
-                          text: 'Start Game',
-                          color: Colors.green,
-                          onPressed: () {
-                            Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const CardTemplatePage()),
-                                (route) => false);
-                          },
-                        ),
-                        duration: const Duration(seconds: 1),
-                        opacity: afterTossOpacity,
-                      ),
-                    ),
+                    startGameButton()
                   ],
                 );
         }
-        return Container();
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.asset(
+              'assets/images/home_bg.jpg',
+              fit: BoxFit.cover,
+            ),
+            OverflowBox(
+              minHeight: 180,
+              maxHeight: 180,
+              child: Lottie.asset(
+                'assets/lottie_images/Loading.json',
+                width: 300,
+                height: 300,
+              ),
+            ),
+          ],
+        );
       },
     ));
+  }
+
+  startGameButton() {
+    return Align(
+      alignment: const Alignment(-0.01, 0.60),
+      child: AnimatedOpacity(
+        child: HostingButton(
+          text: 'Start Game',
+          color: Colors.green,
+          onPressed: () {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                    builder: (context) => const CardTemplatePage()),
+                (route) => false);
+          },
+        ),
+        duration: const Duration(seconds: 1),
+        opacity: afterTossOpacity,
+      ),
+    );
   }
 
   void _flipCoin(String face) async {
@@ -239,7 +261,8 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
       setState(() {
         afterTossOpacity = 1.0;
       });
-      SelectTossModel selectCardModel = SelectTossModel(selectToss: isActive);
+      SelectTossModel selectCardModel =
+          SelectTossModel(selectToss: isActive, tossFace: _face);
       GameServices().selectToss(
           roomId: Provider.of<GameProvider>(context, listen: false).roomId,
           selectTossModel: selectCardModel);

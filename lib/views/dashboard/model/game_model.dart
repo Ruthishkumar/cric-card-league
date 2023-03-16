@@ -67,8 +67,9 @@ class SelectCardModel {
 @JsonSerializable()
 class SelectTossModel {
   bool selectToss;
+  String tossFace;
 
-  SelectTossModel({required this.selectToss});
+  SelectTossModel({required this.selectToss, required this.tossFace});
 
   factory SelectTossModel.fromJson(Map<String, dynamic> json) =>
       _$SelectTossModelFromJson(json);
