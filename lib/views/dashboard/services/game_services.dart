@@ -65,9 +65,11 @@ class GameServices {
     await reference.update(selectCardModel.toJson());
   }
 
-  Future selectToss({required String roomId}) async {
+  Future selectToss(
+      {required String roomId,
+      required SelectTossModel selectTossModel}) async {
     DatabaseReference reference =
         FirebaseDatabase.instance.ref('Room').child('/$roomId');
-    // await reference.update(value)
+    await reference.update(selectTossModel.toJson());
   }
 }

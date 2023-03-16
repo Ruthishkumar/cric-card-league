@@ -281,7 +281,11 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
               SelectCardModel(selectCard: selectCardValue != -1 ? true : false);
 
           log(selectCardNumbers);
-          NavigationRoute().animationRoute(context, const CoinFlipScreen());
+          NavigationRoute().animationRoute(
+              context,
+              const CoinFlipScreen(
+                roomId: '',
+              ));
           Provider.of<NameProvider>(context, listen: false)
               .addCards(value: selectCardValue);
           Provider.of<NameProvider>(context, listen: false)

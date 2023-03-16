@@ -60,3 +60,13 @@ Map<String, dynamic> _$SelectCardModelToJson(SelectCardModel instance) =>
     <String, dynamic>{
       'selectCard': instance.selectCard,
     };
+
+SelectTossModel _$SelectTossModelFromJson(Map<String, dynamic> json) =>
+    SelectTossModel(
+      selectToss: json['selectToss'] as bool,
+    );
+
+Map<String, dynamic> _$SelectTossModelToJson(SelectTossModel instance) =>
+    <String, dynamic>{
+      'selectToss': instance.selectToss,
+    };

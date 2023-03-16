@@ -63,3 +63,14 @@ class SelectCardModel {
       _$SelectCardModelFromJson(json);
   Map<String, dynamic> toJson() => _$SelectCardModelToJson(this);
 }
+
+@JsonSerializable()
+class SelectTossModel {
+  bool selectToss;
+
+  SelectTossModel({required this.selectToss});
+
+  factory SelectTossModel.fromJson(Map<String, dynamic> json) =>
+      _$SelectTossModelFromJson(json);
+  Map<String, dynamic> toJson() => _$SelectTossModelToJson(this);
+}

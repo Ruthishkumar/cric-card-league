@@ -210,51 +210,50 @@ class _HostIpPageState extends State<HostIpPage> {
                                       color: Colors.white),
                                   hintText: 'Enter Host IP'))),
                       SizedBox(height: 20.sp),
-                      StreamBuilder<DatabaseEvent>(
+                      StreamBuilder(
                         stream: getBegin().onValue,
                         builder: (context, snapShot) {
                           if (snapShot.data != null) {
-                            return snapShot.data!.snapshot.value == true
-                                ? loader == snapShot.data!.snapshot.value
-                                    ? const CircularProgressIndicator()
-                                    : NavigationRoute().animationRoute(
-                                        context, const CoinFlipScreen())
-                                : GameStartButton(
-                                    text: snapShot.data!.snapshot.value == true
-                                        ? 'Let\'s Toss'
-                                        : 'Begin',
-                                    color: Colors.blue,
-                                    onPressed: () {
-                                      log(snapShot.data!.snapshot.value
-                                          .toString());
-                                      log('JJJJ');
-                                      if (hostIpController.text == '') {
-                                        Fluttertoast.showToast(
-                                            msg: "Please enter host ip",
-                                            toastLength: Toast.LENGTH_SHORT,
-                                            gravity: ToastGravity.BOTTOM,
-                                            timeInSecForIosWeb: 1,
-                                            backgroundColor: Colors.blueGrey,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0);
-                                        return false;
-                                      } else {
-                                        GamePlayerModel joinGame =
-                                            GamePlayerModel(
-                                                name: Provider.of<NameProvider>(
-                                                        context,
-                                                        listen: false)
-                                                    .playerName,
-                                                timestamp: DateTime.now()
-                                                    .millisecondsSinceEpoch);
-                                        Provider.of<GameProvider>(context,
+                            return GameStartButton(
+                                text: snapShot.data!.snapshot.value == true
+                                    ? 'Let\'s Toss'
+                                    : 'Begin',
+                                color: Colors.blue,
+                                onPressed: () {
+                                  log(snapShot.data!.snapshot.value.toString());
+                                  log('JJJJ');
+                                  if (hostIpController.text == '') {
+                                    Fluttertoast.showToast(
+                                        msg: "Please enter host ip",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.BOTTOM,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Colors.blueGrey,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0);
+                                    return false;
+                                  } else {
+                                    GamePlayerModel joinGame = GamePlayerModel(
+                                        name: Provider.of<NameProvider>(context,
                                                 listen: false)
-                                            .joinRoom(joinGame,
-                                                hostIpController.text);
-                                        log(snapShot.data!.snapshot.value
-                                            .toString());
-                                      }
-                                    });
+                                            .playerName,
+                                        timestamp: DateTime.now()
+                                            .millisecondsSinceEpoch);
+                                    Provider.of<GameProvider>(context,
+                                            listen: false)
+                                        .joinRoom(
+                                            joinGame, hostIpController.text);
+                                    log(snapShot.data!.snapshot.value
+                                        .toString());
+                                    snapShot.data!.snapshot.value == true
+                                        ? NavigationRoute().animationRoute(
+                                            context,
+                                            CoinFlipScreen(
+                                              roomId: hostIpController.text,
+                                            ))
+                                        : null;
+                                  }
+                                });
                           }
                           return Container();
                         },
