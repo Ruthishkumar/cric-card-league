@@ -242,8 +242,40 @@ class _SuccessPageState extends State<SuccessPage> {
       });
       GamePlayerModel createUser = GamePlayerModel(
           name: playerNameController.text,
+          timestamp: DateTime.now().millisecondsSinceEpoch);
+      log('PlayersList');
+      GameServices().createUserGameService(gamePlayerModel: createUser);
+      Provider.of<NameProvider>(context, listen: false)
+          .addPlayerName(value: playerNameController.text);
+    }
+  }
+
+  bool validate() {
+    if (playerNameController.text == '') {
+      Fluttertoast.showToast(
+          msg: "Enter Your Name",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.blueGrey,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  /// host summit
+  _createHostSummit() {
+    GameModel gameRoom =
+        GameModel(hostId: FirebaseAuth.instance.currentUser!.uid, players: {
+      FirebaseAuth.instance.currentUser!.uid: GamePlayerModel(
+          name: Provider.of<NameProvider>(context, listen: false)
+              .playerName
+              .toString(),
           timestamp: DateTime.now().millisecondsSinceEpoch,
-          createPlayerModel: {
+          playerCharacters: {
             '0': CreatePlayerModel(
               playerName: 'Virat Kohli',
               country: 'India',
@@ -296,39 +328,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 economyRate: '4.62',
                 strikeRate: '48.21',
                 wickets: '38'),
-          });
-      log('PlayersList');
-      GameServices().createUserGameService(gamePlayerModel: createUser);
-      Provider.of<NameProvider>(context, listen: false)
-          .addPlayerName(value: playerNameController.text);
-    }
-  }
-
-  bool validate() {
-    if (playerNameController.text == '') {
-      Fluttertoast.showToast(
-          msg: "Enter Your Name",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.blueGrey,
-          textColor: Colors.white,
-          fontSize: 16.0);
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  /// host summit
-  _createHostSummit() {
-    GameModel gameRoom =
-        GameModel(hostId: FirebaseAuth.instance.currentUser!.uid, players: {
-      FirebaseAuth.instance.currentUser!.uid: GamePlayerModel(
-          name: Provider.of<NameProvider>(context, listen: false)
-              .playerName
-              .toString(),
-          timestamp: DateTime.now().millisecondsSinceEpoch)
+          })
     });
     Provider.of<GameProvider>(context, listen: false).hostRoom(gameRoom);
     Provider.of<GameProvider>(context, listen: false)

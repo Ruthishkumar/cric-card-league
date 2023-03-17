@@ -27,8 +27,8 @@ GamePlayerModel _$GamePlayerModelFromJson(Map<String, dynamic> json) =>
     GamePlayerModel(
       name: json['name'] as String,
       timestamp: json['timestamp'] as int,
-      createPlayerModel:
-          (json['createPlayerModel'] as Map<String, dynamic>?)?.map(
+      playerCharacters:
+          (json['playerCharacters'] as Map<String, dynamic>?)?.map(
         (k, e) =>
             MapEntry(k, CreatePlayerModel.fromJson(e as Map<String, dynamic>)),
       ),
@@ -38,7 +38,7 @@ Map<String, dynamic> _$GamePlayerModelToJson(GamePlayerModel instance) =>
     <String, dynamic>{
       'name': instance.name,
       'timestamp': instance.timestamp,
-      'createPlayerModel': mapPlayerListToJson(instance.createPlayerModel),
+      'playerCharacters': mapPlayerListToJson(instance.playerCharacters),
     };
 
 JoinModel _$JoinModelFromJson(Map<String, dynamic> json) => JoinModel(

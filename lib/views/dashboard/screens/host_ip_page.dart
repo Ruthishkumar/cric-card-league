@@ -220,7 +220,7 @@ class _HostIpPageState extends State<HostIpPage> {
                                             .playerName,
                                         timestamp: DateTime.now()
                                             .millisecondsSinceEpoch,
-                                        createPlayerModel: {
+                                        playerCharacters: {
                                           '0': CreatePlayerModel(
                                             playerName: 'MS Dhoni',
                                             country: 'India',

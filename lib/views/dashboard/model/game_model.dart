@@ -39,10 +39,10 @@ class GamePlayerModel {
   final String name;
   final int timestamp;
   @JsonKey(toJson: mapPlayerListToJson)
-  Map<String, CreatePlayerModel>? createPlayerModel;
+  Map<String, CreatePlayerModel>? playerCharacters;
 
   GamePlayerModel(
-      {required this.name, required this.timestamp, this.createPlayerModel});
+      {required this.name, required this.timestamp, this.playerCharacters});
 
   factory GamePlayerModel.fromJson(Map<String, dynamic> json) =>
       _$GamePlayerModelFromJson(json);
