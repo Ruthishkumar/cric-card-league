@@ -66,28 +66,51 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
       builder: (context, snapShot) {
         if (snapShot.data != null) {
           return snapShot.data!.snapshot.value == true
-              ? Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.asset(
-                      'assets/images/home_bg.jpg',
-                      fit: BoxFit.cover,
-                    ),
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Let's Start",
-                            style: AppTextStyles.instance.countryName,
+              ? snapShot.data!.snapshot.value != null
+                  ? Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image.asset(
+                          'assets/images/home_bg.jpg',
+                          fit: BoxFit.cover,
+                        ),
+                        Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Toss Is Progress",
+                                style: AppTextStyles.instance.countryName,
+                              ),
+                              SizedBox(height: 50.sp),
+                              startGameButton()
+                            ],
                           ),
-                          SizedBox(height: 50.sp),
-                          startGameButton()
-                        ],
-                      ),
+                        )
+                      ],
                     )
-                  ],
-                )
+                  : Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image.asset(
+                          'assets/images/home_bg.jpg',
+                          fit: BoxFit.cover,
+                        ),
+                        Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Let's Start",
+                                style: AppTextStyles.instance.countryName,
+                              ),
+                              SizedBox(height: 50.sp),
+                              startGameButton()
+                            ],
+                          ),
+                        )
+                      ],
+                    )
               : Stack(
                   fit: StackFit.expand,
                   children: [
@@ -263,11 +286,11 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
       });
       SelectTossModel selectCardModel = SelectTossModel(
           selectToss: isActive,
-          coinFace: _face == "heads"
-              ? 'You Won the Toss'
-              : _face == "tails"
-                  ? 'You Won the toss'
-                  : 'You Loss the toss');
+          coinFace: _face == "heads" && coinSpin == "Heads"
+              ? "You Won the toss"
+              : coinSpin == "Tails" && _face == "tails"
+                  ? "You Won the Toss"
+                  : "You Loss the Loss");
       GameServices().selectToss(
           roomId: Provider.of<GameProvider>(context, listen: false).roomId,
           selectTossModel: selectCardModel);

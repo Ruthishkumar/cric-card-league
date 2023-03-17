@@ -282,16 +282,6 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          SelectCardModel selectCardModel =
-              SelectCardModel(selectCard: selectCardValue != -1 ? true : false);
-          GameServices().selectCard(
-              roomId: Provider.of<GameProvider>(context, listen: false).roomId,
-              selectCardModel: selectCardModel);
-          TotalCardModel totalCardModel =
-              TotalCardModel(cardTotal: selectCardNumbers.toString());
-          Provider.of<GameProvider>(context, listen: false).addCardTotal(
-              value: Provider.of<GameProvider>(context, listen: false).roomId,
-              totalCardModel: totalCardModel);
           selectCardValue = options['cardId'];
           selectCardNumbers = options['cardValue'];
           NavigationRoute().animationRoute(
@@ -304,6 +294,17 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
           Provider.of<NameProvider>(context, listen: false)
               .cardTotalValue(value: selectCardNumbers);
         });
+        SelectCardModel selectCardModel = SelectCardModel(
+            selectCard: selectCardValue != -1 ? true : false,
+            totalCards: selectCardNumbers.toString());
+        GameServices().selectCard(
+            roomId: Provider.of<GameProvider>(context, listen: false).roomId,
+            selectCardModel: selectCardModel);
+        // TotalCardModel totalCardModel =
+        //     TotalCardModel(cardTotal: selectCardNumbers.toString());
+        // Provider.of<GameProvider>(context, listen: false).addCardTotal(
+        //     value: Provider.of<GameProvider>(context, listen: false).roomId,
+        //     totalCardModel: totalCardModel);
       },
       child: Stack(
         children: [

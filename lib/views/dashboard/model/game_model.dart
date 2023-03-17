@@ -66,8 +66,9 @@ class JoinModel {
 @JsonSerializable()
 class SelectCardModel {
   bool selectCard;
+  String totalCards;
 
-  SelectCardModel({required this.selectCard});
+  SelectCardModel({required this.selectCard, required this.totalCards});
 
   factory SelectCardModel.fromJson(Map<String, dynamic> json) =>
       _$SelectCardModelFromJson(json);
