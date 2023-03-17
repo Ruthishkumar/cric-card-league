@@ -261,8 +261,13 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
       setState(() {
         afterTossOpacity = 1.0;
       });
-      SelectTossModel selectCardModel =
-          SelectTossModel(selectToss: isActive, tossFace: _face);
+      SelectTossModel selectCardModel = SelectTossModel(
+          selectToss: isActive,
+          coinFace: _face == "heads"
+              ? 'You Won the Toss'
+              : _face == "tails"
+                  ? 'You Won the toss'
+                  : 'You Loss the toss');
       GameServices().selectToss(
           roomId: Provider.of<GameProvider>(context, listen: false).roomId,
           selectTossModel: selectCardModel);
