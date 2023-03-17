@@ -4,6 +4,7 @@ import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/authentication/services/storage_services.dart';
 import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
+import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/screens/host_ip_page.dart';
 import 'package:ds_game/views/dashboard/screens/players_details_page.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
@@ -241,7 +242,62 @@ class _SuccessPageState extends State<SuccessPage> {
       });
       GamePlayerModel createUser = GamePlayerModel(
           name: playerNameController.text,
-          timestamp: DateTime.now().millisecondsSinceEpoch);
+          timestamp: DateTime.now().millisecondsSinceEpoch,
+          createPlayerModel: {
+            '0': CreatePlayerModel(
+              playerName: 'Virat Kohli',
+              country: 'India',
+              batAvg: '57.7',
+              bowlAvg: '166.25',
+              runs: '12809',
+              topScore: '183',
+              economyRate: '6.22',
+              strikeRate: '93.77',
+              wickets: '4',
+            ),
+            '1': CreatePlayerModel(
+              playerName: 'Ben Stokes',
+              country: 'England',
+              batAvg: '38.99',
+              bowlAvg: '42.39',
+              runs: '2924',
+              topScore: '102',
+              economyRate: '6.05',
+              strikeRate: '95.09',
+              wickets: '74',
+            ),
+            '2': CreatePlayerModel(
+                playerName: 'Adam Zampa',
+                country: 'Australia',
+                batAvg: '9.36',
+                bowlAvg: '28.67',
+                runs: '206',
+                topScore: '36',
+                economyRate: '5.44',
+                strikeRate: '62.05',
+                wickets: '127	'),
+            '3': CreatePlayerModel(
+                playerName: 'Martin Guptil',
+                country: 'New Zealand',
+                batAvg: '41.5',
+                bowlAvg: '24.5',
+                runs: '7346',
+                topScore: '237',
+                economyRate: '5.39',
+                strikeRate: '87.31',
+                wickets: '4'),
+            '4': CreatePlayerModel(
+                playerName: 'M Siraj',
+                country: 'India',
+                batAvg: '6.75',
+                bowlAvg: '20.76',
+                runs: '27',
+                topScore: '9',
+                economyRate: '4.62',
+                strikeRate: '48.21',
+                wickets: '38'),
+          });
+      log('PlayersList');
       GameServices().createUserGameService(gamePlayerModel: createUser);
       Provider.of<NameProvider>(context, listen: false)
           .addPlayerName(value: playerNameController.text);

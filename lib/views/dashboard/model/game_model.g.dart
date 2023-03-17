@@ -27,28 +27,30 @@ GamePlayerModel _$GamePlayerModelFromJson(Map<String, dynamic> json) =>
     GamePlayerModel(
       name: json['name'] as String,
       timestamp: json['timestamp'] as int,
+      createPlayerModel:
+          (json['createPlayerModel'] as Map<String, dynamic>?)?.map(
+        (k, e) =>
+            MapEntry(k, CreatePlayerModel.fromJson(e as Map<String, dynamic>)),
+      ),
     );
 
 Map<String, dynamic> _$GamePlayerModelToJson(GamePlayerModel instance) =>
     <String, dynamic>{
       'name': instance.name,
       'timestamp': instance.timestamp,
+      'createPlayerModel': mapPlayerListToJson(instance.createPlayerModel),
     };
 
 JoinModel _$JoinModelFromJson(Map<String, dynamic> json) => JoinModel(
       name: json['name'] as String,
       userId: json['userId'] as String,
       createdAt: json['createdAt'] as int,
-    )..players = (json['players'] as Map<String, dynamic>?)?.map(
-        (k, e) =>
-            MapEntry(k, GamePlayerModel.fromJson(e as Map<String, dynamic>)),
-      );
+    );
 
 Map<String, dynamic> _$JoinModelToJson(JoinModel instance) => <String, dynamic>{
       'name': instance.name,
       'userId': instance.userId,
       'createdAt': instance.createdAt,
-      'players': mapPlayerToJson(instance.players),
     };
 
 SelectCardModel _$SelectCardModelFromJson(Map<String, dynamic> json) =>
@@ -81,4 +83,30 @@ TotalCardModel _$TotalCardModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$TotalCardModelToJson(TotalCardModel instance) =>
     <String, dynamic>{
       'cardTotal': instance.cardTotal,
+    };
+
+CreatePlayerModel _$CreatePlayerModelFromJson(Map<String, dynamic> json) =>
+    CreatePlayerModel(
+      playerName: json['playerName'] as String,
+      country: json['country'] as String,
+      batAvg: json['batAvg'] as String,
+      bowlAvg: json['bowlAvg'] as String,
+      runs: json['runs'] as String,
+      topScore: json['topScore'] as String,
+      economyRate: json['economyRate'] as String,
+      strikeRate: json['strikeRate'] as String,
+      wickets: json['wickets'] as String,
+    );
+
+Map<String, dynamic> _$CreatePlayerModelToJson(CreatePlayerModel instance) =>
+    <String, dynamic>{
+      'playerName': instance.playerName,
+      'country': instance.country,
+      'batAvg': instance.batAvg,
+      'bowlAvg': instance.bowlAvg,
+      'strikeRate': instance.strikeRate,
+      'economyRate': instance.economyRate,
+      'runs': instance.runs,
+      'topScore': instance.topScore,
+      'wickets': instance.wickets,
     };

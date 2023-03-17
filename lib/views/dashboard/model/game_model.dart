@@ -9,6 +9,15 @@ Map<String, dynamic>? mapPlayerToJson(Map<String, GamePlayerModel>? players) {
   return data;
 }
 
+Map<String, dynamic>? mapPlayerListToJson(
+    Map<String, CreatePlayerModel>? players) {
+  Map<String, dynamic> data = {};
+  players?.entries.forEach((e) {
+    data[e.key] = e.value.toJson();
+  });
+  return data;
+}
+
 @JsonSerializable()
 class GameModel {
   String hostId;
@@ -29,8 +38,11 @@ class GameModel {
 class GamePlayerModel {
   final String name;
   final int timestamp;
+  @JsonKey(toJson: mapPlayerListToJson)
+  Map<String, CreatePlayerModel>? createPlayerModel;
 
-  GamePlayerModel({required this.name, required this.timestamp});
+  GamePlayerModel(
+      {required this.name, required this.timestamp, this.createPlayerModel});
 
   factory GamePlayerModel.fromJson(Map<String, dynamic> json) =>
       _$GamePlayerModelFromJson(json);
@@ -42,8 +54,6 @@ class JoinModel {
   String name;
   String userId;
   int createdAt;
-  @JsonKey(toJson: mapPlayerToJson)
-  Map<String, GamePlayerModel>? players;
 
   JoinModel(
       {required this.name, required this.userId, required this.createdAt});
@@ -85,4 +95,32 @@ class TotalCardModel {
   factory TotalCardModel.fromJson(Map<String, dynamic> json) =>
       _$TotalCardModelFromJson(json);
   Map<String, dynamic> toJson() => _$TotalCardModelToJson(this);
+}
+
+@JsonSerializable()
+class CreatePlayerModel {
+  String playerName;
+  String country;
+  String batAvg;
+  String bowlAvg;
+  String strikeRate;
+  String economyRate;
+  String runs;
+  String topScore;
+  String wickets;
+
+  CreatePlayerModel(
+      {required this.playerName,
+      required this.country,
+      required this.batAvg,
+      required this.bowlAvg,
+      required this.runs,
+      required this.topScore,
+      required this.economyRate,
+      required this.strikeRate,
+      required this.wickets});
+
+  factory CreatePlayerModel.fromJson(Map<String, dynamic> json) =>
+      _$CreatePlayerModelFromJson(json);
+  Map<String, dynamic> toJson() => _$CreatePlayerModelToJson(this);
 }

@@ -16,14 +16,11 @@ class GameServices {
   static GameServices get instance => _singleton;
 
   /// For Create User
-  Future createUserGameService({GamePlayerModel? gamePlayerModel}) async {
+  Future createUserGameService(
+      {required GamePlayerModel gamePlayerModel}) async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
     DatabaseReference ref = FirebaseDatabase.instance.ref('user').child(userId);
-    Map<String, dynamic> playerValue = {
-      'name': gamePlayerModel?.name,
-      'createdAt': gamePlayerModel?.timestamp
-    };
-    ref.set(playerValue).asStream();
+    ref.set(gamePlayerModel.toJson()).asStream();
   }
 
   /// For Create Room
