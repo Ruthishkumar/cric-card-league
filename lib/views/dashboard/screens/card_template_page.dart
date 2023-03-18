@@ -71,6 +71,16 @@ class _CardTemplatePageState extends State<CardTemplatePage>
   Widget build(BuildContext context) {
     final mainList = database.onValue;
 
+    var gridList = [
+      {'statsHeader': 'Bat Avg :', 'Value': '1', 'setValue': 0},
+      {'statsHeader': 'Bowl Avg : ', 'Value': '1', 'setValue': 1},
+      {'statsHeader': 'Runs :', 'Value': '10000', 'setValue': 2},
+      {'statsHeader': 'Wickets :', 'Value': '1', 'setValue': 3},
+      {'statsHeader': 'Strike rate :', 'Value': '1', 'setValue': 4},
+      {'statsHeader': 'Eco. rate :', 'Value': '1', 'setValue': 5},
+      {'statsHeader': 'Top Score :', 'Value': '1', 'setValue': 6},
+    ];
+
     return ScreenContainer(
         bodyWidget: Stack(
       fit: StackFit.expand,
@@ -189,17 +199,9 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  StreamBuilder(
-                                      stream: refDb.onValue,
-                                      builder: (context, snapShot) {
-                                        return snapShot.data != null
-                                            ? Text(
-                                                snapShot.data!.snapshot.value
-                                                    .toString(),
-                                                style: AppTextStyles
-                                                    .instance.cardFirstName)
-                                            : const Text('');
-                                      }),
+                                  Text("Virat".toString(),
+                                      style:
+                                          AppTextStyles.instance.cardFirstName),
                                   Text(
                                     'Kohli',
                                     style:
@@ -220,144 +222,68 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                             ],
                           ),
                         ),
-                        StreamBuilder(
-                          stream: db
-                              .reference()
-                              .child('playerStats')
-                              .child('0')
-                              .orderByKey()
-                              .onValue,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<DatabaseEvent> snapshot) {
-                            if (snapshot.data!.snapshot.value != null) {
-                              Map<dynamic, dynamic> map =
-                                  snapshot.data!.snapshot.value as Map;
-                              List<dynamic> list = map.values.toList();
-                              print("list is : $list");
-                              var gridList = [
-                                {
-                                  'statsHeader': 'Bat Avg :',
-                                  'Value': '1',
-                                  'setValue': 0
-                                },
-                                {
-                                  'statsHeader': 'Bowl Avg : ',
-                                  'Value': '1',
-                                  'setValue': 1
-                                },
-                                {
-                                  'statsHeader': 'Runs :',
-                                  'Value': '10000',
-                                  'setValue': 2
-                                },
-                                {
-                                  'statsHeader': 'Wickets :',
-                                  'Value': '1',
-                                  'setValue': 3
-                                },
-                                {
-                                  'statsHeader': 'Strike rate :',
-                                  'Value': '1',
-                                  'setValue': 4
-                                },
-                                {
-                                  'statsHeader': 'Eco. rate :',
-                                  'Value': '1',
-                                  'setValue': 5
-                                },
-                                {
-                                  'statsHeader': 'Top Score :',
-                                  'Value': '1',
-                                  'setValue': 6
-                                },
-                                {
-                                  'statsHeader': 'Top Score :',
-                                  'Value': '1',
-                                  'setValue': 6
-                                },
-                                {
-                                  'statsHeader': 'Top Score :',
-                                  'Value': '1',
-                                  'setValue': 6
-                                },
-                                {
-                                  'statsHeader': 'Top Score :',
-                                  'Value': '1',
-                                  'setValue': 6
-                                },
-                              ];
-                              return Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.fromLTRB(
-                                    12.sp, 12.sp, 12.sp, 12.sp),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(16.sp))),
-                                child: Column(
-                                  children: [
-                                    StaggeredGridView.countBuilder(
-                                        shrinkWrap: true,
-                                        itemCount: list.length,
-                                        crossAxisSpacing: 20,
-                                        mainAxisSpacing: 10,
-                                        crossAxisCount: 4,
-                                        itemBuilder: (context, index) {
-                                          Map data = list[index];
-                                          print(list[index]['country']
-                                              .toString());
-                                          return GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                selectIndex = data['setValue'];
-                                              });
-                                            },
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  color: selectIndex ==
-                                                          data['setValue']
-                                                      ? Colors.green
-                                                      : const Color(0xff243b55),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              12.sp))),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    data['statsHeader'],
-                                                    style: AppTextStyles
-                                                        .instance.playersStats,
-                                                  ),
-                                                  Text(
-                                                    data['Value'],
-                                                    style: AppTextStyles
-                                                        .instance.playersStats,
-                                                  )
-                                                ],
-                                              ),
+                        Container(
+                          width: double.infinity,
+                          padding:
+                              EdgeInsets.fromLTRB(12.sp, 12.sp, 12.sp, 12.sp),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(16.sp))),
+                          child: Column(
+                            children: [
+                              StaggeredGridView.countBuilder(
+                                  shrinkWrap: true,
+                                  itemCount: gridList.length,
+                                  crossAxisSpacing: 20,
+                                  mainAxisSpacing: 10,
+                                  crossAxisCount: 4,
+                                  itemBuilder: (context, index) {
+                                    Map data = gridList[index];
+
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          selectIndex = data['setValue'];
+                                        });
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color:
+                                                selectIndex == data['setValue']
+                                                    ? Colors.green
+                                                    : const Color(0xff243b55),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(12.sp))),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              data['statsHeader'],
+                                              style: AppTextStyles
+                                                  .instance.playersStats,
                                             ),
-                                          );
-                                        },
-                                        staggeredTileBuilder: (index) {
-                                          if (gridList.length % 2 != 0 &&
-                                              gridList.length - 1 == index) {
-                                            return const StaggeredTile.count(
-                                                4, 1);
-                                          }
-                                          return const StaggeredTile.count(
-                                              2, 1);
-                                        }),
-                                  ],
-                                ),
-                              );
-                            } else {
-                              return const CircularProgressIndicator();
-                            }
-                          },
-                        )
+                                            Text(
+                                              data['Value'],
+                                              style: AppTextStyles
+                                                  .instance.playersStats,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  staggeredTileBuilder: (index) {
+                                    if (gridList.length % 2 != 0 &&
+                                        gridList.length - 1 == index) {
+                                      return const StaggeredTile.count(4, 1);
+                                    }
+                                    return const StaggeredTile.count(2, 1);
+                                  }),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),

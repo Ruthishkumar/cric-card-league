@@ -28,6 +28,7 @@ class GameServices {
     try {
       var uuid = const Uuid();
       String roomId = uuid.v4().toString();
+      roomId = 'test';
       DatabaseReference reference =
           FirebaseDatabase.instance.ref('Room').child('/$roomId');
       await reference.set(roomModel.toJson());
@@ -65,8 +66,31 @@ class GameServices {
   Future selectToss(
       {required String roomId,
       required SelectTossModel selectTossModel}) async {
-    DatabaseReference reference =
-        FirebaseDatabase.instance.ref('Room').child('/$roomId');
+    DataSnapshot playerData = await FirebaseDatabase.instance
+        .ref('Room')
+        .child('/$roomId/players')
+        .get();
+    for (var playerId in (playerData.value as Map<dynamic, dynamic>).keys) {
+      if (playerId == FirebaseAuth.instance.currentUser!.uid) {
+        DatabaseReference reference = FirebaseDatabase.instance
+            .ref('Room')
+            .child(
+                '/$roomId/players/${FirebaseAuth.instance.currentUser!.uid}');
+        reference.update(selectTossModel.toJson());
+      } else {
+        SelectTossModel oppToss = SelectTossModel(
+            selectToss: selectTossModel.selectToss,
+            wonToss: !selectTossModel.wonToss);
+        DatabaseReference reference = FirebaseDatabase.instance
+            .ref('Room')
+            .child('/$roomId/players/${playerId}');
+        reference.update(oppToss.toJson());
+      }
+    }
+
+    DatabaseReference reference = FirebaseDatabase.instance
+        .ref('Room')
+        .child('/$roomId/players/${FirebaseAuth.instance.currentUser!.uid}');
     await reference.update(selectTossModel.toJson());
   }
 
