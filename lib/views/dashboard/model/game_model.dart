@@ -9,6 +9,21 @@ Map<String, dynamic>? mapPlayerToJson(Map<String, GamePlayerModel>? players) {
   return data;
 }
 
+Map<String, dynamic>? mapPlayerFeatureToJson(
+    Map<String, PlayerFeature>? playerFeature) {
+  Map<String, dynamic> data = {};
+  playerFeature?.entries.forEach((e) {
+    data[e.key] = e.value.toJson();
+  });
+  return data;
+}
+
+Map<String, PlayerFeature>? mapPlayerFeatureFromJson(List<dynamic> playerList) {
+  Map<String, PlayerFeature> data = {};
+  data["0"] = PlayerFeature.fromJson(playerList[0]);
+  return data;
+}
+
 Map<String, dynamic>? mapPlayerListToJson(
     Map<String, CreatePlayerModel>? players) {
   Map<String, dynamic> data = {};
@@ -99,27 +114,40 @@ class TotalCardModel {
 }
 
 @JsonSerializable()
+class PlayerFeature {
+  final String batAvg;
+  final String bowlAvg;
+  final String strikeRate;
+  final String economyRate;
+  final String runs;
+  final String topScore;
+  final String wickets;
+
+  PlayerFeature(
+      {required this.batAvg,
+      required this.bowlAvg,
+      required this.strikeRate,
+      required this.economyRate,
+      required this.runs,
+      required this.topScore,
+      required this.wickets});
+
+  factory PlayerFeature.fromJson(Map<String, dynamic> json) =>
+      _$PlayerFeatureFromJson(json);
+  Map<String, dynamic> toJson() => _$PlayerFeatureToJson(this);
+}
+
+@JsonSerializable()
 class CreatePlayerModel {
   String playerName;
   String country;
-  String batAvg;
-  String bowlAvg;
-  String strikeRate;
-  String economyRate;
-  String runs;
-  String topScore;
-  String wickets;
-
-  CreatePlayerModel(
-      {required this.playerName,
-      required this.country,
-      required this.batAvg,
-      required this.bowlAvg,
-      required this.runs,
-      required this.topScore,
-      required this.economyRate,
-      required this.strikeRate,
-      required this.wickets});
+  @JsonKey(toJson: mapPlayerFeatureToJson, fromJson: mapPlayerFeatureFromJson)
+  Map<String, PlayerFeature>? feature;
+  CreatePlayerModel({
+    required this.playerName,
+    required this.country,
+    required this.feature,
+  });
 
   factory CreatePlayerModel.fromJson(Map<String, dynamic> json) =>
       _$CreatePlayerModelFromJson(json);

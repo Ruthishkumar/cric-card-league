@@ -85,6 +85,10 @@ class GameServices {
             .ref('Room')
             .child('/$roomId/players/${playerId}');
         reference.update(oppToss.toJson());
+        FirebaseDatabase.instance
+            .ref('Room')
+            .child('/$roomId')
+            .update({"selectToss": true});
       }
     }
 
@@ -99,5 +103,12 @@ class GameServices {
     DatabaseReference reference =
         FirebaseDatabase.instance.ref('Room').child('/$roomId');
     await reference.update(totalCardModel.toJson());
+  }
+
+  Future<DatabaseReference> getMyPlayer() async {
+    //TODO::Change actual room ID;
+    DatabaseReference reference = FirebaseDatabase.instance.ref('Room').child(
+        'test/players/${FirebaseAuth.instance.currentUser!.uid}/playerCharacters');
+    return reference;
   }
 }

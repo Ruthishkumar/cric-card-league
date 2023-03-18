@@ -1,6 +1,10 @@
+import 'dart:convert';
 import 'dart:math';
+import 'dart:developer' as dev;
 
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
+import 'package:ds_game/views/dashboard/model/game_model.dart';
+import 'package:ds_game/views/dashboard/screens/player-card.widget.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/screen_container.dart';
@@ -61,16 +65,32 @@ class _CardTemplatePageState extends State<CardTemplatePage>
 
   final FirebaseDatabase db = FirebaseDatabase.instance;
 
+  List<CreatePlayerModel> playerList = [];
   getData() {
     var user = FirebaseAuth.instance.currentUser!;
+    GameServices().getMyPlayer().asStream().listen((event) {
+      event.onValue.listen((event) {
+        try {
+          (event.snapshot.value as List<Object?>).forEach((e) => playerList.add(
+              CreatePlayerModel.fromJson(
+                  json.decode(json.encode(e)) as Map<String, dynamic>)));
+          // playerList = event.snapshot.value as List<Map<String, Object>>;
+          print(playerList);
+          setState(() {});
+        } catch (e, stck) {
+          dev.inspect(e);
+          dev.inspect(stck);
+        }
+      });
+    });
   }
 
-  int selectIndex = -1;
+  String selectedPlayerFeature = '';
 
   @override
   Widget build(BuildContext context) {
     final mainList = database.onValue;
-
+    getData();
     var gridList = [
       {'statsHeader': 'Bat Avg :', 'Value': '1', 'setValue': 0},
       {'statsHeader': 'Bowl Avg : ', 'Value': '1', 'setValue': 1},
@@ -175,118 +195,17 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                       ),
                     ],
                   ),
-                  SizedBox(height: 30.sp),
-                  Container(
-                    width: 250.sp,
-                    decoration: BoxDecoration(
-                        color: const Color(0xff243b55),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.white70.withOpacity(0.3), //New
-                              blurRadius: 5.0,
-                              spreadRadius: 5.0)
-                        ],
-                        borderRadius: BorderRadius.all(Radius.circular(16.sp))),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 250.sp,
-                          padding:
-                              EdgeInsets.fromLTRB(12.sp, 12.sp, 12.sp, 0.sp),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Virat".toString(),
-                                      style:
-                                          AppTextStyles.instance.cardFirstName),
-                                  Text(
-                                    'Kohli',
-                                    style:
-                                        AppTextStyles.instance.cardSecondName,
-                                  ),
-                                  SizedBox(height: 10.sp),
-                                  Text(
-                                    'India'.toUpperCase(),
-                                    style: AppTextStyles.instance.countryName,
-                                  ),
-                                ],
-                              ),
-                              Image.asset(
-                                'assets/images/Virat-Kohli-T20I2020.png',
-                                height: 150.sp,
-                                width: 100.sp,
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          padding:
-                              EdgeInsets.fromLTRB(12.sp, 12.sp, 12.sp, 12.sp),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16.sp))),
-                          child: Column(
-                            children: [
-                              StaggeredGridView.countBuilder(
-                                  shrinkWrap: true,
-                                  itemCount: gridList.length,
-                                  crossAxisSpacing: 20,
-                                  mainAxisSpacing: 10,
-                                  crossAxisCount: 4,
-                                  itemBuilder: (context, index) {
-                                    Map data = gridList[index];
 
-                                    return GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          selectIndex = data['setValue'];
-                                        });
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color:
-                                                selectIndex == data['setValue']
-                                                    ? Colors.green
-                                                    : const Color(0xff243b55),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(12.sp))),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              data['statsHeader'],
-                                              style: AppTextStyles
-                                                  .instance.playersStats,
-                                            ),
-                                            Text(
-                                              data['Value'],
-                                              style: AppTextStyles
-                                                  .instance.playersStats,
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  staggeredTileBuilder: (index) {
-                                    if (gridList.length % 2 != 0 &&
-                                        gridList.length - 1 == index) {
-                                      return const StaggeredTile.count(4, 1);
-                                    }
-                                    return const StaggeredTile.count(2, 1);
-                                  }),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                  SizedBox(height: 30.sp),
+                  PlayerCardWidget(
+                    playerList: playerList,
+                    onFeatureSelect: (selectedFeature) {
+                      selectedPlayerFeature = selectedFeature;
+                      setState(() {});
+                    },
+                    selectedFeature: selectedPlayerFeature,
                   ),
+
                   // SizedBox(
                   //   height: 390.sp,
                   //   width: 250.sp,

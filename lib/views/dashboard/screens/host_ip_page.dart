@@ -216,59 +216,77 @@ class _HostIpPageState extends State<HostIpPage> {
                                       DateTime.now().millisecondsSinceEpoch,
                                   playerCharacters: {
                                     '0': CreatePlayerModel(
-                                      playerName: 'MS Dhoni',
-                                      country: 'India',
-                                      batAvg: '50.58',
-                                      bowlAvg: '31.0',
-                                      runs: '10773',
-                                      topScore: '183',
-                                      economyRate: '5.17',
-                                      strikeRate: '87.56',
-                                      wickets: '1',
-                                    ),
+                                        country: 'India',
+                                        playerName: 'MS Dhoni',
+                                        feature: {
+                                          '0': PlayerFeature(
+                                            batAvg: '50.58',
+                                            bowlAvg: '31.0',
+                                            runs: '10773',
+                                            topScore: '183',
+                                            economyRate: '5.17',
+                                            strikeRate: '87.56',
+                                            wickets: '1',
+                                          )
+                                        }),
                                     '1': CreatePlayerModel(
                                       playerName: 'R Jadeja',
                                       country: 'India',
-                                      batAvg: '32.63',
-                                      bowlAvg: '37.37',
-                                      runs: '2447',
-                                      topScore: '87',
-                                      economyRate: '4.92',
-                                      strikeRate: '86.53',
-                                      wickets: '189',
+                                      feature: {
+                                        '1': PlayerFeature(
+                                          batAvg: '32.63',
+                                          bowlAvg: '37.37',
+                                          runs: '2447',
+                                          topScore: '87',
+                                          economyRate: '4.92',
+                                          strikeRate: '86.53',
+                                          wickets: '189',
+                                        )
+                                      },
                                     ),
                                     '2': CreatePlayerModel(
-                                      playerName: 'Jasprit Bumrah',
-                                      country: 'India',
-                                      batAvg: '6.71',
-                                      bowlAvg: '24.31',
-                                      runs: '47',
-                                      topScore: '14',
-                                      economyRate: '4.64',
-                                      strikeRate: '50.54',
-                                      wickets: '121',
-                                    ),
+                                        playerName: 'Jasprit Bumrah',
+                                        country: 'India',
+                                        feature: {
+                                          '2': PlayerFeature(
+                                            batAvg: '6.71',
+                                            bowlAvg: '24.31',
+                                            runs: '47',
+                                            topScore: '14',
+                                            economyRate: '4.64',
+                                            strikeRate: '50.54',
+                                            wickets: '121',
+                                          )
+                                        }),
                                     '3': CreatePlayerModel(
                                       playerName: 'David Warner',
                                       country: 'Australia',
-                                      batAvg: '44.83',
-                                      bowlAvg: '0.0',
-                                      runs: '6007',
-                                      topScore: '179',
-                                      economyRate: '8.0',
-                                      strikeRate: '95.26',
-                                      wickets: '0',
+                                      feature: {
+                                        '3': PlayerFeature(
+                                          batAvg: '44.83',
+                                          bowlAvg: '0.0',
+                                          runs: '6007',
+                                          topScore: '179',
+                                          economyRate: '8.0',
+                                          strikeRate: '95.26',
+                                          wickets: '0',
+                                        )
+                                      },
                                     ),
                                     '4': CreatePlayerModel(
                                       playerName: 'Mitchell Santner',
                                       country: 'New Zealand',
-                                      batAvg: '28.36',
-                                      bowlAvg: '38.59',
-                                      runs: '1248',
-                                      topScore: '67',
-                                      economyRate: '4.87',
-                                      strikeRate: '89.4',
-                                      wickets: '90',
+                                      feature: {
+                                        '4': PlayerFeature(
+                                          batAvg: '28.36',
+                                          bowlAvg: '38.59',
+                                          runs: '1248',
+                                          topScore: '67',
+                                          economyRate: '4.87',
+                                          strikeRate: '89.4',
+                                          wickets: '90',
+                                        )
+                                      },
                                     ),
                                   });
                               Provider.of<GameProvider>(context, listen: false)
