@@ -8,11 +8,9 @@ import 'package:ds_game/views/dashboard/screens/player-card.widget.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/screen_container.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -63,19 +61,18 @@ class _CardTemplatePageState extends State<CardTemplatePage>
     super.dispose();
   }
 
-  final FirebaseDatabase db = FirebaseDatabase.instance;
-
   List<CreatePlayerModel> playerList = [];
   getData() {
     GameServices().getMyPlayer().asStream().listen((event) {
       event.onValue.listen((event) {
         try {
-          (event.snapshot.value as List<Object?>).forEach((e) => playerList.add(
-              CreatePlayerModel.fromJson(
-                  json.decode(json.encode(e)) as Map<String, dynamic>)));
-          // playerList = event.snapshot.value as List<Map<String, Object>>;
-          dev.inspect(playerList);
-          setState(() {});
+          setState(() {
+            (event.snapshot.value as List<Object?>).forEach((e) =>
+                playerList.add(CreatePlayerModel.fromJson(
+                    json.decode(json.encode(e)) as Map<String, dynamic>)));
+            // playerList = event.snapshot.value as List<Map<String, Object>>;
+            dev.inspect(playerList);
+          });
         } catch (e, stck) {
           dev.inspect(e);
           dev.inspect(stck);

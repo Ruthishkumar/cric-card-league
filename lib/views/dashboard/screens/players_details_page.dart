@@ -278,6 +278,16 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
 
   String selectCardNumbers = "";
 
+  getTotalPoint() {
+    if (selectCardValue == 0) {
+      return '500';
+    } else if (selectCardValue == 1) {
+      return '1000';
+    } else {
+      return '1500';
+    }
+  }
+
   _cardDetails(options) {
     return GestureDetector(
       onTap: () {
@@ -296,16 +306,11 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
         });
         SelectCardModel selectCardModel = SelectCardModel(
             selectCard: selectCardValue != -1 ? true : false,
-            totalCards: selectCardNumbers.toString(),
-            totalPoints: "500");
+            totalCards: selectCardNumbers,
+            totalPoints: getTotalPoint());
         GameServices().selectCard(
             roomId: Provider.of<GameProvider>(context, listen: false).roomId,
             selectCardModel: selectCardModel);
-        // TotalCardModel totalCardModel =
-        //     TotalCardModel(cardTotal: selectCardNumbers.toString());
-        // Provider.of<GameProvider>(context, listen: false).addCardTotal(
-        //     value: Provider.of<GameProvider>(context, listen: false).roomId,
-        //     totalCardModel: totalCardModel);
       },
       child: Stack(
         children: [

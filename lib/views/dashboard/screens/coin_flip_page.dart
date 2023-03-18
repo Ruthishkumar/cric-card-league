@@ -1,6 +1,7 @@
 import 'dart:developer' as dev;
 import 'dart:math';
 
+import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/screens/card_template_page.dart';
@@ -73,6 +74,7 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
           var roomData = snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
           dev.log((roomData['hostId'] != FirebaseAuth.instance.currentUser!.uid)
               .toString());
+          dev.log('message');
           dev.log(roomData['hostId']);
           return (roomData['selectCard'] != true ||
                       roomData['selectToss'] != true) &&
@@ -118,9 +120,9 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                roomData['wonToss'] == false
-                                    ? 'You Won the Toss'
-                                    : 'You Loss the Toss',
+                                roomData[
+                                        'roomId/${FirebaseAuth.instance.currentUser!.uid}']
+                                    .toString(),
                                 style: AppTextStyles.instance.tossHeader,
                               ),
                               SizedBox(height: 50.sp),
@@ -324,7 +326,9 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
               ? true
               : coinSpin == "Tails" && _face == "tails"
                   ? true
-                  : false);
+                  : false,
+          totalCards:
+              Provider.of<NameProvider>(context, listen: false).cardTotal);
       GameServices().selectToss(
           roomId: Provider.of<GameProvider>(context, listen: false).roomId,
           selectTossModel: selectCardModel);

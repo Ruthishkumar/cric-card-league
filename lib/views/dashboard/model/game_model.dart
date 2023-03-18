@@ -98,8 +98,12 @@ class SelectCardModel {
 class SelectTossModel {
   bool selectToss;
   bool wonToss;
+  String totalCards;
 
-  SelectTossModel({required this.selectToss, required this.wonToss});
+  SelectTossModel(
+      {required this.selectToss,
+      required this.wonToss,
+      required this.totalCards});
 
   factory SelectTossModel.fromJson(Map<String, dynamic> json) =>
       _$SelectTossModelFromJson(json);

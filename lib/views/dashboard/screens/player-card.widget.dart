@@ -34,21 +34,19 @@ class PlayerCardWidget extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            width: double.infinity,
-            padding: EdgeInsets.fromLTRB(12.sp, 12.sp, 12.sp, 12.sp),
+            width: 250.sp,
             decoration: BoxDecoration(
-                color: Colors.grey,
+                color: const Color(0xff243b55),
                 borderRadius: BorderRadius.all(Radius.circular(16.sp))),
             child: Column(
               children: [
                 ...playerList.map((data) {
-                  log(data.feature.toString());
-                  log("MESSAGE");
                   return Column(
                     children: [
                       Container(
                         width: 250.sp,
-                        padding: EdgeInsets.fromLTRB(12.sp, 12.sp, 12.sp, 0.sp),
+                        padding:
+                            EdgeInsets.fromLTRB(12.sp, 12.sp, 12.sp, 12.sp),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -75,51 +73,70 @@ class PlayerCardWidget extends StatelessWidget {
                       ),
                       if (data.feature != null)
                         ...data.feature!.keys.map((e) {
-                          return StaggeredGridView.countBuilder(
-                            shrinkWrap: true,
-                            itemCount: data.feature?[e]!.toJson().keys.length,
-                            crossAxisSpacing: 20,
-                            mainAxisSpacing: 10,
-                            crossAxisCount: 4,
-                            itemBuilder: (context, index) {
-                              dynamic feat =
-                                  data.feature![e]!.toJson()[index].toString();
-                              // log(feat.toString());
-                              // log('FEST');
-                              return GestureDetector(
-                                onTap: () => onFeatureSelect(
-                                    '${data.firstName}-${index}'),
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                        color: selectedFeature ==
-                                                '${data.firstName}-${index}'
-                                            ? Colors.green
-                                            : const Color(0xff243b55),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(12.sp))),
-                                    child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                              data.feature![e]!
-                                                  .toJson()[index]
-                                                  .toString(),
-                                              style: AppTextStyles
-                                                  .instance.playersStats),
-                                          Text(' : ${feat.toString()}',
-                                              style: AppTextStyles
-                                                  .instance.playersStats)
-                                        ])),
-                              );
-                            },
-                            staggeredTileBuilder: (index) {
-                              if (playerList.length % 2 != 0 &&
-                                  playerList.length - 1 == index) {
-                                return const StaggeredTile.count(4, 1);
-                              }
-                              return const StaggeredTile.count(2, 1);
-                            },
+                          return Container(
+                            width: double.infinity,
+                            padding:
+                                EdgeInsets.fromLTRB(12.sp, 12.sp, 12.sp, 12.sp),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(16.sp))),
+                            child: Column(
+                              children: [
+                                StaggeredGridView.countBuilder(
+                                  shrinkWrap: true,
+                                  itemCount:
+                                      data.feature?[e]!.toJson().keys.length,
+                                  crossAxisSpacing: 20,
+                                  mainAxisSpacing: 10,
+                                  crossAxisCount: 4,
+                                  itemBuilder: (context, index) {
+                                    dynamic feat = data.feature![e]!
+                                        .toJson()[index]
+                                        .toString();
+                                    // log(feat.toString());
+                                    // log('FEST');
+                                    return GestureDetector(
+                                      onTap: () {
+                                        onFeatureSelect(
+                                            '${data.firstName}-${index}');
+                                        log(index.toString());
+                                        log('Feature Select');
+                                      },
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                              color: selectedFeature ==
+                                                      '${data.firstName}-${index}'
+                                                  ? Colors.green
+                                                  : const Color(0xff243b55),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(12.sp))),
+                                          child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                    data.feature![e]!
+                                                        .toJson()[index]
+                                                        .toString(),
+                                                    style: AppTextStyles
+                                                        .instance.playersStats),
+                                                Text(' : ${feat.toString()}',
+                                                    style: AppTextStyles
+                                                        .instance.playersStats)
+                                              ])),
+                                    );
+                                  },
+                                  staggeredTileBuilder: (index) {
+                                    if (playerList.length % 2 != 0 &&
+                                        playerList.length - 1 == index) {
+                                      return const StaggeredTile.count(4, 1);
+                                    }
+                                    return const StaggeredTile.count(2, 1);
+                                  },
+                                ),
+                              ],
+                            ),
                           );
                         })
                     ],

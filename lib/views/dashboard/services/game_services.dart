@@ -80,7 +80,8 @@ class GameServices {
       } else {
         SelectTossModel oppToss = SelectTossModel(
             selectToss: selectTossModel.selectToss,
-            wonToss: !selectTossModel.wonToss);
+            wonToss: !selectTossModel.wonToss,
+            totalCards: selectTossModel.totalCards);
         DatabaseReference reference = FirebaseDatabase.instance
             .ref('Room')
             .child('/$roomId/players/$playerId');
