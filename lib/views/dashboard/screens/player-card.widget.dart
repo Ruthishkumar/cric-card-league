@@ -36,12 +36,13 @@ class PlayerCardWidget extends StatelessWidget {
           Container(
             width: double.infinity,
             padding: EdgeInsets.fromLTRB(12.sp, 12.sp, 12.sp, 12.sp),
-            // decoration: BoxDecoration(
-            //     color: Colors.white,
-            //     borderRadius: BorderRadius.all(Radius.circular(16.sp))),
+            decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.all(Radius.circular(16.sp))),
             child: Column(
               children: [
                 ...playerList.map((data) {
+                  log(data.country);
                   return Column(
                     children: [
                       Container(
@@ -105,11 +106,12 @@ class PlayerCardWidget extends StatelessWidget {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                                data.feature![e]!
-                                                    .toJson()[index],
+                                                data.feature?[e]!
+                                                        .toJson()[index] ??
+                                                    '',
                                                 style: AppTextStyles
                                                     .instance.playersStats),
-                                            Text(feat,
+                                            Text(feat ?? '',
                                                 style: AppTextStyles
                                                     .instance.playersStats)
                                           ])),

@@ -83,7 +83,7 @@ class GameServices {
             wonToss: !selectTossModel.wonToss);
         DatabaseReference reference = FirebaseDatabase.instance
             .ref('Room')
-            .child('/$roomId/players/${playerId}');
+            .child('/$roomId/players/$playerId');
         reference.update(oppToss.toJson());
         FirebaseDatabase.instance
             .ref('Room')

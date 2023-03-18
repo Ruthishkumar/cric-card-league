@@ -5,6 +5,7 @@ import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/screens/card_template_page.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
+import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
@@ -87,8 +88,14 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Toss Is Progress",
-                              style: AppTextStyles.instance.countryName),
+                          // showToss(context),
+                          Lottie.asset(
+                            'assets/lottie_images/dlf10_3bCWbEJWSv.json',
+                          ),
+                          Text(
+                            "Toss In Progress",
+                            style: AppTextStyles.instance.tossHeader,
+                          ),
                           SizedBox(height: 50.sp),
                         ],
                       ),
@@ -110,15 +117,24 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                              Text(
+                                roomData['wonToss'] == false
+                                    ? 'You Won the Toss'
+                                    : 'You Loss the Toss',
+                                style: AppTextStyles.instance.tossHeader,
+                              ),
+                              SizedBox(height: 50.sp),
                               HostingButton(
                                 text: 'Start Game',
                                 color: Colors.green,
                                 onPressed: () {
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const CardTemplatePage()),
-                                      (route) => false);
+                                  NavigationRoute().animationRoute(
+                                      context, const CardTemplatePage());
+                                  // Navigator.of(context).pushAndRemoveUntil(
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) =>
+                                  //             const CardTemplatePage()),
+                                  //     (route) => false);
                                 },
                               ),
                             ],
@@ -273,10 +289,11 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
           text: 'Start Game',
           color: Colors.green,
           onPressed: () {
-            Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                    builder: (context) => const CardTemplatePage()),
-                (route) => false);
+            NavigationRoute().animationRoute(context, const CardTemplatePage());
+            // Navigator.of(context).pushAndRemoveUntil(
+            //     MaterialPageRoute(
+            //         builder: (context) => const CardTemplatePage()),
+            //     (route) => false);
           },
         ),
         duration: const Duration(seconds: 1),
@@ -383,5 +400,31 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                   ? Image.asset('assets/images/heads.png')
                   : Image.asset('assets/images/tails.png'),
             )));
+  }
+
+  showToss(BuildContext context) async {
+    await Future.delayed(const Duration(milliseconds: 50));
+    showDialog(
+      barrierColor: Colors.transparent,
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          elevation: 100,
+          clipBehavior: Clip.none,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.sp)),
+          ),
+          backgroundColor: Colors.blue,
+          title: Lottie.asset('assets/lottie_images/dlf10_3bCWbEJWSv.json',
+              width: 100, height: 100),
+          content: Text(
+            'Toss in Progress',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.instance.playGame,
+          ),
+        );
+      },
+    );
   }
 }

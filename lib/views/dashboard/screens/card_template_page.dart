@@ -75,7 +75,7 @@ class _CardTemplatePageState extends State<CardTemplatePage>
               CreatePlayerModel.fromJson(
                   json.decode(json.encode(e)) as Map<String, dynamic>)));
           // playerList = event.snapshot.value as List<Map<String, Object>>;
-          print(playerList);
+          dev.inspect(playerList);
           setState(() {});
         } catch (e, stck) {
           dev.inspect(e);
