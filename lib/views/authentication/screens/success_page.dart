@@ -277,8 +277,9 @@ class _SuccessPageState extends State<SuccessPage> {
           timestamp: DateTime.now().millisecondsSinceEpoch,
           playerCharacters: {
             '0': CreatePlayerModel(
+                firstName: 'MS',
+                lastName: 'Dhoni',
                 country: 'India',
-                playerName: 'MS Dhoni',
                 feature: {
                   '0': PlayerFeature(
                     batAvg: '50.58',
@@ -291,7 +292,8 @@ class _SuccessPageState extends State<SuccessPage> {
                   )
                 }),
             '1': CreatePlayerModel(
-              playerName: 'R Jadeja',
+              firstName: 'Ravi',
+              lastName: 'Jadeja',
               country: 'India',
               feature: {
                 '1': PlayerFeature(
@@ -306,7 +308,8 @@ class _SuccessPageState extends State<SuccessPage> {
               },
             ),
             '2': CreatePlayerModel(
-                playerName: 'Jasprit Bumrah',
+                firstName: 'Jasprit',
+                lastName: 'Bumrah',
                 country: 'India',
                 feature: {
                   '2': PlayerFeature(
@@ -320,7 +323,8 @@ class _SuccessPageState extends State<SuccessPage> {
                   )
                 }),
             '3': CreatePlayerModel(
-              playerName: 'David Warner',
+              firstName: 'David',
+              lastName: 'Warner',
               country: 'Australia',
               feature: {
                 '3': PlayerFeature(
@@ -335,7 +339,8 @@ class _SuccessPageState extends State<SuccessPage> {
               },
             ),
             '4': CreatePlayerModel(
-              playerName: 'Mitchell Santner',
+              firstName: 'Mitchell',
+              lastName: 'Santner',
               country: 'New Zealand',
               feature: {
                 '4': PlayerFeature(

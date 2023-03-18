@@ -37,12 +37,13 @@ class PlayerCardWidget extends StatelessWidget {
             width: double.infinity,
             padding: EdgeInsets.fromLTRB(12.sp, 12.sp, 12.sp, 12.sp),
             decoration: BoxDecoration(
-                color: Colors.green,
+                color: Colors.grey,
                 borderRadius: BorderRadius.all(Radius.circular(16.sp))),
             child: Column(
               children: [
                 ...playerList.map((data) {
-                  log(data.country);
+                  log(data.feature.toString());
+                  log("MESSAGE");
                   return Column(
                     children: [
                       Container(
@@ -54,14 +55,14 @@ class PlayerCardWidget extends StatelessWidget {
                             Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(data.playerName,
+                                  Text(data.firstName,
                                       style:
                                           AppTextStyles.instance.cardFirstName),
-                                  Text(data.country,
+                                  Text(data.lastName,
                                       style: AppTextStyles
                                           .instance.cardSecondName),
                                   SizedBox(height: 10.sp),
-                                  Text('India'.toUpperCase(),
+                                  Text(data.country.toUpperCase(),
                                       style:
                                           AppTextStyles.instance.countryName),
                                 ]),
@@ -75,48 +76,51 @@ class PlayerCardWidget extends StatelessWidget {
                       if (data.feature != null)
                         ...data.feature!.keys.map((e) {
                           return StaggeredGridView.countBuilder(
-                              staggeredTileBuilder: (index) {
-                                if (playerList.length % 2 != 0 &&
-                                    playerList.length - 1 == index) {
-                                  return const StaggeredTile.count(4, 1);
-                                }
-                                return const StaggeredTile.count(2, 1);
-                              },
-                              shrinkWrap: true,
-                              itemCount: data.feature![e]!.toJson().keys.length,
-                              crossAxisSpacing: 20,
-                              mainAxisSpacing: 10,
-                              crossAxisCount: 4,
-                              itemBuilder: (context, index) {
-                                dynamic feat =
-                                    data.feature![e]!.toJson()[index];
-                                return GestureDetector(
-                                  onTap: () => onFeatureSelect(
-                                      '${data.playerName}-${index}'),
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                          color: selectedFeature ==
-                                                  '${data.playerName}-${index}'
-                                              ? Colors.green
-                                              : const Color(0xff243b55),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(12.sp))),
-                                      child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                                data.feature?[e]!
-                                                        .toJson()[index] ??
-                                                    '',
-                                                style: AppTextStyles
-                                                    .instance.playersStats),
-                                            Text(feat ?? '',
-                                                style: AppTextStyles
-                                                    .instance.playersStats)
-                                          ])),
-                                );
-                              });
+                            shrinkWrap: true,
+                            itemCount: data.feature?[e]!.toJson().keys.length,
+                            crossAxisSpacing: 20,
+                            mainAxisSpacing: 10,
+                            crossAxisCount: 4,
+                            itemBuilder: (context, index) {
+                              dynamic feat =
+                                  data.feature![e]!.toJson()[index].toString();
+                              // log(feat.toString());
+                              // log('FEST');
+                              return GestureDetector(
+                                onTap: () => onFeatureSelect(
+                                    '${data.firstName}-${index}'),
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        color: selectedFeature ==
+                                                '${data.firstName}-${index}'
+                                            ? Colors.green
+                                            : const Color(0xff243b55),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(12.sp))),
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                              data.feature![e]!
+                                                  .toJson()[index]
+                                                  .toString(),
+                                              style: AppTextStyles
+                                                  .instance.playersStats),
+                                          Text(' : ${feat.toString()}',
+                                              style: AppTextStyles
+                                                  .instance.playersStats)
+                                        ])),
+                              );
+                            },
+                            staggeredTileBuilder: (index) {
+                              if (playerList.length % 2 != 0 &&
+                                  playerList.length - 1 == index) {
+                                return const StaggeredTile.count(4, 1);
+                              }
+                              return const StaggeredTile.count(2, 1);
+                            },
+                          );
                         })
                     ],
                   );

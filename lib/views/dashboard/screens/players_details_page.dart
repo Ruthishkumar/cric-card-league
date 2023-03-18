@@ -296,7 +296,8 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
         });
         SelectCardModel selectCardModel = SelectCardModel(
             selectCard: selectCardValue != -1 ? true : false,
-            totalCards: selectCardNumbers.toString());
+            totalCards: selectCardNumbers.toString(),
+            totalPoints: "500");
         GameServices().selectCard(
             roomId: Provider.of<GameProvider>(context, listen: false).roomId,
             selectCardModel: selectCardModel);

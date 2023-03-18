@@ -67,7 +67,6 @@ class _CardTemplatePageState extends State<CardTemplatePage>
 
   List<CreatePlayerModel> playerList = [];
   getData() {
-    var user = FirebaseAuth.instance.currentUser!;
     GameServices().getMyPlayer().asStream().listen((event) {
       event.onValue.listen((event) {
         try {
@@ -89,18 +88,6 @@ class _CardTemplatePageState extends State<CardTemplatePage>
 
   @override
   Widget build(BuildContext context) {
-    final mainList = database.onValue;
-    getData();
-    var gridList = [
-      {'statsHeader': 'Bat Avg :', 'Value': '1', 'setValue': 0},
-      {'statsHeader': 'Bowl Avg : ', 'Value': '1', 'setValue': 1},
-      {'statsHeader': 'Runs :', 'Value': '10000', 'setValue': 2},
-      {'statsHeader': 'Wickets :', 'Value': '1', 'setValue': 3},
-      {'statsHeader': 'Strike rate :', 'Value': '1', 'setValue': 4},
-      {'statsHeader': 'Eco. rate :', 'Value': '1', 'setValue': 5},
-      {'statsHeader': 'Top Score :', 'Value': '1', 'setValue': 6},
-    ];
-
     return ScreenContainer(
         bodyWidget: Stack(
       fit: StackFit.expand,
@@ -195,174 +182,16 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                       ),
                     ],
                   ),
-
                   SizedBox(height: 30.sp),
                   PlayerCardWidget(
                     playerList: playerList,
                     onFeatureSelect: (selectedFeature) {
-                      selectedPlayerFeature = selectedFeature;
-                      setState(() {});
+                      setState(() {
+                        selectedPlayerFeature = selectedFeature;
+                      });
                     },
                     selectedFeature: selectedPlayerFeature,
                   ),
-
-                  // SizedBox(
-                  //   height: 390.sp,
-                  //   width: 250.sp,
-                  //   child: WidgetFlipper(
-                  //       frontWidget: AnimatedBuilder(
-                  //         animation: _resizableController,
-                  //         builder: (BuildContext context, Widget? child) {
-                  //           return Container(
-                  //             decoration: BoxDecoration(
-                  //                 color: const Color(0xff243b55),
-                  //                 boxShadow: [
-                  //                   BoxShadow(
-                  //                       color: Colors.white70
-                  //                           .withOpacity(0.3), //New
-                  //                       blurRadius: 5.0,
-                  //                       spreadRadius: 5.0)
-                  //                 ],
-                  //                 border: Border.all(
-                  //                     color: Colors.white,
-                  //                     width: _resizableController.value * 3),
-                  //                 borderRadius:
-                  //                     BorderRadius.all(Radius.circular(16.sp))),
-                  //             alignment: Alignment.center,
-                  //             child: Text(
-                  //               "Tap to Open the Card",
-                  //               style: AppTextStyles.instance.points,
-                  //             ),
-                  //           );
-                  //         },
-                  //       ),
-                  //       backWidget: Container(
-                  //         decoration: BoxDecoration(
-                  //             color: const Color(0xff243b55),
-                  //             boxShadow: [
-                  //               BoxShadow(
-                  //                   color:
-                  //                       Colors.white70.withOpacity(0.3), //New
-                  //                   blurRadius: 5.0,
-                  //                   spreadRadius: 5.0)
-                  //             ],
-                  //             borderRadius:
-                  //                 BorderRadius.all(Radius.circular(16.sp))),
-                  //         child: Column(
-                  //           children: [
-                  //             Container(
-                  //               width: 250.sp,
-                  //               padding: EdgeInsets.fromLTRB(
-                  //                   12.sp, 12.sp, 12.sp, 0.sp),
-                  //               child: Row(
-                  //                 mainAxisAlignment:
-                  //                     MainAxisAlignment.spaceBetween,
-                  //                 children: [
-                  //                   Column(
-                  //                     crossAxisAlignment:
-                  //                         CrossAxisAlignment.start,
-                  //                     children: [
-                  //                       StreamBuilder(
-                  //                           stream: refDb.onValue,
-                  //                           builder: (context, snapShot) {
-                  //                             return snapShot.data != null
-                  //                                 ? Text(
-                  //                                     snapShot
-                  //                                         .data!.snapshot.value
-                  //                                         .toString(),
-                  //                                     style: AppTextStyles
-                  //                                         .instance
-                  //                                         .cardFirstName)
-                  //                                 : const Text('');
-                  //                           }),
-                  //                       Text(
-                  //                         'Kohli',
-                  //                         style: AppTextStyles
-                  //                             .instance.cardSecondName,
-                  //                       ),
-                  //                       SizedBox(height: 10.sp),
-                  //                       Text(
-                  //                         'India'.toUpperCase(),
-                  //                         style: AppTextStyles
-                  //                             .instance.countryName,
-                  //                       ),
-                  //                     ],
-                  //                   ),
-                  //                   Image.asset(
-                  //                     'assets/images/Virat-Kohli-T20I2020.png',
-                  //                     height: 150.sp,
-                  //                     width: 100.sp,
-                  //                   )
-                  //                 ],
-                  //               ),
-                  //             ),
-                  //             Expanded(
-                  //               child: Container(
-                  //                 width: double.infinity,
-                  //                 padding: EdgeInsets.fromLTRB(
-                  //                     12.sp, 12.sp, 12.sp, 12.sp),
-                  //                 decoration: BoxDecoration(
-                  //                     color: Colors.white,
-                  //                     borderRadius: BorderRadius.all(
-                  //                         Radius.circular(16.sp))),
-                  //                 child: Column(
-                  //                   children: [
-                  //                     GridView.builder(
-                  //                         shrinkWrap: true,
-                  //                         itemCount: gridList.length,
-                  //                         physics:
-                  //                             const NeverScrollableScrollPhysics(),
-                  //                         gridDelegate:
-                  //                             const SliverGridDelegateWithFixedCrossAxisCount(
-                  //                                 crossAxisCount: 2,
-                  //                                 childAspectRatio: (1 / .3),
-                  //                                 mainAxisSpacing: 10,
-                  //                                 crossAxisSpacing: 10),
-                  //                         itemBuilder: (BuildContext context,
-                  //                             int index) {
-                  //                           Map data = gridList[index];
-                  //                           return GestureDetector(
-                  //                             onTap: () {
-                  //                               setState(() {
-                  //                                 selectIndex =
-                  //                                     data['setValue'];
-                  //                               });
-                  //                             },
-                  //                             child: Container(
-                  //                               decoration: BoxDecoration(
-                  //                                   color: selectIndex ==
-                  //                                           data['setValue']
-                  //                                       ? Colors.amberAccent
-                  //                                       : const Color(
-                  //                                           0xff243b55),
-                  //                                   borderRadius:
-                  //                                       BorderRadius.all(
-                  //                                           Radius.circular(
-                  //                                               12.sp))),
-                  //                               child: Row(
-                  //                                 mainAxisAlignment:
-                  //                                     MainAxisAlignment.center,
-                  //                                 children: [
-                  //                                   Text(
-                  //                                     data['statsHeader'],
-                  //                                     style: AppTextStyles
-                  //                                         .instance
-                  //                                         .playersStats,
-                  //                                   ),
-                  //                                   Text(data['Value'])
-                  //                                 ],
-                  //                               ),
-                  //                             ),
-                  //                           );
-                  //                         }),
-                  //                   ],
-                  //                 ),
-                  //               ),
-                  //             )
-                  //           ],
-                  //         ),
-                  //       )),
-                  // ),
                 ],
               ),
             ),

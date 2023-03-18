@@ -216,7 +216,8 @@ class _HostIpPageState extends State<HostIpPage> {
                                       DateTime.now().millisecondsSinceEpoch,
                                   playerCharacters: {
                                     '0': CreatePlayerModel(
-                                      playerName: 'Virat Kohli',
+                                      firstName: 'Virat',
+                                      lastName: 'Kohli',
                                       country: 'India',
                                       feature: {
                                         '0': PlayerFeature(
@@ -231,7 +232,8 @@ class _HostIpPageState extends State<HostIpPage> {
                                       },
                                     ),
                                     '1': CreatePlayerModel(
-                                      playerName: 'Ben Stokes',
+                                      firstName: 'Ben',
+                                      lastName: 'Stokes',
                                       country: 'England',
                                       feature: {
                                         '0': PlayerFeature(
@@ -246,7 +248,8 @@ class _HostIpPageState extends State<HostIpPage> {
                                       },
                                     ),
                                     '2': CreatePlayerModel(
-                                      playerName: 'Adam Zampa',
+                                      firstName: 'Adam',
+                                      lastName: 'Zampa',
                                       country: 'Australia',
                                       feature: {
                                         '0': PlayerFeature(
@@ -260,7 +263,8 @@ class _HostIpPageState extends State<HostIpPage> {
                                       },
                                     ),
                                     '3': CreatePlayerModel(
-                                      playerName: 'Martin Guptil',
+                                      firstName: 'Martin',
+                                      lastName: 'Guptil',
                                       country: 'New Zealand',
                                       feature: {
                                         '0': PlayerFeature(
@@ -274,7 +278,8 @@ class _HostIpPageState extends State<HostIpPage> {
                                       },
                                     ),
                                     '4': CreatePlayerModel(
-                                      playerName: 'M Siraj',
+                                      firstName: 'Mohmd.',
+                                      lastName: 'Siraj',
                                       country: 'India',
                                       feature: {
                                         '0': PlayerFeature(

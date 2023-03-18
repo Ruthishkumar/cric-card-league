@@ -82,8 +82,12 @@ class JoinModel {
 class SelectCardModel {
   bool selectCard;
   String totalCards;
+  String totalPoints;
 
-  SelectCardModel({required this.selectCard, required this.totalCards});
+  SelectCardModel(
+      {required this.selectCard,
+      required this.totalCards,
+      required this.totalPoints});
 
   factory SelectCardModel.fromJson(Map<String, dynamic> json) =>
       _$SelectCardModelFromJson(json);
@@ -139,12 +143,14 @@ class PlayerFeature {
 
 @JsonSerializable()
 class CreatePlayerModel {
-  String playerName;
+  String firstName;
+  String lastName;
   String country;
   @JsonKey(toJson: mapPlayerFeatureToJson, fromJson: mapPlayerFeatureFromJson)
   Map<String, PlayerFeature>? feature;
   CreatePlayerModel({
-    required this.playerName,
+    required this.firstName,
+    required this.lastName,
     required this.country,
     required this.feature,
   });

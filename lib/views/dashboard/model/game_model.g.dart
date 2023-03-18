@@ -57,12 +57,14 @@ SelectCardModel _$SelectCardModelFromJson(Map<String, dynamic> json) =>
     SelectCardModel(
       selectCard: json['selectCard'] as bool,
       totalCards: json['totalCards'] as String,
+      totalPoints: json['totalPoints'] as String,
     );
 
 Map<String, dynamic> _$SelectCardModelToJson(SelectCardModel instance) =>
     <String, dynamic>{
       'selectCard': instance.selectCard,
       'totalCards': instance.totalCards,
+      'totalPoints': instance.totalPoints,
     };
 
 SelectTossModel _$SelectTossModelFromJson(Map<String, dynamic> json) =>
@@ -111,14 +113,16 @@ Map<String, dynamic> _$PlayerFeatureToJson(PlayerFeature instance) =>
 
 CreatePlayerModel _$CreatePlayerModelFromJson(Map<String, dynamic> json) =>
     CreatePlayerModel(
-      playerName: json['playerName'] as String,
+      firstName: json['firstName'] as String,
+      lastName: json['lastName'] as String,
       country: json['country'] as String,
       feature: mapPlayerFeatureFromJson(json['feature'] as List),
     );
 
 Map<String, dynamic> _$CreatePlayerModelToJson(CreatePlayerModel instance) =>
     <String, dynamic>{
-      'playerName': instance.playerName,
+      'firstName': instance.firstName,
+      'lastName': instance.lastName,
       'country': instance.country,
       'feature': mapPlayerFeatureToJson(instance.feature),
     };
