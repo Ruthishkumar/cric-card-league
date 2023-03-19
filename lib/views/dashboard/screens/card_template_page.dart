@@ -65,15 +65,18 @@ class _CardTemplatePageState extends State<CardTemplatePage>
   getData() {
     GameServices().getMyPlayer().asStream().listen((event) {
       event.onValue.listen((event) {
+        dev.log("Player Details Changed");
         try {
-          setState(() {
-            (event.snapshot.value as List<Object?>).forEach((e) =>
-                playerList.add(CreatePlayerModel.fromJson(
-                    json.decode(json.encode(e)) as Map<String, dynamic>)));
-            // playerList = event.snapshot.value as List<Map<String, Object>>;
-            dev.inspect(playerList);
-          });
+          dev.log(event.snapshot.value.toString());
+          (event.snapshot.value as List<Object?>).forEach((e) => playerList.add(
+              CreatePlayerModel.fromJson(
+                  json.decode(json.encode(e)) as Map<String, dynamic>)));
+          playerList = event.snapshot.value as List<CreatePlayerModel>;
+          dev.log(playerList.length.toString());
+          dev.inspect('*********PlayerList***********');
+          setState(() {});
         } catch (e, stck) {
+          dev.log(e.toString());
           dev.inspect(e);
           dev.inspect(stck);
         }
@@ -100,95 +103,74 @@ class _CardTemplatePageState extends State<CardTemplatePage>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Stack(
+                    alignment: Alignment.bottomLeft,
                     children: [
-                      Stack(
-                        alignment: Alignment.bottomLeft,
-                        children: [
-                          Container(
-                              decoration: BoxDecoration(
-                                  color: const Color(0xffF2C94C),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(16.sp))),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                      width: 57,
-                                      height: 57,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(16.sp)),
-                                          color: Colors.white),
-                                      child: const Icon(
-                                        Icons.person,
-                                        color: Colors.black,
-                                      )),
-                                  Container(
-                                    padding: EdgeInsets.all(16.sp),
-                                    child: Text(
-                                      'Your Cards',
-                                      style: GoogleFonts.prompt(
-                                          fontWeight: FontWeight.w600,
-                                          fontStyle: FontStyle.normal,
-                                          fontSize: 15.sp,
-                                          color: Colors.white),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 57,
-                                    height: 57,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
+                      Container(
+                          width: 250.sp,
+                          decoration: BoxDecoration(
+                              color: const Color(0xffF2C94C),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(16.sp))),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                  width: 57,
+                                  height: 57,
+                                  decoration: BoxDecoration(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(16.sp)),
-                                    ),
-                                    child: Center(child: Consumer<NameProvider>(
-                                      builder: (widget, data, child) {
-                                        return Text(data.cardTotal.toString(),
-                                            style: GoogleFonts.prompt(
-                                                fontWeight: FontWeight.w600,
-                                                fontStyle: FontStyle.normal,
-                                                fontSize: 15.sp,
-                                                color: Colors.black));
-                                      },
-                                    )),
-                                  )
-                                ],
-                              )),
-                        ],
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(15.sp),
-                        decoration: BoxDecoration(
-                          color: const Color(0xffF2C94C),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black.withOpacity(0.5),
-                                blurRadius: 12)
-                          ],
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(100.sp),
-                            bottomRight: Radius.circular(100.sp),
-                          ),
-                        ),
-                        child: scorePoints(),
-                      ),
+                                      color: Colors.white),
+                                  child: const Icon(
+                                    Icons.person,
+                                    color: Colors.black,
+                                  )),
+                              Container(
+                                padding: EdgeInsets.all(16.sp),
+                                child: Text(
+                                  'Your Cards',
+                                  style: GoogleFonts.prompt(
+                                      fontWeight: FontWeight.w600,
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 15.sp,
+                                      color: Colors.white),
+                                ),
+                              ),
+                              Container(
+                                width: 57,
+                                height: 57,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(16.sp)),
+                                ),
+                                child: Center(child: Consumer<NameProvider>(
+                                  builder: (widget, data, child) {
+                                    return Text(data.cardTotal.toString(),
+                                        style: GoogleFonts.prompt(
+                                            fontWeight: FontWeight.w600,
+                                            fontStyle: FontStyle.normal,
+                                            fontSize: 15.sp,
+                                            color: Colors.black));
+                                  },
+                                )),
+                              )
+                            ],
+                          )),
                     ],
                   ),
                   SizedBox(height: 30.sp),
-                  PlayerCardWidget(
-                    playerList: playerList,
-                    onFeatureSelect: (selectedFeature) {
-                      setState(() {
-                        selectedPlayerFeature = selectedFeature;
-                      });
-                    },
-                    selectedFeature: selectedPlayerFeature,
-                  ),
+                  if (playerList.isNotEmpty)
+                    PlayerCardWidget(
+                      playerList: playerList,
+                      onFeatureSelect: (selectedFeature) {
+                        setState(() {
+                          selectedPlayerFeature = selectedFeature;
+                        });
+                      },
+                      selectedFeature: selectedPlayerFeature,
+                    ),
                 ],
               ),
             ),

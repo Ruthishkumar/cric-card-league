@@ -150,13 +150,25 @@ class CreatePlayerModel {
   String firstName;
   String lastName;
   String country;
-  @JsonKey(toJson: mapPlayerFeatureToJson, fromJson: mapPlayerFeatureFromJson)
-  Map<String, PlayerFeature>? feature;
+  final String batAvg;
+  final String bowlAvg;
+  final String strikeRate;
+  final String economyRate;
+  final String runs;
+  final String topScore;
+  final String wickets;
+
   CreatePlayerModel({
     required this.firstName,
     required this.lastName,
     required this.country,
-    required this.feature,
+    required this.batAvg,
+    required this.bowlAvg,
+    required this.strikeRate,
+    required this.economyRate,
+    required this.runs,
+    required this.topScore,
+    required this.wickets,
   });
 
   factory CreatePlayerModel.fromJson(Map<String, dynamic> json) =>

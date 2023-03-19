@@ -63,6 +63,7 @@ class GameServices {
     await reference.update(selectCardModel.toJson());
   }
 
+  /// For Select Toss
   Future selectToss(
       {required String roomId,
       required SelectTossModel selectTossModel}) async {
@@ -92,13 +93,13 @@ class GameServices {
             .update({"selectToss": true});
       }
     }
-
     DatabaseReference reference = FirebaseDatabase.instance
         .ref('Room')
         .child('/$roomId/players/${FirebaseAuth.instance.currentUser!.uid}');
     await reference.update(selectTossModel.toJson());
   }
 
+  /// For Total Cards
   Future matchTotalCard(
       {required String roomId, required TotalCardModel totalCardModel}) async {
     DatabaseReference reference =
@@ -106,10 +107,20 @@ class GameServices {
     await reference.update(totalCardModel.toJson());
   }
 
+  /// For Player Shown
   Future<DatabaseReference> getMyPlayer() async {
     //TODO::Change actual room ID;
     DatabaseReference reference = FirebaseDatabase.instance.ref('Room').child(
         'test/players/${FirebaseAuth.instance.currentUser!.uid}/playerCharacters');
     return reference;
+  }
+
+  /// For Select Player Stats
+  createSelectStats(
+      {required String selectedKey, required String selectedValue}) async {
+    DatabaseReference reference =
+        FirebaseDatabase.instance.ref('Room').child('test');
+    return reference
+        .update({'selectedKey': selectedKey, 'selectedValue': selectedValue});
   }
 }

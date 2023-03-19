@@ -91,6 +91,13 @@ class AppTextStyles {
     fontSize: 15.sp,
   );
 
+  final TextStyle? playersStat1 = GoogleFonts.prompt(
+    color: Colors.black87,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w700,
+    fontSize: 15.sp,
+  );
+
   final TextStyle? popError = GoogleFonts.prompt(
       color: Colors.black,
       fontSize: 20.sp,

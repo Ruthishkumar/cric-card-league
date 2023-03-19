@@ -118,7 +118,13 @@ CreatePlayerModel _$CreatePlayerModelFromJson(Map<String, dynamic> json) =>
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
       country: json['country'] as String,
-      feature: mapPlayerFeatureFromJson(json['feature'] as List),
+      batAvg: json['batAvg'] as String,
+      bowlAvg: json['bowlAvg'] as String,
+      strikeRate: json['strikeRate'] as String,
+      economyRate: json['economyRate'] as String,
+      runs: json['runs'] as String,
+      topScore: json['topScore'] as String,
+      wickets: json['wickets'] as String,
     );
 
 Map<String, dynamic> _$CreatePlayerModelToJson(CreatePlayerModel instance) =>
@@ -126,5 +132,11 @@ Map<String, dynamic> _$CreatePlayerModelToJson(CreatePlayerModel instance) =>
       'firstName': instance.firstName,
       'lastName': instance.lastName,
       'country': instance.country,
-      'feature': mapPlayerFeatureToJson(instance.feature),
+      'batAvg': instance.batAvg,
+      'bowlAvg': instance.bowlAvg,
+      'strikeRate': instance.strikeRate,
+      'economyRate': instance.economyRate,
+      'runs': instance.runs,
+      'topScore': instance.topScore,
+      'wickets': instance.wickets,
     };

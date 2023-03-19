@@ -35,8 +35,6 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
   ];
 
   DatabaseReference getCardSelect() {
-    log('Room/${Provider.of<GameProvider>(context, listen: false).roomId}/players');
-    log('KKKKK');
     DatabaseReference refDb = FirebaseDatabase.instance.ref(
         'Room/${Provider.of<GameProvider>(context, listen: false).roomId}/players');
     return refDb;

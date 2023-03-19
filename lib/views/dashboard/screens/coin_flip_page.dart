@@ -72,10 +72,6 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
       builder: (context, snapShot) {
         if (snapShot.data != null) {
           var roomData = snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
-          dev.log((roomData['hostId'] != FirebaseAuth.instance.currentUser!.uid)
-              .toString());
-          dev.log('message');
-          dev.log(roomData['hostId']);
           return (roomData['selectCard'] != true ||
                       roomData['selectToss'] != true) &&
                   roomData['hostId'] != FirebaseAuth.instance.currentUser!.uid
@@ -120,9 +116,11 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                roomData[
-                                        'roomId/${FirebaseAuth.instance.currentUser!.uid}']
-                                    .toString(),
+                                roomData['players'][FirebaseAuth.instance
+                                            .currentUser!.uid]['wonToss'] ==
+                                        true
+                                    ? 'You Won the Toss'
+                                    : 'You Loss the Toss'.toString(),
                                 style: AppTextStyles.instance.tossHeader,
                               ),
                               SizedBox(height: 50.sp),
@@ -230,33 +228,21 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                             opacity: afterTossOpacity,
                           ),
                         ),
-                        coinSpin == "Heads"
-                            ? Align(
-                                alignment: const Alignment(-0.01, 0.40),
-                                child: AnimatedOpacity(
-                                  child: Text(
-                                    _face == "heads"
-                                        ? 'You Won the Toss'
-                                        : "You Loss the Toss",
-                                    style: AppTextStyles.instance.tossHeader,
-                                  ),
-                                  duration: const Duration(seconds: 1),
-                                  opacity: afterTossOpacity,
-                                ),
-                              )
-                            : Align(
-                                alignment: const Alignment(-0.01, 0.40),
-                                child: AnimatedOpacity(
-                                  child: Text(
-                                    _face == "tails"
-                                        ? 'You Won the Toss'
-                                        : "You Loss the Toss",
-                                    style: AppTextStyles.instance.tossHeader,
-                                  ),
-                                  duration: const Duration(seconds: 1),
-                                  opacity: afterTossOpacity,
-                                ),
-                              ),
+                        Align(
+                          alignment: const Alignment(-0.01, 0.40),
+                          child: AnimatedOpacity(
+                            child: Text(
+                              roomData['players'][FirebaseAuth.instance
+                                          .currentUser!.uid]['wonToss'] ==
+                                      true
+                                  ? 'You Won the Toss'
+                                  : 'You Loss the Toss'.toString(),
+                              style: AppTextStyles.instance.tossHeader,
+                            ),
+                            duration: const Duration(seconds: 1),
+                            opacity: afterTossOpacity,
+                          ),
+                        ),
                         startGameButton()
                       ],
                     );
