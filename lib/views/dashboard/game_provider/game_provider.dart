@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class GameProvider extends ChangeNotifier {
@@ -16,19 +17,21 @@ class GameProvider extends ChangeNotifier {
   void hostRoom(GameModel gameModel) async {
     await gameServices.createHostGameService(roomModel: gameModel);
     roomId = gameModel.roomId.toString();
+    await gameServices.createRoomId(roomId: roomId);
     notifyListeners();
   }
 
-  void createRoom(String value) {
+  void createRoomId({required String value}) async {
+    await gameServices.createRoomId(roomId: value);
     roomId = value;
+    log(roomId);
+    log('njfjdfjkn');
     notifyListeners();
   }
 
   void joinRoom(GamePlayerModel joinModel, String roomId) async {
     await gameServices.joinGameService(joinModel: joinModel, roomId: roomId);
     updatedRoomId = roomId;
-    log(updatedRoomId);
-    log('JJJJJ');
     notifyListeners();
   }
 

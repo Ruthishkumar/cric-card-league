@@ -40,6 +40,11 @@ class GameServices {
     }
   }
 
+  Future createRoomId({required String roomId}) async {
+    DatabaseReference reference = FirebaseDatabase.instance.ref('Room');
+    await reference.update({'roomId': roomId});
+  }
+
   /// For Join Room
   Future joinGameService(
       {required GamePlayerModel joinModel, required String roomId}) async {

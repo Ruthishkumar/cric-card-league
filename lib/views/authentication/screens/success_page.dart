@@ -15,6 +15,7 @@ import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:fade_and_translate/fade_and_translate.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -267,7 +268,7 @@ class _SuccessPageState extends State<SuccessPage> {
   }
 
   /// host summit
-  _createHostSummit() {
+  _createHostSummit() async {
     GameModel gameRoom =
         GameModel(hostId: FirebaseAuth.instance.currentUser!.uid, players: {
       FirebaseAuth.instance.currentUser!.uid: GamePlayerModel(
@@ -339,12 +340,6 @@ class _SuccessPageState extends State<SuccessPage> {
           })
     });
     Provider.of<GameProvider>(context, listen: false).hostRoom(gameRoom);
-    Provider.of<GameProvider>(context, listen: false)
-        .createRoom(gameRoom.roomId.toString());
-    setState(() {
-      log(Provider.of<GameProvider>(context, listen: false).roomId.toString());
-      log('message');
-    });
 
     NavigationRoute().animationRoute(context, const PlayersDetailsPage());
   }

@@ -122,32 +122,7 @@ class PlayerCardWidget extends StatelessWidget {
                           barrierDismissible: false,
                           context: context,
                           builder: (BuildContext context) {
-                            return AlertDialog(
-                              elevation: 100,
-                              clipBehavior: Clip.none,
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20.sp)),
-                              ),
-                              backgroundColor: Colors.white,
-                              title: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text('Wait for your',
-                                      style: AppTextStyles.instance.popError),
-                                  SizedBox(height: 4.sp),
-                                  Text('Opponent turn',
-                                      style: AppTextStyles.instance.popError),
-                                  SizedBox(height: 15.sp),
-                                  HeadTailsButton(
-                                      text: 'Okay',
-                                      color: Colors.red,
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      })
-                                ],
-                              ),
-                            );
+                            return alertDialogWidget(context);
                           },
                         );
                         log('You Does not Click');
@@ -155,11 +130,7 @@ class PlayerCardWidget extends StatelessWidget {
                 child: Row(children: [
                   Container(
                       width: 120.sp,
-                      height: stats['selectedKey'] == 'batAvg' &&
-                              stats['hostId'] !=
-                                  FirebaseAuth.instance.currentUser!.uid
-                          ? 120.sp
-                          : 90.sp,
+                      height: 65.sp,
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
                           color: stats['selectedKey'] == 'batAvg' &&
@@ -175,7 +146,8 @@ class PlayerCardWidget extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Center(
+                          FittedBox(
+                            fit: BoxFit.contain,
                             child: Text('Bat.Avg : ${createAvgModel.batAvg}',
                                 style: AppTextStyles.instance.playersStats),
                           ),
@@ -183,7 +155,7 @@ class PlayerCardWidget extends StatelessWidget {
                             stats['selectedKey'] == 'batAvg' &&
                                     stats['hostId'] !=
                                         FirebaseAuth.instance.currentUser!.uid
-                                ? 'Your Opponent  is ${stats['selectedValue']}'
+                                ? 'vs ${stats['selectedValue']}'
                                 : '',
                             style: AppTextStyles.instance.playersStat1,
                           )
@@ -212,11 +184,7 @@ class PlayerCardWidget extends StatelessWidget {
                     children: [
                       Container(
                         width: 120.sp,
-                        height: bowlingAvg['selectedKey'] == 'bowlAvg' &&
-                                bowlingAvg['hostId'] !=
-                                    FirebaseAuth.instance.currentUser!.uid
-                            ? 135.sp
-                            : 90.sp,
+                        height: 65.sp,
                         padding: EdgeInsets.all(8.sp),
                         decoration: BoxDecoration(
                             color: bowlingAvg['selectedKey'] == 'bowlAvg' &&
@@ -232,7 +200,8 @@ class PlayerCardWidget extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Center(
+                            FittedBox(
+                              fit: BoxFit.contain,
                               child: Text(
                                 'Bowl Avg : ${createAvgModel.bowlAvg}',
                                 style: AppTextStyles.instance.playersStats,
@@ -243,7 +212,7 @@ class PlayerCardWidget extends StatelessWidget {
                               bowlingAvg['selectedKey'] == 'bowlAvg' &&
                                       bowlingAvg['hostId'] !=
                                           FirebaseAuth.instance.currentUser!.uid
-                                  ? 'Your Opponent is  ${bowlingAvg['selectedValue']}'
+                                  ? 'vs ${bowlingAvg['selectedValue']}'
                                   : '',
                               style: AppTextStyles.instance.playersStat1,
                               textAlign: TextAlign.center,
@@ -281,11 +250,7 @@ class PlayerCardWidget extends StatelessWidget {
                   children: [
                     Container(
                       width: 120.sp,
-                      height: strikeRate['selectedKey'] == 'strRate' &&
-                              strikeRate['hostId'] !=
-                                  FirebaseAuth.instance.currentUser!.uid
-                          ? 135.sp
-                          : 90.sp,
+                      height: 65.sp,
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
                           color: strikeRate['selectedKey'] == 'strRate' &&
@@ -301,7 +266,8 @@ class PlayerCardWidget extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Center(
+                          FittedBox(
+                            fit: BoxFit.contain,
                             child: Text(
                               'Str.Rate : ${seData.strikeRate}',
                               style: AppTextStyles.instance.playersStats,
@@ -311,7 +277,7 @@ class PlayerCardWidget extends StatelessWidget {
                             strikeRate['selectedKey'] == 'strRate' &&
                                     strikeRate['hostId'] !=
                                         FirebaseAuth.instance.currentUser!.uid
-                                ? 'Your Opponent is  ${strikeRate['selectedValue']}'
+                                ? 'vs ${strikeRate['selectedValue']}'
                                 : '',
                             style: AppTextStyles.instance.playersStat1,
                             textAlign: TextAlign.center,
@@ -343,11 +309,7 @@ class PlayerCardWidget extends StatelessWidget {
                   children: [
                     Container(
                       width: 120.sp,
-                      height: economyRate['selectedKey'] == 'ecoRate' &&
-                              economyRate['hostId'] !=
-                                  FirebaseAuth.instance.currentUser!.uid
-                          ? 135.sp
-                          : 90.sp,
+                      height: 65.sp,
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
                           color: economyRate['selectedKey'] == 'ecoRate' &&
@@ -373,7 +335,7 @@ class PlayerCardWidget extends StatelessWidget {
                             economyRate['selectedKey'] == 'ecoRate' &&
                                     economyRate['hostId'] !=
                                         FirebaseAuth.instance.currentUser!.uid
-                                ? 'Your Opponent is  ${economyRate['selectedValue']}'
+                                ? 'vs ${economyRate['selectedValue']}'
                                 : '',
                             style: AppTextStyles.instance.playersStat1,
                             textAlign: TextAlign.center,
@@ -423,11 +385,7 @@ class PlayerCardWidget extends StatelessWidget {
               child: Row(children: [
                 Container(
                     width: 120.sp,
-                    height: runs['selectedKey'] == 'runs' &&
-                            runs['hostId'] !=
-                                FirebaseAuth.instance.currentUser!.uid
-                        ? 120.sp
-                        : 90.sp,
+                    height: 65.sp,
                     padding: EdgeInsets.all(8.sp),
                     decoration: BoxDecoration(
                         color: runs['selectedKey'] == 'runs' &&
@@ -449,7 +407,7 @@ class PlayerCardWidget extends StatelessWidget {
                           runs['selectedKey'] == 'runs' &&
                                   runs['hostId'] !=
                                       FirebaseAuth.instance.currentUser!.uid
-                              ? 'Your Opponent is  ${runs['selectedValue']}'
+                              ? 'vs ${runs['selectedValue']}'
                               : '',
                           style: AppTextStyles.instance.playersStat1,
                           textAlign: TextAlign.center,
@@ -477,11 +435,7 @@ class PlayerCardWidget extends StatelessWidget {
               return Row(children: [
                 Container(
                   width: 120.sp,
-                  height: wickets['selectedKey'] == 'wickets' &&
-                          wickets['hostId'] !=
-                              FirebaseAuth.instance.currentUser!.uid
-                      ? 120.sp
-                      : 90.sp,
+                  height: 65.sp,
                   padding: EdgeInsets.all(8.sp),
                   decoration: BoxDecoration(
                       color: wickets['selectedKey'] == 'wickets' &&
@@ -495,18 +449,18 @@ class PlayerCardWidget extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Center(
-                        child: Text('Wickets : ${runsWickets.wickets}',
-                            style: AppTextStyles.instance.playersStats),
-                      ),
-                      Text(
-                        wickets['selectedKey'] == 'wickets' &&
-                                wickets['hostId'] !=
-                                    FirebaseAuth.instance.currentUser!.uid
-                            ? 'Your Opponent is  ${wickets['selectedValue']}'
-                            : '',
-                        style: AppTextStyles.instance.playersStat1,
-                        textAlign: TextAlign.center,
+                      Text('Wickets : ${runsWickets.wickets}',
+                          style: AppTextStyles.instance.playersStats),
+                      Visibility(
+                        child: Text(
+                          wickets['selectedKey'] == 'wickets' &&
+                                  wickets['hostId'] !=
+                                      FirebaseAuth.instance.currentUser!.uid
+                              ? 'vs ${wickets['selectedValue']}'
+                              : '',
+                          style: AppTextStyles.instance.playersStat1,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ],
                   ),
@@ -535,11 +489,7 @@ class PlayerCardWidget extends StatelessWidget {
                   snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
               return Container(
                   width: 300.sp,
-                  height: topScore['selectedKey'] == 'topScore' &&
-                          topScore['hostId'] !=
-                              FirebaseAuth.instance.currentUser!.uid
-                      ? 120.sp
-                      : 90.sp,
+                  height: 65.sp,
                   padding: EdgeInsets.all(8.sp),
                   decoration: BoxDecoration(
                       color: topScore['selectedKey'] == 'topScore' &&
@@ -553,19 +503,17 @@ class PlayerCardWidget extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Center(
-                        child: Text('Top Score : ${highScore.topScore}',
-                            style: AppTextStyles.instance.playersStats),
-                      ),
+                      Text('Top Score : ${highScore.topScore}',
+                          style: AppTextStyles.instance.playersStats),
                       Text(
                         topScore['selectedKey'] == 'topScore' &&
                                 topScore['hostId'] !=
                                     FirebaseAuth.instance.currentUser!.uid
-                            ? 'Your Opponent is  ${topScore['selectedValue']}'
+                            ? 'vs ${topScore['selectedValue']}'
                             : '',
                         style: AppTextStyles.instance.playersStat1,
                         textAlign: TextAlign.center,
-                      ),
+                      )
                     ],
                   ));
             }
@@ -592,6 +540,32 @@ class PlayerCardWidget extends StatelessWidget {
           ]),
           Image.asset('assets/images/Virat-Kohli-T20I2020.png',
               height: 150.sp, width: 130.sp)
+        ],
+      ),
+    );
+  }
+
+  alertDialogWidget(BuildContext context) {
+    return AlertDialog(
+      elevation: 100,
+      clipBehavior: Clip.none,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20.sp)),
+      ),
+      backgroundColor: Colors.white,
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text('Wait for your', style: AppTextStyles.instance.popError),
+          SizedBox(height: 4.sp),
+          Text('Opponent turn', style: AppTextStyles.instance.popError),
+          SizedBox(height: 15.sp),
+          HeadTailsButton(
+              text: 'Okay',
+              color: Colors.red,
+              onPressed: () {
+                Navigator.of(context).pop();
+              })
         ],
       ),
     );

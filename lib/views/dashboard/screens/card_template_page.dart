@@ -54,9 +54,16 @@ class _CardTemplatePageState extends State<CardTemplatePage>
   //   getPlayersData();
   // }
 
+  bool _showWidget = true;
+
   @override
   void initState() {
     getData();
+    Future.delayed(const Duration(seconds: 3)).then((value) {
+      setState(() {
+        _showWidget = false;
+      });
+    });
     super.initState();
   }
 
@@ -192,14 +199,18 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                                 ],
                               ),
                               SizedBox(height: 15.sp),
-                              Text(
-                                cards['players'][FirebaseAuth.instance
-                                            .currentUser!.uid]['wonToss'] ==
-                                        true
-                                    ? 'You Select the card first'
-                                    : 'Your opponent select the card first',
-                                style: AppTextStyles.instance.tossStatus,
-                              )
+                              _showWidget
+                                  ? Text(
+                                      cards['players'][FirebaseAuth
+                                                  .instance
+                                                  .currentUser!
+                                                  .uid]['wonToss'] ==
+                                              true
+                                          ? 'You Select the card first'
+                                          : 'Your opponent select the card first',
+                                      style: AppTextStyles.instance.tossStatus,
+                                    )
+                                  : Text('')
                             ],
                           );
                         }
