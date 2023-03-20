@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
+import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -99,60 +100,101 @@ class PlayerCardWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        GestureDetector(
-            onTap: () {
-              onFeatureSelect('${createAvgModel.batAvg}-${index}');
-              GameServices().createSelectStats(
-                  selectedKey: 'batAvg', selectedValue: createAvgModel.batAvg);
-            },
-            child: StreamBuilder(
-              stream: getStats().onValue,
-              builder: (context, snapShot) {
-                if (snapShot.data != null) {
-                  var stats =
-                      snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-                  return Row(children: [
-                    Container(
-                        width: 120.sp,
-                        height: stats['selectedKey'] == 'batAvg' &&
-                                stats['hostId'] !=
-                                    FirebaseAuth.instance.currentUser!.uid
-                            ? 120.sp
-                            : 90.sp,
-                        padding: EdgeInsets.all(8.sp),
-                        decoration: BoxDecoration(
-                            color: stats['selectedKey'] == 'batAvg' &&
+        StreamBuilder(
+          stream: getStats().onValue,
+          builder: (context, snapShot) {
+            if (snapShot.data != null) {
+              var stats =
+                  snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
+              return GestureDetector(
+                onTap: stats['players'][FirebaseAuth.instance.currentUser!.uid]
+                            ['wonToss'] ==
+                        true
+                    ? () {
+                        onFeatureSelect('${createAvgModel.batAvg}-${index}');
+                        GameServices().createSelectStats(
+                            selectedKey: 'batAvg',
+                            selectedValue: createAvgModel.batAvg);
+                      }
+                    : () {
+                        showDialog(
+                          barrierColor: Colors.transparent,
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              elevation: 100,
+                              clipBehavior: Clip.none,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20.sp)),
+                              ),
+                              backgroundColor: Colors.white,
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text('Wait for your',
+                                      style: AppTextStyles.instance.popError),
+                                  SizedBox(height: 4.sp),
+                                  Text('Opponent turn',
+                                      style: AppTextStyles.instance.popError),
+                                  SizedBox(height: 15.sp),
+                                  HeadTailsButton(
+                                      text: 'Okay',
+                                      color: Colors.red,
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      })
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                        log('You Does not Click');
+                      },
+                child: Row(children: [
+                  Container(
+                      width: 120.sp,
+                      height: stats['selectedKey'] == 'batAvg' &&
+                              stats['hostId'] !=
+                                  FirebaseAuth.instance.currentUser!.uid
+                          ? 120.sp
+                          : 90.sp,
+                      padding: EdgeInsets.all(8.sp),
+                      decoration: BoxDecoration(
+                          color: stats['selectedKey'] == 'batAvg' &&
+                                  stats['hostId'] !=
+                                      FirebaseAuth.instance.currentUser!.uid
+                              ? Colors.red
+                              : selectedFeature ==
+                                      '${createAvgModel.batAvg}-${index}'
+                                  ? Colors.green
+                                  : const Color(0xff243b55),
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(12.sp))),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: Text('Bat.Avg : ${createAvgModel.batAvg}',
+                                style: AppTextStyles.instance.playersStats),
+                          ),
+                          Text(
+                            stats['selectedKey'] == 'batAvg' &&
                                     stats['hostId'] !=
                                         FirebaseAuth.instance.currentUser!.uid
-                                ? Colors.red
-                                : selectedFeature ==
-                                        '${createAvgModel.batAvg}-${index}'
-                                    ? Colors.green
-                                    : const Color(0xff243b55),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.sp))),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Center(
-                              child: Text('Bat.Avg : ${createAvgModel.batAvg}',
-                                  style: AppTextStyles.instance.playersStats),
-                            ),
-                            Text(
-                              stats['selectedKey'] == 'batAvg' &&
-                                      stats['hostId'] !=
-                                          FirebaseAuth.instance.currentUser!.uid
-                                  ? 'Your Opponent  is ${stats['selectedValue']}'
-                                  : '',
-                              style: AppTextStyles.instance.playersStat1,
-                            )
-                          ],
-                        ))
-                  ]);
-                }
-                return const CircularProgressIndicator();
-              },
-            )),
+                                ? 'Your Opponent  is ${stats['selectedValue']}'
+                                : '',
+                            style: AppTextStyles.instance.playersStat1,
+                          )
+                        ],
+                      ))
+                ]),
+              );
+            }
+            return const CircularProgressIndicator();
+          },
+        ),
         GestureDetector(
             onTap: () {
               GameServices().createSelectStats(
@@ -295,7 +337,7 @@ class PlayerCardWidget extends StatelessWidget {
             stream: getStats().onValue,
             builder: (context, snapShot) {
               var economyRate =
-                  snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
+                  snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
               if (snapShot.data != null) {
                 return Row(
                   children: [
@@ -352,18 +394,33 @@ class PlayerCardWidget extends StatelessWidget {
 
   runsAndWickets(CreatePlayerModel runsWickets, int index) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-      GestureDetector(
-        onTap: () {
-          GameServices().createSelectStats(
-              selectedKey: 'runs', selectedValue: runsWickets.runs);
-          onFeatureSelect('${runsWickets.runs}-${index}');
-        },
-        child: StreamBuilder(
-          stream: getStats().onValue,
-          builder: (context, snapShot) {
-            if (snapShot.data != null) {
-              var runs = snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
-              return Row(children: [
+      StreamBuilder(
+        stream: getStats().onValue,
+        builder: (context, snapShot) {
+          if (snapShot.data != null) {
+            var runs = snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
+            return GestureDetector(
+              onTap: () {
+                log(runs['selectedValue'].toString());
+                log('New Turns');
+                GameServices().createSelectStats(
+                    selectedKey: 'runs', selectedValue: runsWickets.runs);
+                onFeatureSelect('${runsWickets.runs}-${index}');
+                if (int.parse(runs['selectedValue']) >
+                    int.parse(runsWickets.runs)) {
+                  log('You Win');
+                  log(FirebaseAuth.instance.currentUser!.uid);
+                } else {
+                  log('You Lose');
+                  runs['selectedValue'] =
+                      FirebaseAuth.instance.currentUser!.uid;
+                  runs['players'][FirebaseAuth.instance.currentUser!.uid]
+                      ['playerCharacters'];
+                  log(FirebaseAuth.instance.currentUser!.uid);
+                  // log(playerList.removeAt(index).runs.toString());
+                }
+              },
+              child: Row(children: [
                 Container(
                     width: 120.sp,
                     height: runs['selectedKey'] == 'runs' &&
@@ -399,11 +456,11 @@ class PlayerCardWidget extends StatelessWidget {
                         ),
                       ],
                     ))
-              ]);
-            }
-            return const CircularProgressIndicator();
-          },
-        ),
+              ]),
+            );
+          }
+          return const CircularProgressIndicator();
+        },
       ),
       GestureDetector(
         onTap: () {

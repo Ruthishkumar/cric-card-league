@@ -8,6 +8,7 @@ import 'package:ds_game/views/dashboard/screens/player-card.widget.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/screen_container.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,62 +30,77 @@ class _CardTemplatePageState extends State<CardTemplatePage>
       FirebaseDatabase.instance.ref('playerStats/0/firstName');
   final database = FirebaseDatabase.instance.ref("playerStats");
 
+  // @override
+  // void initState() {
+  //   getData();
+  //   _resizableController = AnimationController(
+  //       vsync: this, duration: const Duration(milliseconds: 1000));
+  //   _resizableController.addStatusListener((animationStatus) {
+  //     switch (animationStatus) {
+  //       case AnimationStatus.completed:
+  //         _resizableController.reverse();
+  //         break;
+  //       case AnimationStatus.dismissed:
+  //         _resizableController.forward();
+  //         break;
+  //       case AnimationStatus.forward:
+  //         break;
+  //       case AnimationStatus.reverse:
+  //         break;
+  //     }
+  //   });
+  //   _resizableController.forward();
+  //   super.initState();
+  //   getPlayersData();
+  // }
+
   @override
   void initState() {
     getData();
-    _resizableController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1000));
-    _resizableController.addStatusListener((animationStatus) {
-      switch (animationStatus) {
-        case AnimationStatus.completed:
-          _resizableController.reverse();
-          break;
-        case AnimationStatus.dismissed:
-          _resizableController.forward();
-          break;
-        case AnimationStatus.forward:
-          break;
-        case AnimationStatus.reverse:
-          break;
-      }
-    });
-    _resizableController.forward();
     super.initState();
-    getPlayersData();
-  }
-
-  getPlayersData() async {}
-
-  @override
-  dispose() {
-    _resizableController.dispose();
-    super.dispose();
   }
 
   List<CreatePlayerModel> playerList = [];
-  getData() {
+
+  getData() async {
     GameServices().getMyPlayer().asStream().listen((event) {
       event.onValue.listen((event) {
         dev.log("Player Details Changed");
         try {
           dev.log(event.snapshot.value.toString());
-          (event.snapshot.value as List<Object?>).forEach((e) => playerList.add(
-              CreatePlayerModel.fromJson(
-                  json.decode(json.encode(e)) as Map<String, dynamic>)));
-          playerList = event.snapshot.value as List<CreatePlayerModel>;
-          dev.log(playerList.length.toString());
-          dev.inspect('*********PlayerList***********');
+          playerList.clear();
+          if (event.snapshot.value != null) {
+            if (event.snapshot.value is List<Object?>) {
+              (event.snapshot.value as List<Object?>)
+                  .where((element) => element != null)
+                  .forEach((e) => playerList.add(CreatePlayerModel.fromJson(
+                      json.decode(json.encode(e)) as Map<String, dynamic>)));
+            } else {
+              (json.decode(json.encode(event.snapshot.value))
+                      as Map<String, Object?>)
+                  .values
+                  .where((element) => element != null)
+                  .forEach((e) => playerList.add(CreatePlayerModel.fromJson(
+                      json.decode(json.encode(e)) as Map<String, dynamic>)));
+            }
+          }
           setState(() {});
         } catch (e, stck) {
           dev.log(e.toString());
           dev.inspect(e);
           dev.inspect(stck);
+          dev.log('Error Message');
         }
       });
     });
   }
 
   String selectedPlayerFeature = '';
+
+  DatabaseReference getTotalCard() {
+    DatabaseReference refDb = FirebaseDatabase.instance.ref('Room/test');
+    return refDb;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,68 +114,97 @@ class _CardTemplatePageState extends State<CardTemplatePage>
         ),
         Center(
           child: Container(
-            padding: EdgeInsets.fromLTRB(20.sp, 10.sp, 20.sp, 20.sp),
+            padding: EdgeInsets.fromLTRB(20.sp, 40.sp, 20.sp, 20.sp),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Stack(
-                    alignment: Alignment.bottomLeft,
-                    children: [
-                      Container(
-                          width: 250.sp,
-                          decoration: BoxDecoration(
-                              color: const Color(0xffF2C94C),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16.sp))),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  StreamBuilder(
+                      stream: getTotalCard().onValue,
+                      builder: (context, snapShot) {
+                        if (snapShot.data != null) {
+                          var cards = snapShot.data?.snapshot.value
+                              as Map<dynamic, dynamic>;
+                          return Column(
                             children: [
-                              Container(
-                                  width: 57,
-                                  height: 57,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(16.sp)),
-                                      color: Colors.white),
-                                  child: const Icon(
-                                    Icons.person,
-                                    color: Colors.black,
-                                  )),
-                              Container(
-                                padding: EdgeInsets.all(16.sp),
-                                child: Text(
-                                  'Your Cards',
-                                  style: GoogleFonts.prompt(
-                                      fontWeight: FontWeight.w600,
-                                      fontStyle: FontStyle.normal,
-                                      fontSize: 15.sp,
-                                      color: Colors.white),
-                                ),
+                              Stack(
+                                alignment: Alignment.bottomLeft,
+                                children: [
+                                  Container(
+                                      width: 250.sp,
+                                      decoration: BoxDecoration(
+                                          color: const Color(0xffF2C94C),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(16.sp))),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                              width: 57,
+                                              height: 57,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              16.sp)),
+                                                  color: Colors.white),
+                                              child: const Icon(
+                                                Icons.person,
+                                                color: Colors.black,
+                                              )),
+                                          Container(
+                                            padding: EdgeInsets.all(16.sp),
+                                            child: Text(
+                                              'Your Cards',
+                                              style: GoogleFonts.prompt(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontStyle: FontStyle.normal,
+                                                  fontSize: 15.sp,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                          Container(
+                                            width: 57,
+                                            height: 57,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(16.sp)),
+                                            ),
+                                            child: Center(
+                                                child: Text(
+                                                    cards['players'][
+                                                        FirebaseAuth
+                                                            .instance
+                                                            .currentUser!
+                                                            .uid]['totalCards'],
+                                                    style: GoogleFonts.prompt(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontStyle:
+                                                            FontStyle.normal,
+                                                        fontSize: 15.sp,
+                                                        color: Colors.black))),
+                                          )
+                                        ],
+                                      )),
+                                ],
                               ),
-                              Container(
-                                width: 57,
-                                height: 57,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(16.sp)),
-                                ),
-                                child: Center(child: Consumer<NameProvider>(
-                                  builder: (widget, data, child) {
-                                    return Text(data.cardTotal.toString(),
-                                        style: GoogleFonts.prompt(
-                                            fontWeight: FontWeight.w600,
-                                            fontStyle: FontStyle.normal,
-                                            fontSize: 15.sp,
-                                            color: Colors.black));
-                                  },
-                                )),
+                              SizedBox(height: 15.sp),
+                              Text(
+                                cards['players'][FirebaseAuth.instance
+                                            .currentUser!.uid]['wonToss'] ==
+                                        true
+                                    ? 'You Select the card first'
+                                    : 'Your opponent select the card first',
+                                style: AppTextStyles.instance.tossStatus,
                               )
                             ],
-                          )),
-                    ],
-                  ),
+                          );
+                        }
+                        return CircularProgressIndicator();
+                      }),
                   SizedBox(height: 30.sp),
                   if (playerList.isNotEmpty)
                     PlayerCardWidget(
