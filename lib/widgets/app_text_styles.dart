@@ -110,4 +110,10 @@ class AppTextStyles {
       fontSize: 20.sp,
       fontStyle: FontStyle.normal,
       fontWeight: FontWeight.w600);
+
+  final TextStyle? alert = GoogleFonts.prompt(
+      color: Colors.black,
+      fontSize: 15.sp,
+      fontStyle: FontStyle.normal,
+      fontWeight: FontWeight.w500);
 }

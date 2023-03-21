@@ -175,3 +175,14 @@ class CreatePlayerModel {
       _$CreatePlayerModelFromJson(json);
   Map<String, dynamic> toJson() => _$CreatePlayerModelToJson(this);
 }
+
+@JsonSerializable()
+class GameCardModel {
+  bool gameTotalCards;
+
+  GameCardModel({required this.gameTotalCards});
+
+  factory GameCardModel.fromJson(Map<String, dynamic> json) =>
+      _$GameCardModelFromJson(json);
+  Map<String, dynamic> toJson() => _$GameCardModelToJson(this);
+}

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
@@ -9,6 +10,7 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class PlayerCardWidget extends StatelessWidget {
   final List<CreatePlayerModel> playerList;
@@ -107,26 +109,36 @@ class PlayerCardWidget extends StatelessWidget {
               var stats =
                   snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
               return GestureDetector(
-                onTap: stats['players'][FirebaseAuth.instance.currentUser!.uid]
-                            ['wonToss'] ==
-                        true
-                    ? () {
-                        onFeatureSelect('${createAvgModel.batAvg}-${index}');
-                        GameServices().createSelectStats(
-                            selectedKey: 'batAvg',
-                            selectedValue: createAvgModel.batAvg);
-                      }
-                    : () {
-                        showDialog(
-                          barrierColor: Colors.transparent,
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (BuildContext context) {
-                            return alertDialogWidget(context);
-                          },
-                        );
-                        log('You Does not Click');
-                      },
+                onTap: () {
+                  onFeatureSelect('${createAvgModel.batAvg}-${index}');
+                  GameServices().createSelectStats(
+                      selectedKey: 'batAvg',
+                      selectedValue: createAvgModel.batAvg);
+                  GameCardModel totalCardModel = GameCardModel(
+                      gameTotalCards: (double.parse(stats['selectedValue']) >
+                              double.parse(createAvgModel.batAvg))
+                          ? true
+                          : false);
+                  GameServices().cardTotal(
+                      roomId: Provider.of<GameProvider>(context, listen: false)
+                          .roomId,
+                      gameCardModel: totalCardModel);
+                  DatabaseReference reference = FirebaseDatabase.instance.ref(
+                      'Room/test/players/${FirebaseAuth.instance.currentUser!.uid}/playerCharacters/0');
+                  reference.remove();
+                  if (stats['selectedKey'] == 'batAvg' &&
+                      stats['hostId'] !=
+                          FirebaseAuth.instance.currentUser!.uid) {
+                    log('HH');
+                  } else {
+                    log('fhfhh');
+                  }
+                  // if (double.parse(stats['selectedValue']) >
+                  //     double.parse(createAvgModel.batAvg)) {
+                  //   log('You Won');
+                  // } else {
+                  // }
+                },
                 child: Row(children: [
                   Container(
                       width: 120.sp,

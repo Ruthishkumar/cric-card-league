@@ -140,3 +140,13 @@ Map<String, dynamic> _$CreatePlayerModelToJson(CreatePlayerModel instance) =>
       'topScore': instance.topScore,
       'wickets': instance.wickets,
     };
+
+GameCardModel _$GameCardModelFromJson(Map<String, dynamic> json) =>
+    GameCardModel(
+      gameTotalCards: json['gameTotalCards'] as bool,
+    );
+
+Map<String, dynamic> _$GameCardModelToJson(GameCardModel instance) =>
+    <String, dynamic>{
+      'gameTotalCards': instance.gameTotalCards,
+    };

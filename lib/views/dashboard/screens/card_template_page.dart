@@ -7,12 +7,15 @@ import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/screens/player-card.widget.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
+import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class CardTemplatePage extends StatefulWidget {
@@ -25,11 +28,6 @@ class CardTemplatePage extends StatefulWidget {
 class _CardTemplatePageState extends State<CardTemplatePage>
     with SingleTickerProviderStateMixin {
   late AnimationController _resizableController;
-
-  DatabaseReference refDb =
-      FirebaseDatabase.instance.ref('playerStats/0/firstName');
-  final database = FirebaseDatabase.instance.ref("playerStats");
-
   // @override
   // void initState() {
   //   getData();
@@ -109,6 +107,49 @@ class _CardTemplatePageState extends State<CardTemplatePage>
     return refDb;
   }
 
+  Future<bool> _onBackPressed() async {
+    return await showDialog(
+        context: context,
+        barrierColor: Colors.black54,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.sp))),
+            clipBehavior: Clip.none,
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Lottie.asset('assets/lottie_images/alert.json',
+                    width: 100, height: 100),
+                SizedBox(height: 15.sp),
+                Text('Are you sure you', style: AppTextStyles.instance.alert),
+                SizedBox(height: 4.sp),
+                Text('want to exit the game',
+                    style: AppTextStyles.instance.alert),
+                SizedBox(height: 15.sp),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ExitButton(
+                        text: 'No',
+                        color: Colors.green,
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        }),
+                    ExitButton(
+                        text: 'Yes',
+                        color: Colors.red,
+                        onPressed: () {
+                          SystemNavigator.pop();
+                        }),
+                  ],
+                )
+              ],
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScreenContainer(
@@ -172,28 +213,34 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                                             ),
                                           ),
                                           Container(
-                                            width: 57,
-                                            height: 57,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(16.sp)),
-                                            ),
-                                            child: Center(
-                                                child: Text(
-                                                    cards['players'][
-                                                        FirebaseAuth
-                                                            .instance
-                                                            .currentUser!
-                                                            .uid]['totalCards'],
-                                                    style: GoogleFonts.prompt(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        fontStyle:
-                                                            FontStyle.normal,
-                                                        fontSize: 15.sp,
-                                                        color: Colors.black))),
-                                          )
+                                              width: 57,
+                                              height: 57,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(16.sp)),
+                                              ),
+                                              child: Center(
+                                                  child: Text(
+                                                      cards['players'][FirebaseAuth
+                                                                      .instance
+                                                                      .currentUser!
+                                                                      .uid][
+                                                                  'gameTotalCards'] ==
+                                                              null
+                                                          ? cards['players']
+                                                                  [FirebaseAuth.instance.currentUser!.uid]
+                                                              ['totalCards']
+                                                          : cards['players'][FirebaseAuth.instance.currentUser!.uid]['gameTotalCards'] ==
+                                                                  true
+                                                              ? '6'
+                                                              : '4',
+                                                      style: GoogleFonts.prompt(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontStyle: FontStyle.normal,
+                                                          fontSize: 15.sp,
+                                                          color: Colors.black))))
                                         ],
                                       )),
                                 ],
@@ -210,14 +257,33 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                                           : 'Your opponent select the card first',
                                       style: AppTextStyles.instance.tossStatus,
                                     )
-                                  : Text('')
+                                  : const Text('')
                             ],
                           );
                         }
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       }),
                   SizedBox(height: 30.sp),
                   if (playerList.isNotEmpty)
+                    // StreamBuilder(
+                    //   stream: getTotalCard().onValue,
+                    //   builder: (context, snapShot) {
+                    //     if (snapShot.data != null) {
+                    //       var totalPlayersList = snapShot.data?.snapshot.value
+                    //           as Map<dynamic, dynamic>;
+                    //       return totalPlayersList['hostId'] !=
+                    //                   FirebaseAuth.instance.currentUser!.uid &&
+                    //               totalPlayersList['players'][FirebaseAuth
+                    //                       .instance
+                    //                       .currentUser!
+                    //                       .uid]['playerCharacters'] ==
+                    //                   null
+                    //           ? Text('You Lose')
+                    //           : Text('JOi');
+                    //     }
+                    //     return CircularProgressIndicator();
+                    //   },
+                    // ),
                     PlayerCardWidget(
                       playerList: playerList,
                       onFeatureSelect: (selectedFeature) {
