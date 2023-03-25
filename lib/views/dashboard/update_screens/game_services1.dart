@@ -198,17 +198,15 @@ class GameServices {
         winnerUpdated.add(value);
       }
       if (loser.isNotEmpty) {
-        winnerUpdated.add(loser);
-        log(loser[0].toString());
-        log('Looser Card Status');
+        winnerUpdated.add(loser[0]);
       }
       Map<dynamic, dynamic> winnerFinalMap = {};
-      for (int i = 1; i < winnerUpdated.length - 1; i++) {
+      for (int i = 1; i < winnerUpdated.length; i++) {
         winnerFinalMap[(i - 1).toString()] = winnerUpdated[i];
       }
+      log(winnerUpdated.toString());
+      log('Winner Card List');
       winnerFinalMap[(winnerUpdated.length - 1).toString()] = winnerUpdated[0];
-      log(winner[0].toString());
-      log('Winner Card Status');
       Map<dynamic, dynamic> loserFinalMap = {};
       for (int i = 1; i < loser.length; i++) {
         loserFinalMap[(i - 1).toString()] = loser[i];

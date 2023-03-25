@@ -48,10 +48,6 @@ class PlayerCardWidget extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(16.sp))),
             child: Column(
               children: [
-                // Text(
-                //   currentPlayer,
-                //   style: AppTextStyles.instance.ipAddress,
-                // ),
                 ...[playerList.first].map((data) {
                   if (playerList.isNotEmpty) {
                     return Column(
