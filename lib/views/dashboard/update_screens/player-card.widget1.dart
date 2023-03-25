@@ -2,12 +2,11 @@ import 'dart:developer';
 
 import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
-import 'package:ds_game/views/dashboard/services/game_services.dart';
+import 'package:ds_game/views/dashboard/update_screens/game_services1.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -16,13 +15,18 @@ class PlayerCardWidget extends StatelessWidget {
   final List<CreatePlayerModel> playerList;
   final Function(String) onFeatureSelect;
   final String selectedFeature;
+  final String currentPlayer;
+  const PlayerCardWidget(
+      {Key? key,
+      required this.playerList,
+      required this.onFeatureSelect,
+      required this.currentPlayer,
+      required this.selectedFeature})
+      : super(key: key);
 
-  const PlayerCardWidget({
-    Key? key,
-    required this.playerList,
-    required this.onFeatureSelect,
-    required this.selectedFeature,
-  }) : super(key: key);
+  canClick() {
+    return currentPlayer == FirebaseAuth.instance.currentUser!.uid;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +50,10 @@ class PlayerCardWidget extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(16.sp))),
             child: Column(
               children: [
+                Text(
+                  currentPlayer,
+                  style: AppTextStyles.instance.ipAddress,
+                ),
                 ...[playerList.first].map((data) {
                   if (playerList.isNotEmpty) {
                     return Column(
@@ -114,7 +122,8 @@ class PlayerCardWidget extends StatelessWidget {
                   onFeatureSelect('${createAvgModel.batAvg}-${index}');
                   GameServices().createSelectStats(
                       selectedKey: 'batAvg',
-                      selectedValue: createAvgModel.batAvg);
+                      selectedValue: createAvgModel.batAvg,
+                      currentPlayer: '');
                   GameCardModel totalCardModel = GameCardModel(
                       gameTotalCards: (double.parse(stats['selectedValue']) >
                               double.parse(createAvgModel.batAvg))
@@ -134,6 +143,11 @@ class PlayerCardWidget extends StatelessWidget {
                   } else {
                     log('fhfhh');
                   }
+                  // if (double.parse(stats['selectedValue']) >
+                  //     double.parse(createAvgModel.batAvg)) {
+                  //   log('You Won');
+                  // } else {
+                  // }
                 },
                 child: Row(children: [
                   Container(
@@ -176,12 +190,15 @@ class PlayerCardWidget extends StatelessWidget {
           },
         ),
         GestureDetector(
-            onTap: () {
-              GameServices().createSelectStats(
-                  selectedKey: 'bowlAvg',
-                  selectedValue: createAvgModel.bowlAvg);
-              onFeatureSelect('${createAvgModel.bowlAvg}-${index}');
-            },
+            onTap: !canClick()
+                ? null
+                : () {
+                    GameServices().createSelectStats(
+                        selectedKey: 'bowlAvg',
+                        selectedValue: createAvgModel.bowlAvg,
+                        currentPlayer: currentPlayer);
+                    onFeatureSelect('${createAvgModel.bowlAvg}-${index}');
+                  },
             child: StreamBuilder(
               stream: getStats().onValue,
               builder: (context, snapShot) {
@@ -243,11 +260,15 @@ class PlayerCardWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         GestureDetector(
-          onTap: () {
-            GameServices().createSelectStats(
-                selectedKey: 'strRate', selectedValue: seData.strikeRate);
-            onFeatureSelect('${seData.strikeRate}-${index}');
-          },
+          onTap: !canClick()
+              ? null
+              : () {
+                  GameServices().createSelectStats(
+                      selectedKey: 'strRate',
+                      selectedValue: seData.strikeRate,
+                      currentPlayer: currentPlayer);
+                  onFeatureSelect('${seData.strikeRate}-${index}');
+                },
           child: StreamBuilder(
             stream: getStats().onValue,
             builder: (context, snapShot) {
@@ -302,11 +323,15 @@ class PlayerCardWidget extends StatelessWidget {
         ),
         SizedBox(height: 10.sp),
         GestureDetector(
-          onTap: () {
-            GameServices().createSelectStats(
-                selectedKey: 'ecoRate', selectedValue: seData.economyRate);
-            onFeatureSelect('${seData.economyRate}-${index}');
-          },
+          onTap: !canClick()
+              ? null
+              : () {
+                  GameServices().createSelectStats(
+                      selectedKey: 'ecoRate',
+                      selectedValue: seData.economyRate,
+                      currentPlayer: currentPlayer);
+                  onFeatureSelect('${seData.economyRate}-${index}');
+                },
           child: StreamBuilder(
             stream: getStats().onValue,
             builder: (context, snapShot) {
@@ -333,8 +358,7 @@ class PlayerCardWidget extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          FittedBox(
-                            fit: BoxFit.contain,
+                          Center(
                             child: Text(
                               'Eco.Rate : ${seData.economyRate}',
                               style: AppTextStyles.instance.playersStats,
@@ -371,26 +395,30 @@ class PlayerCardWidget extends StatelessWidget {
           if (snapShot.data != null) {
             var runs = snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
             return GestureDetector(
-              onTap: () {
-                log(runs['selectedValue'].toString());
-                log('New Turns');
-                GameServices().createSelectStats(
-                    selectedKey: 'runs', selectedValue: runsWickets.runs);
-                onFeatureSelect('${runsWickets.runs}-${index}');
-                if (int.parse(runs['selectedValue']) >
-                    int.parse(runsWickets.runs)) {
-                  log('You Win');
-                  log(FirebaseAuth.instance.currentUser!.uid);
-                } else {
-                  log('You Lose');
-                  runs['selectedValue'] =
-                      FirebaseAuth.instance.currentUser!.uid;
-                  runs['players'][FirebaseAuth.instance.currentUser!.uid]
-                      ['playerCharacters'];
-                  log(FirebaseAuth.instance.currentUser!.uid);
-                  // log(playerList.removeAt(index).runs.toString());
-                }
-              },
+              onTap: !canClick()
+                  ? null
+                  : () {
+                      log(runs['selectedValue'].toString());
+                      log('New Turns');
+                      GameServices().createSelectStats(
+                          selectedKey: 'runs',
+                          selectedValue: runsWickets.runs,
+                          currentPlayer: currentPlayer);
+                      onFeatureSelect('${runsWickets.runs}-${index}');
+                      if (int.parse(runs['selectedValue']) >
+                          int.parse(runsWickets.runs)) {
+                        log('You Win');
+                        log(FirebaseAuth.instance.currentUser!.uid);
+                      } else {
+                        log('You Lose');
+                        runs['selectedValue'] =
+                            FirebaseAuth.instance.currentUser!.uid;
+                        runs['players'][FirebaseAuth.instance.currentUser!.uid]
+                            ['playerCharacters'];
+                        log(FirebaseAuth.instance.currentUser!.uid);
+                        // log(playerList.removeAt(index).runs.toString());
+                      }
+                    },
               child: Row(children: [
                 Container(
                     width: 120.sp,
@@ -430,11 +458,15 @@ class PlayerCardWidget extends StatelessWidget {
         },
       ),
       GestureDetector(
-        onTap: () {
-          GameServices().createSelectStats(
-              selectedKey: 'wickets', selectedValue: runsWickets.wickets);
-          onFeatureSelect('${runsWickets.wickets}-${index}');
-        },
+        onTap: !canClick()
+            ? null
+            : () {
+                GameServices().createSelectStats(
+                    selectedKey: 'wickets',
+                    selectedValue: runsWickets.wickets,
+                    currentPlayer: currentPlayer);
+                onFeatureSelect('${runsWickets.wickets}-${index}');
+              },
         child: StreamBuilder(
           stream: getStats().onValue,
           builder: (context, snapShot) {
@@ -485,11 +517,15 @@ class PlayerCardWidget extends StatelessWidget {
 
   highScore(CreatePlayerModel highScore, int index) {
     return GestureDetector(
-        onTap: () {
-          GameServices().createSelectStats(
-              selectedKey: 'topScore', selectedValue: highScore.topScore);
-          onFeatureSelect('${highScore.topScore}-${index}');
-        },
+        onTap: !canClick()
+            ? null
+            : () {
+                GameServices().createSelectStats(
+                    selectedKey: 'topScore',
+                    selectedValue: highScore.topScore,
+                    currentPlayer: currentPlayer);
+                onFeatureSelect('${highScore.topScore}-${index}');
+              },
         child: StreamBuilder(
           stream: getStats().onValue,
           builder: (context, snapShot) {
