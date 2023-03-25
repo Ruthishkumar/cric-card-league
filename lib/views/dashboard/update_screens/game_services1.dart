@@ -135,100 +135,98 @@ class GameServices {
       {required String selectedKey,
       required String selectedValue,
       required String currentPlayer}) async {
-    DatabaseEvent snap =
-        await FirebaseDatabase.instance.ref('Room').child('test').once();
-    // DatabaseEvent snap = await reference.child('players').once();
-    var map =
-        Map<String, dynamic>.from(snap.snapshot.value as Map<dynamic, dynamic>);
-    var playerAValue = "0";
-    var playerBValue = "0";
-    var playerAId = map['hostId'];
-    print(map['players'][map['hostId']]);
-    var playerACharacter = (map['players'][map['hostId']]
-        as Map<String, dynamic>)['playerCharacters'];
-    if (playerACharacter.isNotEmpty) {
-      playerAValue = playerACharacter[0][selectedKey];
-    }
-    var playerBId = (map['players'] as Map<dynamic, dynamic>)
-        .keys
-        .where((element) => element != map['hostId'])
-        .toList()[0];
-    var playerBcharacter =
-        (map['players'][playerBId] as Map<String, dynamic>)['playerCharacters'];
-    if (playerBcharacter.isNotEmpty) {
-      playerBValue = playerBcharacter[0][selectedKey];
-    }
-    var isPlayerAWon = double.parse(playerAValue) > double.parse(playerBValue);
-    if (isPlayerAWon) {
-      var playerANewArray = [];
-      (playerACharacter).forEach((value) {
-        playerANewArray.add(value);
+    try {
+      DatabaseEvent snap =
+          await FirebaseDatabase.instance.ref('Room').child('test').once();
+      var map = Map<dynamic, dynamic>.from(
+          snap.snapshot.value as Map<dynamic, dynamic>);
+      var playerAValue = "0";
+      var playerBValue = "0";
+      var playerAId = map['hostId'];
+      var playerACharacter = (map['players'][map['hostId']]
+          as Map<dynamic, dynamic>)['playerCharacters'];
+      if (playerACharacter.isNotEmpty) {
+        playerAValue = playerACharacter[0][selectedKey];
+      }
+      var playerBId = (map['players'] as Map<dynamic, dynamic>)
+          .keys
+          .where((element) => element != map['hostId'])
+          .toList()[0];
+      var playerBCharacter = (map['players'][playerBId]
+          as Map<dynamic, dynamic>)['playerCharacters'];
+      if (playerBCharacter.isNotEmpty) {
+        playerBValue = playerBCharacter[0][selectedKey];
+      }
+      var isPlayerAWon =
+          double.parse(playerAValue) > double.parse(playerBValue);
+      if (isPlayerAWon) {
+        Future.delayed(const Duration(seconds: 1), () async {
+          movePlayer(
+              loser: playerBCharacter,
+              winner: playerACharacter,
+              winnerId: playerAId,
+              loserId: playerBId);
+        });
+      } else {
+        Future.delayed(const Duration(seconds: 1), () async {
+          movePlayer(
+              loser: playerACharacter,
+              winner: playerBCharacter,
+              winnerId: playerBId,
+              loserId: playerAId);
+        });
+      }
+      return FirebaseDatabase.instance.ref('Room').child('test').update({
+        'selectedKey': selectedKey,
+        'selectedValue': selectedValue,
+        'currentPlayer': isPlayerAWon ? map['hostId'] : playerBId
       });
-      if (playerBcharacter.isNotEmpty) {
-        playerANewArray.add(playerBcharacter[0]);
-      }
-      Map<String, dynamic> finalMap = {};
-      for (int i = 1; i < playerANewArray.length - 1; i++) {
-        finalMap[(i - 1).toString()] = playerANewArray[i];
-      }
-      finalMap[(playerANewArray.length - 1).toString()] = playerANewArray[0];
-
-      Map<String, dynamic> playerBfinalMap = {};
-      for (int i = 1; i < playerBcharacter.length; i++) {
-        playerBfinalMap[(i - 1).toString()] = playerBcharacter[i];
-      }
-      await FirebaseDatabase.instance
-          .ref('Room')
-          .child('test')
-          .child('players')
-          .child(playerBId)
-          .child('playerCharacters')
-          .set(playerBfinalMap);
-      await FirebaseDatabase.instance
-          .ref('Room')
-          .child('test')
-          .child('players')
-          .child(playerBId)
-          .child('playerCharacters')
-          .set(finalMap);
-    } else {
-      var playerBNewArray = [];
-      (playerBcharacter).forEach((value) {
-        playerBNewArray.add(value);
-      });
-      if (playerBcharacter.isNotEmpty) {
-        playerBNewArray.add(playerACharacter[0]);
-      }
-      Map<String, dynamic> finalMap = {};
-      for (int i = 1; i < playerBNewArray.length - 1; i++) {
-        finalMap[(i - 1).toString()] = playerBNewArray[i];
-      }
-      finalMap[(playerBNewArray.length - 1).toString()] = playerBNewArray[0];
-
-      Map<String, dynamic> playerAfinalMap = {};
-      for (int i = 1; i < playerACharacter.length; i++) {
-        playerAfinalMap[(i - 1).toString()] = playerACharacter[i];
-      }
-      await FirebaseDatabase.instance
-          .ref('Room')
-          .child('test')
-          .child('players')
-          .child(playerAId)
-          .child('playerCharacters')
-          .set(playerAfinalMap);
-      await FirebaseDatabase.instance
-          .ref('Room')
-          .child('test')
-          .child('players')
-          .child(playerBId)
-          .child('playerCharacters')
-          .set(finalMap);
+    } catch (e, stack) {
+      log(e.toString());
+      log(stack.toString());
     }
+  }
 
-    return FirebaseDatabase.instance.ref('Room').child('test').update({
-      'selectedKey': selectedKey,
-      'selectedValue': selectedValue,
-      'currentPlayer': isPlayerAWon ? map['hostId'] : playerBId
+  void movePlayer(
+      {required List<dynamic> loser,
+      required List<dynamic> winner,
+      required String winnerId,
+      required String loserId}) {
+    Future.delayed(const Duration(seconds: 2), () async {
+      var winnerUpdated = [];
+      for (var value in winner) {
+        winnerUpdated.add(value);
+      }
+      if (loser.isNotEmpty) {
+        winnerUpdated.add(loser);
+        log(loser[0].toString());
+        log('Looser Card Status');
+      }
+      Map<dynamic, dynamic> winnerFinalMap = {};
+      for (int i = 1; i < winnerUpdated.length - 1; i++) {
+        winnerFinalMap[(i - 1).toString()] = winnerUpdated[i];
+      }
+      winnerFinalMap[(winnerUpdated.length - 1).toString()] = winnerUpdated[0];
+      log(winner[0].toString());
+      log('Winner Card Status');
+      Map<dynamic, dynamic> loserFinalMap = {};
+      for (int i = 1; i < loser.length; i++) {
+        loserFinalMap[(i - 1).toString()] = loser[i];
+      }
+      await FirebaseDatabase.instance
+          .ref('Room')
+          .child('test')
+          .child('players')
+          .child(winnerId)
+          .child('playerCharacters')
+          .set(winnerFinalMap);
+      await FirebaseDatabase.instance
+          .ref('Room')
+          .child('test')
+          .child('players')
+          .child(loserId)
+          .child('playerCharacters')
+          .set(loserFinalMap);
     });
   }
 

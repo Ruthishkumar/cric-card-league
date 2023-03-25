@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/update_screens/game_services1.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
@@ -9,7 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 
 class PlayerCardWidget extends StatelessWidget {
   final List<CreatePlayerModel> playerList;
@@ -50,10 +48,10 @@ class PlayerCardWidget extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(16.sp))),
             child: Column(
               children: [
-                Text(
-                  currentPlayer,
-                  style: AppTextStyles.instance.ipAddress,
-                ),
+                // Text(
+                //   currentPlayer,
+                //   style: AppTextStyles.instance.ipAddress,
+                // ),
                 ...[playerList.first].map((data) {
                   if (playerList.isNotEmpty) {
                     return Column(
@@ -118,37 +116,22 @@ class PlayerCardWidget extends StatelessWidget {
               var stats =
                   snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
               return GestureDetector(
-                onTap: () {
-                  onFeatureSelect('${createAvgModel.batAvg}-${index}');
-                  GameServices().createSelectStats(
-                      selectedKey: 'batAvg',
-                      selectedValue: createAvgModel.batAvg,
-                      currentPlayer: '');
-                  GameCardModel totalCardModel = GameCardModel(
-                      gameTotalCards: (double.parse(stats['selectedValue']) >
-                              double.parse(createAvgModel.batAvg))
-                          ? true
-                          : false);
-                  GameServices().cardTotal(
-                      roomId: Provider.of<GameProvider>(context, listen: false)
-                          .roomId,
-                      gameCardModel: totalCardModel);
-                  DatabaseReference reference = FirebaseDatabase.instance.ref(
-                      'Room/test/players/${FirebaseAuth.instance.currentUser!.uid}/playerCharacters/0');
-                  reference.remove();
-                  if (stats['selectedKey'] == 'batAvg' &&
-                      stats['hostId'] !=
-                          FirebaseAuth.instance.currentUser!.uid) {
-                    log('HH');
-                  } else {
-                    log('fhfhh');
-                  }
-                  // if (double.parse(stats['selectedValue']) >
-                  //     double.parse(createAvgModel.batAvg)) {
-                  //   log('You Won');
-                  // } else {
-                  // }
-                },
+                onTap: canClick()
+                    ? () {
+                        showDialog(
+                            barrierColor: Colors.black87,
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alertDialogWidget(context);
+                            });
+                      }
+                    : () {
+                        GameServices().createSelectStats(
+                            selectedKey: 'batAvg',
+                            selectedValue: createAvgModel.batAvg,
+                            currentPlayer: currentPlayer);
+                      },
                 child: Row(children: [
                   Container(
                       width: 120.sp,
@@ -189,68 +172,77 @@ class PlayerCardWidget extends StatelessWidget {
             return const CircularProgressIndicator();
           },
         ),
-        GestureDetector(
-            onTap: !canClick()
-                ? null
-                : () {
-                    GameServices().createSelectStats(
-                        selectedKey: 'bowlAvg',
-                        selectedValue: createAvgModel.bowlAvg,
-                        currentPlayer: currentPlayer);
-                    onFeatureSelect('${createAvgModel.bowlAvg}-${index}');
-                  },
-            child: StreamBuilder(
-              stream: getStats().onValue,
-              builder: (context, snapShot) {
-                if (snapShot.data != null) {
-                  var bowlingAvg =
-                      snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-                  return Row(
-                    children: [
-                      Container(
-                        width: 120.sp,
-                        height: 65.sp,
-                        padding: EdgeInsets.all(8.sp),
-                        decoration: BoxDecoration(
-                            color: bowlingAvg['selectedKey'] == 'bowlAvg' &&
-                                    bowlingAvg['hostId'] !=
-                                        FirebaseAuth.instance.currentUser!.uid
-                                ? Colors.red
-                                : selectedFeature ==
-                                        '${createAvgModel.bowlAvg}-${index}'
-                                    ? Colors.green
-                                    : const Color(0xff243b55),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.sp))),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            FittedBox(
-                              fit: BoxFit.contain,
-                              child: Text(
-                                'Bowl Avg : ${createAvgModel.bowlAvg}',
-                                style: AppTextStyles.instance.playersStats,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            Text(
-                              bowlingAvg['selectedKey'] == 'bowlAvg' &&
-                                      bowlingAvg['hostId'] !=
-                                          FirebaseAuth.instance.currentUser!.uid
-                                  ? 'vs ${bowlingAvg['selectedValue']}'
-                                  : '',
-                              style: AppTextStyles.instance.playersStat1,
+        StreamBuilder(
+          stream: getStats().onValue,
+          builder: (context, snapShot) {
+            if (snapShot.data != null) {
+              var bowlingAvg =
+                  snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
+              return GestureDetector(
+                onTap: canClick()
+                    ? () {
+                        showDialog(
+                            barrierColor: Colors.black87,
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alertDialogWidget(context);
+                            });
+                      }
+                    : () {
+                        GameServices().createSelectStats(
+                            selectedKey: 'bowlAvg',
+                            selectedValue: createAvgModel.bowlAvg,
+                            currentPlayer: currentPlayer);
+                        onFeatureSelect('${createAvgModel.bowlAvg}-${index}');
+                      },
+                child: Row(
+                  children: [
+                    Container(
+                      width: 120.sp,
+                      height: 65.sp,
+                      padding: EdgeInsets.all(8.sp),
+                      decoration: BoxDecoration(
+                          color: bowlingAvg['selectedKey'] == 'bowlAvg' &&
+                                  bowlingAvg['hostId'] !=
+                                      FirebaseAuth.instance.currentUser!.uid
+                              ? Colors.red
+                              : selectedFeature ==
+                                      '${createAvgModel.bowlAvg}-${index}'
+                                  ? Colors.green
+                                  : const Color(0xff243b55),
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(12.sp))),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text(
+                              'Bowl Avg : ${createAvgModel.bowlAvg}',
+                              style: AppTextStyles.instance.playersStats,
                               textAlign: TextAlign.center,
                             ),
-                          ],
-                        ),
+                          ),
+                          Text(
+                            bowlingAvg['selectedKey'] == 'bowlAvg' &&
+                                    bowlingAvg['hostId'] !=
+                                        FirebaseAuth.instance.currentUser!.uid
+                                ? 'vs ${bowlingAvg['selectedValue']}'
+                                : '',
+                            style: AppTextStyles.instance.playersStat1,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ),
-                    ],
-                  );
-                }
-                return const CircularProgressIndicator();
-              },
-            )),
+                    ),
+                  ],
+                ),
+              );
+            }
+            return const CircularProgressIndicator();
+          },
+        ),
       ],
     );
   }
@@ -259,23 +251,31 @@ class PlayerCardWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        GestureDetector(
-          onTap: !canClick()
-              ? null
-              : () {
-                  GameServices().createSelectStats(
-                      selectedKey: 'strRate',
-                      selectedValue: seData.strikeRate,
-                      currentPlayer: currentPlayer);
-                  onFeatureSelect('${seData.strikeRate}-${index}');
-                },
-          child: StreamBuilder(
-            stream: getStats().onValue,
-            builder: (context, snapShot) {
-              if (snapShot.data != null) {
-                var strikeRate =
-                    snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
-                return Row(
+        StreamBuilder(
+          stream: getStats().onValue,
+          builder: (context, snapShot) {
+            if (snapShot.data != null) {
+              var strikeRate =
+                  snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
+              return GestureDetector(
+                onTap: canClick()
+                    ? () {
+                        showDialog(
+                            barrierColor: Colors.black87,
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alertDialogWidget(context);
+                            });
+                      }
+                    : () {
+                        GameServices().createSelectStats(
+                            selectedKey: 'strRate',
+                            selectedValue: seData.strikeRate,
+                            currentPlayer: currentPlayer);
+                        onFeatureSelect('${seData.strikeRate}-${index}');
+                      },
+                child: Row(
                   children: [
                     Container(
                       width: 120.sp,
@@ -315,30 +315,38 @@ class PlayerCardWidget extends StatelessWidget {
                       ),
                     ),
                   ],
-                );
-              }
-              return const CircularProgressIndicator();
-            },
-          ),
+                ),
+              );
+            }
+            return const CircularProgressIndicator();
+          },
         ),
         SizedBox(height: 10.sp),
-        GestureDetector(
-          onTap: !canClick()
-              ? null
-              : () {
-                  GameServices().createSelectStats(
-                      selectedKey: 'ecoRate',
-                      selectedValue: seData.economyRate,
-                      currentPlayer: currentPlayer);
-                  onFeatureSelect('${seData.economyRate}-${index}');
-                },
-          child: StreamBuilder(
-            stream: getStats().onValue,
-            builder: (context, snapShot) {
-              var economyRate =
-                  snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-              if (snapShot.data != null) {
-                return Row(
+        StreamBuilder(
+          stream: getStats().onValue,
+          builder: (context, snapShot) {
+            var economyRate =
+                snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
+            if (snapShot.data != null) {
+              return GestureDetector(
+                onTap: canClick()
+                    ? () {
+                        showDialog(
+                            barrierColor: Colors.black87,
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alertDialogWidget(context);
+                            });
+                      }
+                    : () {
+                        GameServices().createSelectStats(
+                            selectedKey: 'ecoRate',
+                            selectedValue: seData.economyRate,
+                            currentPlayer: currentPlayer);
+                        onFeatureSelect('${seData.economyRate}-${index}');
+                      },
+                child: Row(
                   children: [
                     Container(
                       width: 120.sp,
@@ -358,7 +366,8 @@ class PlayerCardWidget extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Center(
+                          FittedBox(
+                            fit: BoxFit.contain,
                             child: Text(
                               'Eco.Rate : ${seData.economyRate}',
                               style: AppTextStyles.instance.playersStats,
@@ -377,11 +386,11 @@ class PlayerCardWidget extends StatelessWidget {
                       ),
                     ),
                   ],
-                );
-              }
-              return const CircularProgressIndicator();
-            },
-          ),
+                ),
+              );
+            }
+            return const CircularProgressIndicator();
+          },
         ),
       ],
     );
@@ -395,8 +404,16 @@ class PlayerCardWidget extends StatelessWidget {
           if (snapShot.data != null) {
             var runs = snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
             return GestureDetector(
-              onTap: !canClick()
-                  ? null
+              onTap: canClick()
+                  ? () {
+                      showDialog(
+                          barrierColor: Colors.black87,
+                          barrierDismissible: true,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return alertDialogWidget(context);
+                          });
+                    }
                   : () {
                       log(runs['selectedValue'].toString());
                       log('New Turns');
@@ -405,19 +422,6 @@ class PlayerCardWidget extends StatelessWidget {
                           selectedValue: runsWickets.runs,
                           currentPlayer: currentPlayer);
                       onFeatureSelect('${runsWickets.runs}-${index}');
-                      if (int.parse(runs['selectedValue']) >
-                          int.parse(runsWickets.runs)) {
-                        log('You Win');
-                        log(FirebaseAuth.instance.currentUser!.uid);
-                      } else {
-                        log('You Lose');
-                        runs['selectedValue'] =
-                            FirebaseAuth.instance.currentUser!.uid;
-                        runs['players'][FirebaseAuth.instance.currentUser!.uid]
-                            ['playerCharacters'];
-                        log(FirebaseAuth.instance.currentUser!.uid);
-                        // log(playerList.removeAt(index).runs.toString());
-                      }
                     },
               child: Row(children: [
                 Container(
@@ -457,23 +461,31 @@ class PlayerCardWidget extends StatelessWidget {
           return const CircularProgressIndicator();
         },
       ),
-      GestureDetector(
-        onTap: !canClick()
-            ? null
-            : () {
-                GameServices().createSelectStats(
-                    selectedKey: 'wickets',
-                    selectedValue: runsWickets.wickets,
-                    currentPlayer: currentPlayer);
-                onFeatureSelect('${runsWickets.wickets}-${index}');
-              },
-        child: StreamBuilder(
-          stream: getStats().onValue,
-          builder: (context, snapShot) {
-            if (snapShot.data != null) {
-              var wickets =
-                  snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
-              return Row(children: [
+      StreamBuilder(
+        stream: getStats().onValue,
+        builder: (context, snapShot) {
+          if (snapShot.data != null) {
+            var wickets =
+                snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
+            return GestureDetector(
+              onTap: canClick()
+                  ? () {
+                      showDialog(
+                          barrierColor: Colors.black87,
+                          barrierDismissible: true,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return alertDialogWidget(context);
+                          });
+                    }
+                  : () {
+                      GameServices().createSelectStats(
+                          selectedKey: 'wickets',
+                          selectedValue: runsWickets.wickets,
+                          currentPlayer: currentPlayer);
+                      onFeatureSelect('${runsWickets.wickets}-${index}');
+                    },
+              child: Row(children: [
                 Container(
                   width: 120.sp,
                   height: 65.sp,
@@ -506,65 +518,73 @@ class PlayerCardWidget extends StatelessWidget {
                     ],
                   ),
                 )
-              ]);
-            }
-            return const CircularProgressIndicator();
-          },
-        ),
+              ]),
+            );
+          }
+          return const CircularProgressIndicator();
+        },
       )
     ]);
   }
 
   highScore(CreatePlayerModel highScore, int index) {
-    return GestureDetector(
-        onTap: !canClick()
-            ? null
-            : () {
-                GameServices().createSelectStats(
-                    selectedKey: 'topScore',
-                    selectedValue: highScore.topScore,
-                    currentPlayer: currentPlayer);
-                onFeatureSelect('${highScore.topScore}-${index}');
-              },
-        child: StreamBuilder(
-          stream: getStats().onValue,
-          builder: (context, snapShot) {
-            if (snapShot.data != null) {
-              var topScore =
-                  snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
-              return Container(
-                  width: 300.sp,
-                  height: 65.sp,
-                  padding: EdgeInsets.all(8.sp),
-                  decoration: BoxDecoration(
-                      color: topScore['selectedKey'] == 'topScore' &&
-                              topScore['hostId'] !=
-                                  FirebaseAuth.instance.currentUser!.uid
-                          ? Colors.red
-                          : selectedFeature == '${highScore.topScore}-${index}'
-                              ? Colors.green
-                              : const Color(0xff243b55),
-                      borderRadius: BorderRadius.all(Radius.circular(12.sp))),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Top Score : ${highScore.topScore}',
-                          style: AppTextStyles.instance.playersStats),
-                      Text(
-                        topScore['selectedKey'] == 'topScore' &&
-                                topScore['hostId'] !=
-                                    FirebaseAuth.instance.currentUser!.uid
-                            ? 'vs ${topScore['selectedValue']}'
-                            : '',
-                        style: AppTextStyles.instance.playersStat1,
-                        textAlign: TextAlign.center,
-                      )
-                    ],
-                  ));
-            }
-            return const CircularProgressIndicator();
-          },
-        ));
+    return StreamBuilder(
+      stream: getStats().onValue,
+      builder: (context, snapShot) {
+        if (snapShot.data != null) {
+          var topScore = snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
+          return GestureDetector(
+            onTap: canClick()
+                ? () {
+                    showDialog(
+                        barrierColor: Colors.black87,
+                        barrierDismissible: true,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return alertDialogWidget(context);
+                        });
+                  }
+                : () {
+                    GameServices().createSelectStats(
+                        selectedKey: 'topScore',
+                        selectedValue: highScore.topScore,
+                        currentPlayer: currentPlayer);
+                    onFeatureSelect('${highScore.topScore}-${index}');
+                  },
+            child: Container(
+                width: 300.sp,
+                height: 65.sp,
+                padding: EdgeInsets.all(8.sp),
+                decoration: BoxDecoration(
+                    color: topScore['selectedKey'] == 'topScore' &&
+                            topScore['hostId'] !=
+                                FirebaseAuth.instance.currentUser!.uid
+                        ? Colors.red
+                        : selectedFeature == '${highScore.topScore}-${index}'
+                            ? Colors.green
+                            : const Color(0xff243b55),
+                    borderRadius: BorderRadius.all(Radius.circular(12.sp))),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Top Score : ${highScore.topScore}',
+                        style: AppTextStyles.instance.playersStats),
+                    // Text(
+                    //   topScore['selectedKey'] == 'topScore' &&
+                    //           topScore['hostId'] !=
+                    //               FirebaseAuth.instance.currentUser!.uid
+                    //       ? 'vs ${topScore['selectedValue']}'
+                    //       : '',
+                    //   style: AppTextStyles.instance.playersStat1,
+                    //   textAlign: TextAlign.center,
+                    // )
+                  ],
+                )),
+          );
+        }
+        return const CircularProgressIndicator();
+      },
+    );
   }
 
   playerHeaderWidget(CreatePlayerModel playerHeaderData) {
@@ -584,7 +604,7 @@ class PlayerCardWidget extends StatelessWidget {
                 style: AppTextStyles.instance.countryName),
           ]),
           Image.asset('assets/images/Virat-Kohli-T20I2020.png',
-              height: 150.sp, width: 130.sp)
+              height: 70.sp, width: 70.sp)
         ],
       ),
     );
