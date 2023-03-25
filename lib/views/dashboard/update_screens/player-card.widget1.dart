@@ -26,79 +26,98 @@ class PlayerCardWidget extends StatelessWidget {
     return currentPlayer == FirebaseAuth.instance.currentUser!.uid;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 250.sp,
-      decoration: BoxDecoration(
-          color: const Color(0xff243b55),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.white70.withOpacity(0.3), //New
-                blurRadius: 5.0,
-                spreadRadius: 5.0)
-          ],
-          borderRadius: BorderRadius.all(Radius.circular(16.sp))),
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-                color: const Color(0xff243b55),
-                borderRadius: BorderRadius.all(Radius.circular(16.sp))),
-            child: Column(
-              children: [
-                ...[playerList.first].map((data) {
-                  if (playerList.isNotEmpty) {
-                    return Column(
-                      children: [
-                        playerHeaderWidget(data),
-                        Container(
-                          width: 300.sp,
-                          decoration: BoxDecoration(
-                              color: const Color(0xff243b55),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16.sp))),
-                          child: Column(
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.fromLTRB(
-                                    2.sp, 12.sp, 2.sp, 12.sp),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(16.sp))),
-                                child: Column(children: [
-                                  avgWidget(data, data.toJson().length),
-                                  SizedBox(height: 10.sp),
-                                  strikeAndEconomyWidget(
-                                      data, data.toJson().length),
-                                  SizedBox(height: 10.sp),
-                                  runsAndWickets(data, data.toJson().length),
-                                  SizedBox(height: 10.sp),
-                                  highScore(data, data.toJson().length),
-                                ]),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    );
-                  }
-                  return const CircularProgressIndicator();
-                })
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   DatabaseReference getStats() {
     DatabaseReference refDb = FirebaseDatabase.instance.ref('Room/test');
     return refDb;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: 250.sp,
+          decoration: BoxDecoration(
+              color: const Color(0xff243b55),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.white70.withOpacity(0.3), //New
+                    blurRadius: 5.0,
+                    spreadRadius: 5.0)
+              ],
+              borderRadius: BorderRadius.all(Radius.circular(16.sp))),
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    color: const Color(0xff243b55),
+                    borderRadius: BorderRadius.all(Radius.circular(16.sp))),
+                child: Column(
+                  children: [
+                    ...[playerList.first].map((data) {
+                      if (playerList.isNotEmpty) {
+                        return Column(
+                          children: [
+                            playerHeaderWidget(data),
+                            Container(
+                              width: 300.sp,
+                              decoration: BoxDecoration(
+                                  color: const Color(0xff243b55),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(16.sp))),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.fromLTRB(
+                                        2.sp, 12.sp, 2.sp, 12.sp),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(16.sp))),
+                                    child: Column(children: [
+                                      avgWidget(data, data.toJson().length),
+                                      SizedBox(height: 10.sp),
+                                      strikeAndEconomyWidget(
+                                          data, data.toJson().length),
+                                      SizedBox(height: 10.sp),
+                                      runsAndWickets(
+                                          data, data.toJson().length),
+                                      SizedBox(height: 10.sp),
+                                      highScore(data, data.toJson().length),
+                                    ]),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      return const CircularProgressIndicator();
+                    })
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 10.sp),
+        StreamBuilder(
+            stream: getStats().onValue,
+            builder: (context, snapShot) {
+              if (snapShot.data != null) {
+                var getWon =
+                    snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
+                return Text(
+                  currentPlayer == getWon['hostId'] ? 'You Won' : 'You Loss',
+                  style: AppTextStyles.instance.tossStatus,
+                );
+              }
+              return const CircularProgressIndicator();
+            })
+      ],
+    );
   }
 
   avgWidget(CreatePlayerModel createAvgModel, int index) {
@@ -110,8 +129,8 @@ class PlayerCardWidget extends StatelessWidget {
           builder: (context, snapShot) {
             if (snapShot.data != null) {
               var stats =
-                  snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-              return GestureDetector(
+                  snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
+              return InkWell(
                 onTap: canClick()
                     ? () {
                         showDialog(
@@ -126,7 +145,7 @@ class PlayerCardWidget extends StatelessWidget {
                         GameServices().createSelectStats(
                             selectedKey: 'batAvg',
                             selectedValue: createAvgModel.batAvg,
-                            currentPlayer: currentPlayer);
+                            currentPlayer: '');
                       },
                 child: Row(children: [
                   Container(
@@ -134,14 +153,10 @@ class PlayerCardWidget extends StatelessWidget {
                       height: 65.sp,
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
-                          color: stats['selectedKey'] == 'batAvg' &&
-                                  stats['hostId'] !=
-                                      FirebaseAuth.instance.currentUser!.uid
-                              ? Colors.red
-                              : selectedFeature ==
-                                      '${createAvgModel.batAvg}-${index}'
-                                  ? Colors.green
-                                  : const Color(0xff243b55),
+                          color: selectedFeature ==
+                                  '${createAvgModel.batAvg}-${index}'
+                              ? Colors.green
+                              : const Color(0xff243b55),
                           borderRadius:
                               BorderRadius.all(Radius.circular(12.sp))),
                       child: Column(
@@ -174,7 +189,7 @@ class PlayerCardWidget extends StatelessWidget {
             if (snapShot.data != null) {
               var bowlingAvg =
                   snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-              return GestureDetector(
+              return InkWell(
                 onTap: canClick()
                     ? () {
                         showDialog(
@@ -253,7 +268,7 @@ class PlayerCardWidget extends StatelessWidget {
             if (snapShot.data != null) {
               var strikeRate =
                   snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
-              return GestureDetector(
+              return InkWell(
                 onTap: canClick()
                     ? () {
                         showDialog(
@@ -324,7 +339,7 @@ class PlayerCardWidget extends StatelessWidget {
             var economyRate =
                 snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
             if (snapShot.data != null) {
-              return GestureDetector(
+              return InkWell(
                 onTap: canClick()
                     ? () {
                         showDialog(
@@ -399,7 +414,7 @@ class PlayerCardWidget extends StatelessWidget {
         builder: (context, snapShot) {
           if (snapShot.data != null) {
             var runs = snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
-            return GestureDetector(
+            return InkWell(
               onTap: canClick()
                   ? () {
                       showDialog(
@@ -463,7 +478,7 @@ class PlayerCardWidget extends StatelessWidget {
           if (snapShot.data != null) {
             var wickets =
                 snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
-            return GestureDetector(
+            return InkWell(
               onTap: canClick()
                   ? () {
                       showDialog(
@@ -529,7 +544,7 @@ class PlayerCardWidget extends StatelessWidget {
       builder: (context, snapShot) {
         if (snapShot.data != null) {
           var topScore = snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
-          return GestureDetector(
+          return InkWell(
             onTap: canClick()
                 ? () {
                     showDialog(

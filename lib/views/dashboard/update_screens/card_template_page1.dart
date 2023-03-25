@@ -117,6 +117,11 @@ class _CardTemplatePageState extends State<CardTemplatePage>
     return refDb;
   }
 
+  quitGame() {
+    DatabaseReference refDb = FirebaseDatabase.instance.ref('Room');
+    return refDb.remove();
+  }
+
   Future<bool> _onBackPressed() async {
     return await showDialog(
         context: context,
@@ -151,6 +156,7 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                         color: Colors.red,
                         onPressed: () {
                           SystemNavigator.pop();
+                          quitGame();
                         }),
                   ],
                 )
@@ -162,182 +168,191 @@ class _CardTemplatePageState extends State<CardTemplatePage>
 
   @override
   Widget build(BuildContext context) {
-    return ScreenContainer(
-        bodyWidget: Stack(
-      fit: StackFit.expand,
-      children: [
-        Image.asset(
-          'assets/images/home_bg.jpg',
-          fit: BoxFit.cover,
-        ),
-        StreamBuilder(
-          stream: getTotalCard().onValue,
-          builder: (context, snapShot) {
-            if (snapShot.data != null) {
-              var cards =
-                  snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Center(
-                    child: Container(
-                      padding: EdgeInsets.fromLTRB(20.sp, 50.sp, 20.sp, 20.sp),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          StreamBuilder(
-                              stream: getTotalCard().onValue,
-                              builder: (context, snapShot) {
-                                if (snapShot.data != null) {
-                                  var cards = snapShot.data?.snapshot.value
-                                      as Map<dynamic, dynamic>;
-                                  return Column(
-                                    children: [
-                                      Stack(
-                                        alignment: Alignment.bottomLeft,
-                                        children: [
-                                          Container(
-                                              width: 250.sp,
-                                              decoration: BoxDecoration(
-                                                  color:
-                                                      const Color(0xffF2C94C),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              16.sp))),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Container(
-                                                      width: 57,
-                                                      height: 57,
-                                                      decoration: BoxDecoration(
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: ScreenContainer(
+          bodyWidget: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            'assets/images/home_bg.jpg',
+            fit: BoxFit.cover,
+          ),
+          StreamBuilder(
+            stream: getTotalCard().onValue,
+            builder: (context, snapShot) {
+              if (snapShot.data != null) {
+                var cards =
+                    snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Center(
+                      child: Container(
+                        padding:
+                            EdgeInsets.fromLTRB(20.sp, 50.sp, 20.sp, 20.sp),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            StreamBuilder(
+                                stream: getTotalCard().onValue,
+                                builder: (context, snapShot) {
+                                  if (snapShot.data != null) {
+                                    var cards = snapShot.data?.snapshot.value
+                                        as Map<dynamic, dynamic>;
+                                    return Column(
+                                      children: [
+                                        Stack(
+                                          alignment: Alignment.bottomLeft,
+                                          children: [
+                                            Container(
+                                                width: 250.sp,
+                                                decoration: BoxDecoration(
+                                                    color:
+                                                        const Color(0xffF2C94C),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                16.sp))),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Container(
+                                                        width: 57,
+                                                        height: 57,
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    Radius.circular(
+                                                                        16.sp)),
+                                                            color:
+                                                                Colors.white),
+                                                        child: const Icon(
+                                                          Icons.person,
+                                                          color: Colors.black,
+                                                        )),
+                                                    Container(
+                                                      padding:
+                                                          EdgeInsets.all(16.sp),
+                                                      child: Text(
+                                                        'Your Cards',
+                                                        style:
+                                                            GoogleFonts.prompt(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                fontStyle:
+                                                                    FontStyle
+                                                                        .normal,
+                                                                fontSize: 15.sp,
+                                                                color: Colors
+                                                                    .white),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                        width: 57,
+                                                        height: 57,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors.white,
                                                           borderRadius:
                                                               BorderRadius.all(
                                                                   Radius.circular(
                                                                       16.sp)),
-                                                          color: Colors.white),
-                                                      child: const Icon(
-                                                        Icons.person,
-                                                        color: Colors.black,
-                                                      )),
-                                                  Container(
-                                                    padding:
-                                                        EdgeInsets.all(16.sp),
-                                                    child: Text(
-                                                      'Your Cards',
-                                                      style: GoogleFonts.prompt(
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          fontStyle:
-                                                              FontStyle.normal,
-                                                          fontSize: 15.sp,
-                                                          color: Colors.white),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                      width: 57,
-                                                      height: 57,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    16.sp)),
-                                                      ),
-                                                      child: Center(
-                                                          child: Text(
-                                                              cards['players'][
-                                                                          FirebaseAuth
-                                                                              .instance
-                                                                              .currentUser!
-                                                                              .uid]
-                                                                      [
-                                                                      'playerCharacters']
-                                                                  .length
-                                                                  .toString(),
-                                                              style: GoogleFonts.prompt(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontStyle:
-                                                                      FontStyle
-                                                                          .normal,
-                                                                  fontSize:
-                                                                      15.sp,
-                                                                  color: Colors
-                                                                      .black))))
-                                                ],
-                                              )),
-                                        ],
-                                      ),
-                                      SizedBox(height: 15.sp),
-                                      _showWidget
-                                          ? Text(
-                                              cards['players'][FirebaseAuth
-                                                          .instance
-                                                          .currentUser!
-                                                          .uid]['wonToss'] ==
-                                                      true
-                                                  ? 'You Select the card first'
-                                                  : 'Your opponent select the card first',
-                                              style: AppTextStyles
-                                                  .instance.tossStatus,
-                                            )
-                                          : const Text('')
-                                    ],
-                                  );
-                                }
-                                return const CircularProgressIndicator();
-                              }),
-                          SizedBox(height: 30.sp),
-                          if (playerList.isNotEmpty)
-                            PlayerCardWidget(
-                              currentPlayer: currentPlayer,
-                              playerList: playerList,
-                              onFeatureSelect: (selectedFeature) {
-                                setState(() {
-                                  selectedPlayerFeature = selectedFeature;
-                                });
-                              },
-                              selectedFeature: selectedPlayerFeature,
-                            ),
-                        ],
+                                                        ),
+                                                        child: Center(
+                                                            child: Text(
+                                                                cards['players'][FirebaseAuth
+                                                                            .instance
+                                                                            .currentUser!
+                                                                            .uid]
+                                                                        [
+                                                                        'playerCharacters']
+                                                                    .length
+                                                                    .toString(),
+                                                                style: GoogleFonts.prompt(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    fontStyle:
+                                                                        FontStyle
+                                                                            .normal,
+                                                                    fontSize:
+                                                                        15.sp,
+                                                                    color: Colors
+                                                                        .black))))
+                                                  ],
+                                                )),
+                                          ],
+                                        ),
+                                        SizedBox(height: 15.sp),
+                                        _showWidget
+                                            ? Text(
+                                                cards['players'][FirebaseAuth
+                                                            .instance
+                                                            .currentUser!
+                                                            .uid]['wonToss'] ==
+                                                        true
+                                                    ? 'You Select the card first'
+                                                    : 'Your opponent select the card first',
+                                                style: AppTextStyles
+                                                    .instance.tossStatus,
+                                              )
+                                            : const Text('')
+                                      ],
+                                    );
+                                  }
+                                  return const CircularProgressIndicator();
+                                }),
+                            SizedBox(height: 30.sp),
+                            if (playerList.isNotEmpty)
+                              PlayerCardWidget(
+                                currentPlayer: currentPlayer,
+                                playerList: playerList,
+                                onFeatureSelect: (selectedFeature) {
+                                  setState(() {
+                                    selectedPlayerFeature = selectedFeature;
+                                  });
+                                },
+                                selectedFeature: selectedPlayerFeature,
+                              ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(18.sp),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(100.sp),
-                          topLeft: Radius.circular(100.sp)),
-                      color: const Color(0xffF2C94C),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Total Points',
-                          style: AppTextStyles.instance.ipAddress,
-                        ),
-                        SizedBox(height: 5.sp),
-                        Text(
-                          '${cards['players'][FirebaseAuth.instance.currentUser!.uid]['playerCharacters'].length * 1000}',
-                          style: AppTextStyles.instance.ipAddress,
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              );
-            }
-            return Center(child: CircularProgressIndicator());
-          },
-        ),
-      ],
-    ));
+                    Container(
+                      padding: EdgeInsets.all(18.sp),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(100.sp),
+                            topLeft: Radius.circular(100.sp)),
+                        color: const Color(0xffF2C94C),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Total Points',
+                            style: AppTextStyles.instance.ipAddress,
+                          ),
+                          SizedBox(height: 5.sp),
+                          Text(
+                            '${cards['players'][FirebaseAuth.instance.currentUser!.uid]['playerCharacters'].length * 1000}',
+                            style: AppTextStyles.instance.ipAddress,
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                );
+              }
+              return const Center(child: CircularProgressIndicator());
+            },
+          ),
+        ],
+      )),
+    );
   }
 
   scorePoints() {
