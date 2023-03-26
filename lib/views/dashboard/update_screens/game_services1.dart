@@ -229,7 +229,7 @@ class GameServices {
   }
 
   Future cardTotal(
-      {required String roomId, required GameCardModel gameCardModel}) async {
+      {required String roomId, required GameSelectedStats stats}) async {
     // TODO::Change actual room ID;
     DataSnapshot playerData = await FirebaseDatabase.instance
         .ref('Room')
@@ -241,10 +241,10 @@ class GameServices {
             .ref('Room')
             .child(
                 '/$roomId/players/${FirebaseAuth.instance.currentUser!.uid}');
-        reference.update(gameCardModel.toJson());
+        reference.update(stats.toJson());
       } else {
-        GameCardModel oppToss =
-            GameCardModel(gameTotalCards: !gameCardModel.gameTotalCards);
+        GameSelectedStats oppToss = GameSelectedStats(
+            selectedKey: 'kjdkdjkf', selectedValue: 'jsfskjdksj');
         DatabaseReference reference = FirebaseDatabase.instance
             .ref('Room')
             .child('/$roomId/players/$playerId');
@@ -253,7 +253,7 @@ class GameServices {
       DatabaseReference reference = FirebaseDatabase.instance
           .ref('Room')
           .child('/$roomId/players/${FirebaseAuth.instance.currentUser!.uid}');
-      await reference.update(gameCardModel.toJson());
+      await reference.update(stats.toJson());
     }
   }
 

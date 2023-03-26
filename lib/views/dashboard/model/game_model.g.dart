@@ -150,3 +150,15 @@ Map<String, dynamic> _$GameCardModelToJson(GameCardModel instance) =>
     <String, dynamic>{
       'gameTotalCards': instance.gameTotalCards,
     };
+
+GameSelectedStats _$GameSelectedStatsFromJson(Map<String, dynamic> json) =>
+    GameSelectedStats(
+      selectedKey: json['selectedKey'] as String,
+      selectedValue: json['selectedValue'] as String,
+    );
+
+Map<String, dynamic> _$GameSelectedStatsToJson(GameSelectedStats instance) =>
+    <String, dynamic>{
+      'selectedKey': instance.selectedKey,
+      'selectedValue': instance.selectedValue,
+    };

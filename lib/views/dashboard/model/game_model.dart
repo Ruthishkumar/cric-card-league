@@ -186,3 +186,15 @@ class GameCardModel {
       _$GameCardModelFromJson(json);
   Map<String, dynamic> toJson() => _$GameCardModelToJson(this);
 }
+
+@JsonSerializable()
+class GameSelectedStats {
+  String selectedKey;
+  String selectedValue;
+
+  GameSelectedStats({required this.selectedKey, required this.selectedValue});
+
+  factory GameSelectedStats.fromJson(Map<String, dynamic> json) =>
+      _$GameSelectedStatsFromJson(json);
+  Map<String, dynamic> toJson() => _$GameSelectedStatsToJson(this);
+}

@@ -23,7 +23,7 @@ class PlayerCardWidget extends StatelessWidget {
       : super(key: key);
 
   canClick() {
-    return currentPlayer == FirebaseAuth.instance.currentUser!.uid;
+    return currentPlayer == FirebaseAuth.instance.currentUser?.uid.toString();
   }
 
   DatabaseReference getStats() {
@@ -102,22 +102,44 @@ class PlayerCardWidget extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 10.sp),
-        StreamBuilder(
-            stream: getStats().onValue,
-            builder: (context, snapShot) {
-              if (snapShot.data != null) {
-                var getWon =
-                    snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-                return Text(
-                  currentPlayer == getWon['hostId'] ? 'You Won' : 'You Loss',
-                  style: AppTextStyles.instance.tossStatus,
-                );
-              }
-              return const CircularProgressIndicator();
-            })
+        SizedBox(height: 25.sp),
+        ...[playerList.first].map((status) {
+          return Column(
+            children: [
+              getMatchStatus(status.toJson().length),
+            ],
+          );
+        }),
       ],
     );
+  }
+
+  getMatchStatus(int index) {
+    return StreamBuilder(
+        stream: getStats().onValue,
+        builder: (context, snapShot) {
+          if (snapShot.data != null) {
+            var getWon = snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
+            return currentPlayer != getWon['hostId']
+                ? Text(
+                    (currentPlayer != getWon['hostId'] &&
+                            getWon['hostId'] !=
+                                FirebaseAuth.instance.currentUser!.uid)
+                        ? 'You Won'
+                        : 'You Loss',
+                    style: AppTextStyles.instance.tossStatus,
+                  )
+                : Text(
+                    (currentPlayer == getWon['hostId'] &&
+                            getWon['hostId'] ==
+                                FirebaseAuth.instance.currentUser!.uid)
+                        ? 'You Won'
+                        : 'You Loss',
+                    style: AppTextStyles.instance.tossStatus,
+                  );
+          }
+          return Container();
+        });
   }
 
   avgWidget(CreatePlayerModel createAvgModel, int index) {
@@ -131,7 +153,7 @@ class PlayerCardWidget extends StatelessWidget {
               var stats =
                   snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
               return InkWell(
-                onTap: canClick()
+                onTap: !canClick()
                     ? () {
                         showDialog(
                             barrierColor: Colors.black87,
@@ -145,7 +167,8 @@ class PlayerCardWidget extends StatelessWidget {
                         GameServices().createSelectStats(
                             selectedKey: 'batAvg',
                             selectedValue: createAvgModel.batAvg,
-                            currentPlayer: '');
+                            currentPlayer: currentPlayer);
+                        onFeatureSelect('${createAvgModel.batAvg}-${index}');
                       },
                 child: Row(children: [
                   Container(
@@ -167,14 +190,24 @@ class PlayerCardWidget extends StatelessWidget {
                             child: Text('Bat.Avg : ${createAvgModel.batAvg}',
                                 style: AppTextStyles.instance.playersStats),
                           ),
-                          Text(
-                            stats['selectedKey'] == 'batAvg' &&
-                                    stats['hostId'] !=
-                                        FirebaseAuth.instance.currentUser!.uid
-                                ? 'vs ${stats['selectedValue']}'
-                                : '',
-                            style: AppTextStyles.instance.playersStat1,
-                          )
+                          if (stats['hostId'] !=
+                              FirebaseAuth.instance.currentUser!.uid)
+                            Text(
+                              stats['hostId'] !=
+                                      FirebaseAuth.instance.currentUser!.uid
+                                  ? 'vs ${stats['selectedValue']}'
+                                  : '',
+                              style: AppTextStyles.instance.playersStat1,
+                            ),
+                          if (stats['hostId'] ==
+                              FirebaseAuth.instance.currentUser!.uid)
+                            Text(
+                              stats['hostId'] ==
+                                      FirebaseAuth.instance.currentUser!.uid
+                                  ? 'vs ${stats['selectedValue']}'
+                                  : '',
+                              style: AppTextStyles.instance.playersStat1,
+                            )
                         ],
                       ))
                 ]),
@@ -190,7 +223,7 @@ class PlayerCardWidget extends StatelessWidget {
               var bowlingAvg =
                   snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
               return InkWell(
-                onTap: canClick()
+                onTap: !canClick()
                     ? () {
                         showDialog(
                             barrierColor: Colors.black87,
@@ -206,6 +239,10 @@ class PlayerCardWidget extends StatelessWidget {
                             selectedValue: createAvgModel.bowlAvg,
                             currentPlayer: currentPlayer);
                         onFeatureSelect('${createAvgModel.bowlAvg}-${index}');
+                        GameSelectedStats value = GameSelectedStats(
+                            selectedKey: 'bowlAvg',
+                            selectedValue: createAvgModel.bowlAvg);
+                        GameServices().cardTotal(roomId: 'test', stats: value);
                       },
                 child: Row(
                   children: [
@@ -267,9 +304,9 @@ class PlayerCardWidget extends StatelessWidget {
           builder: (context, snapShot) {
             if (snapShot.data != null) {
               var strikeRate =
-                  snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
+                  snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
               return InkWell(
-                onTap: canClick()
+                onTap: !canClick()
                     ? () {
                         showDialog(
                             barrierColor: Colors.black87,
@@ -281,10 +318,12 @@ class PlayerCardWidget extends StatelessWidget {
                       }
                     : () {
                         GameServices().createSelectStats(
-                            selectedKey: 'strRate',
+                            selectedKey: 'strikeRate',
                             selectedValue: seData.strikeRate,
                             currentPlayer: currentPlayer);
                         onFeatureSelect('${seData.strikeRate}-${index}');
+                        log(strikeRate['selectedKey']);
+                        log('Striker');
                       },
                 child: Row(
                   children: [
@@ -340,7 +379,7 @@ class PlayerCardWidget extends StatelessWidget {
                 snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
             if (snapShot.data != null) {
               return InkWell(
-                onTap: canClick()
+                onTap: !canClick()
                     ? () {
                         showDialog(
                             barrierColor: Colors.black87,
@@ -352,7 +391,7 @@ class PlayerCardWidget extends StatelessWidget {
                       }
                     : () {
                         GameServices().createSelectStats(
-                            selectedKey: 'ecoRate',
+                            selectedKey: 'economyRate',
                             selectedValue: seData.economyRate,
                             currentPlayer: currentPlayer);
                         onFeatureSelect('${seData.economyRate}-${index}');
@@ -415,7 +454,7 @@ class PlayerCardWidget extends StatelessWidget {
           if (snapShot.data != null) {
             var runs = snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
             return InkWell(
-              onTap: canClick()
+              onTap: !canClick()
                   ? () {
                       showDialog(
                           barrierColor: Colors.black87,
@@ -479,7 +518,7 @@ class PlayerCardWidget extends StatelessWidget {
             var wickets =
                 snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
             return InkWell(
-              onTap: canClick()
+              onTap: !canClick()
                   ? () {
                       showDialog(
                           barrierColor: Colors.black87,
@@ -545,7 +584,7 @@ class PlayerCardWidget extends StatelessWidget {
         if (snapShot.data != null) {
           var topScore = snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
           return InkWell(
-            onTap: canClick()
+            onTap: !canClick()
                 ? () {
                     showDialog(
                         barrierColor: Colors.black87,
