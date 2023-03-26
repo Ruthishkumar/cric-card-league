@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
-import 'package:ds_game/views/dashboard/update_screens/game_services1.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -222,10 +221,13 @@ class PlayerCardWidget extends StatelessWidget {
                       height: 65.sp,
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
-                          color: selectedFeature ==
-                                  '${matchAndAverage.batAvg}-${index}'
-                              ? Colors.green
-                              : const Color(0xff243b55),
+                          color: currentPlayer ==
+                                  FirebaseAuth.instance.currentUser!.uid
+                              ? Colors.red
+                              : selectedFeature ==
+                                      '${matchAndAverage.batAvg}-${index}'
+                                  ? Colors.green
+                                  : const Color(0xff243b55),
                           borderRadius:
                               BorderRadius.all(Radius.circular(12.sp))),
                       child: Column(

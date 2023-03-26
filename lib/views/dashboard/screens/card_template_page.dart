@@ -7,7 +7,6 @@ import 'package:ds_game/views/authentication/screens/success_page.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/screens/player-card.widget.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
-import 'package:ds_game/views/dashboard/update_screens/game_services1.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
@@ -217,8 +216,8 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                         children: [
                           Center(
                             child: Container(
-                              padding:
-                                  EdgeInsets.fromLTRB(20.sp, 50.sp, 20.sp, 20.sp),
+                              padding: EdgeInsets.fromLTRB(
+                                  20.sp, 50.sp, 20.sp, 20.sp),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -230,9 +229,12 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                                           Container(
                                               width: 250.sp,
                                               decoration: BoxDecoration(
-                                                  color: const Color(0xffF2C94C),
-                                                  borderRadius: BorderRadius.all(
-                                                      Radius.circular(16.sp))),
+                                                  color:
+                                                      const Color(0xffF2C94C),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              16.sp))),
                                               child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
@@ -279,9 +281,7 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                                                           child: Text(
                                                               cards['players'][FirebaseAuth.instance.currentUser!.uid]['playerCharacters'] == null
                                                                   ? '0'
-                                                                  : cards['players']
-                                                                              [FirebaseAuth.instance.currentUser!.uid]
-                                                                          [
+                                                                  : cards['players'][FirebaseAuth.instance.currentUser!.uid][
                                                                           'playerCharacters']
                                                                       .length
                                                                       .toString(),
@@ -292,7 +292,8 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                                                                   fontStyle:
                                                                       FontStyle
                                                                           .normal,
-                                                                  fontSize: 15.sp,
+                                                                  fontSize:
+                                                                      15.sp,
                                                                   color: Colors
                                                                       .black))))
                                                 ],
@@ -334,8 +335,8 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                                           SizedBox(height: 20.sp),
                                           Text(
                                             'You Lose the match',
-                                            style:
-                                                AppTextStyles.instance.tossHeader,
+                                            style: AppTextStyles
+                                                .instance.tossHeader,
                                           ),
                                           SizedBox(height: 50.sp),
                                           GameStartButton(
@@ -411,7 +412,8 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                                                     color: Colors.green,
                                                     onPressed: () {
                                                       Navigator.of(context)
-                                                          .push(MaterialPageRoute(
+                                                          .push(
+                                                              MaterialPageRoute(
                                                         builder: (_) =>
                                                             const SuccessPage(),
                                                       ))
