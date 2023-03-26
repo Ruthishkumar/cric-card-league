@@ -118,13 +118,14 @@ CreatePlayerModel _$CreatePlayerModelFromJson(Map<String, dynamic> json) =>
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
       country: json['country'] as String,
+      matches: json['matches'] as String,
       batAvg: json['batAvg'] as String,
-      bowlAvg: json['bowlAvg'] as String,
       strikeRate: json['strikeRate'] as String,
-      economyRate: json['economyRate'] as String,
       runs: json['runs'] as String,
       topScore: json['topScore'] as String,
       wickets: json['wickets'] as String,
+      hundreds: json['hundreds'] as String,
+      fifties: json['fifties'] as String,
     );
 
 Map<String, dynamic> _$CreatePlayerModelToJson(CreatePlayerModel instance) =>
@@ -132,13 +133,14 @@ Map<String, dynamic> _$CreatePlayerModelToJson(CreatePlayerModel instance) =>
       'firstName': instance.firstName,
       'lastName': instance.lastName,
       'country': instance.country,
+      'matches': instance.matches,
       'batAvg': instance.batAvg,
-      'bowlAvg': instance.bowlAvg,
       'strikeRate': instance.strikeRate,
-      'economyRate': instance.economyRate,
       'runs': instance.runs,
       'topScore': instance.topScore,
       'wickets': instance.wickets,
+      'hundreds': instance.hundreds,
+      'fifties': instance.fifties,
     };
 
 GameCardModel _$GameCardModelFromJson(Map<String, dynamic> json) =>

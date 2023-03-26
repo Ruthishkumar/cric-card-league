@@ -1,97 +1,30 @@
 import 'dart:developer';
 
-import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
+import 'package:ds_game/views/dashboard/update_screens/game_services1.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 
 class PlayerCardWidget extends StatelessWidget {
   final List<CreatePlayerModel> playerList;
   final Function(String) onFeatureSelect;
   final String selectedFeature;
+  final String currentPlayer;
+  const PlayerCardWidget(
+      {Key? key,
+      required this.playerList,
+      required this.onFeatureSelect,
+      required this.currentPlayer,
+      required this.selectedFeature})
+      : super(key: key);
 
-  const PlayerCardWidget({
-    Key? key,
-    required this.playerList,
-    required this.onFeatureSelect,
-    required this.selectedFeature,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 250.sp,
-      decoration: BoxDecoration(
-          color: const Color(0xff243b55),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.white70.withOpacity(0.3), //New
-                blurRadius: 5.0,
-                spreadRadius: 5.0)
-          ],
-          borderRadius: BorderRadius.all(Radius.circular(16.sp))),
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-                color: const Color(0xff243b55),
-                borderRadius: BorderRadius.all(Radius.circular(16.sp))),
-            child: Column(
-              children: [
-                ...[playerList.first].map((data) {
-                  if (playerList.isNotEmpty) {
-                    return Column(
-                      children: [
-                        playerHeaderWidget(data),
-                        Container(
-                          width: 300.sp,
-                          decoration: BoxDecoration(
-                              color: const Color(0xff243b55),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16.sp))),
-                          child: Column(
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.fromLTRB(
-                                    2.sp, 12.sp, 2.sp, 12.sp),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(16.sp))),
-                                child: Column(children: [
-                                  avgWidget(data, data.toJson().length),
-                                  SizedBox(height: 10.sp),
-                                  strikeAndEconomyWidget(
-                                      data, data.toJson().length),
-                                  SizedBox(height: 10.sp),
-                                  runsAndWickets(data, data.toJson().length),
-                                  SizedBox(height: 10.sp),
-                                  highScore(data, data.toJson().length),
-                                ]),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    );
-                  }
-                  return const CircularProgressIndicator();
-                })
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+  canClick() {
+    return currentPlayer == FirebaseAuth.instance.currentUser?.uid.toString();
   }
 
   DatabaseReference getStats() {
@@ -99,7 +32,92 @@ class PlayerCardWidget extends StatelessWidget {
     return refDb;
   }
 
-  avgWidget(CreatePlayerModel createAvgModel, int index) {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: 250.sp,
+          decoration: BoxDecoration(
+              color: const Color(0xff243b55),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.white70.withOpacity(0.3), //New
+                    blurRadius: 5.0,
+                    spreadRadius: 5.0)
+              ],
+              borderRadius: BorderRadius.all(Radius.circular(16.sp))),
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    color: const Color(0xff243b55),
+                    borderRadius: BorderRadius.all(Radius.circular(16.sp))),
+                child: Column(
+                  children: [
+                    ...[playerList.first].map((data) {
+                      if (playerList.isNotEmpty) {
+                        return Column(
+                          children: [
+                            playerHeaderWidget(data),
+                            Container(
+                              width: 300.sp,
+                              decoration: BoxDecoration(
+                                  color: const Color(0xff243b55),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(16.sp))),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.fromLTRB(
+                                        2.sp, 12.sp, 2.sp, 12.sp),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(16.sp))),
+                                    child: Column(children: [
+                                      matchesAndBatAvg(
+                                          data, data.toJson().length),
+                                      SizedBox(height: 10.sp),
+                                      strikeRateAndRuns(
+                                          data, data.toJson().length),
+                                      SizedBox(height: 10.sp),
+                                      hundredsAndFifties(
+                                          data, data.toJson().length),
+                                      SizedBox(height: 10.sp),
+                                      topScoreAndWickets(
+                                          data, data.toJson().length),
+                                    ]),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      return const CircularProgressIndicator();
+                    })
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 25.sp),
+        ...[playerList.first].map((status) {
+          return Column(
+            children: [
+              getMatchStatus(status.toJson().length),
+            ],
+          );
+        }),
+      ],
+    );
+  }
+
+  matchesAndBatAvg(CreatePlayerModel matchAndAverage, int index) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -107,48 +125,41 @@ class PlayerCardWidget extends StatelessWidget {
           stream: getStats().onValue,
           builder: (context, snapShot) {
             if (snapShot.data != null) {
-              var stats =
+              var bowlingAvg =
                   snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-              return GestureDetector(
-                onTap: () {
-                  onFeatureSelect('${createAvgModel.batAvg}-${index}');
-                  GameServices().createSelectStats(
-                      selectedKey: 'batAvg',
-                      selectedValue: createAvgModel.batAvg);
-                  GameCardModel totalCardModel = GameCardModel(
-                      gameTotalCards: (double.parse(stats['selectedValue']) >
-                              double.parse(createAvgModel.batAvg))
-                          ? true
-                          : false);
-                  GameServices().cardTotal(
-                      roomId: Provider.of<GameProvider>(context, listen: false)
-                          .roomId,
-                      gameCardModel: totalCardModel);
-                  DatabaseReference reference = FirebaseDatabase.instance.ref(
-                      'Room/test/players/${FirebaseAuth.instance.currentUser!.uid}/playerCharacters/0');
-                  reference.remove();
-                  if (stats['selectedKey'] == 'batAvg' &&
-                      stats['hostId'] !=
-                          FirebaseAuth.instance.currentUser!.uid) {
-                    log('HH');
-                  } else {
-                    log('fhfhh');
-                  }
-                },
-                child: Row(children: [
-                  Container(
+              return InkWell(
+                onTap: !canClick()
+                    ? () {
+                        showDialog(
+                            barrierColor: Colors.black87,
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alertDialogWidget(context);
+                            });
+                      }
+                    : () {
+                        GameServices().createSelectStats(
+                            selectedKey: 'matches',
+                            selectedValue: matchAndAverage.matches,
+                            currentPlayer: currentPlayer);
+                        onFeatureSelect('${matchAndAverage.matches}-${index}');
+                        // GameSelectedStats value = GameSelectedStats(
+                        //     selectedKey: 'matches',
+                        //     selectedValue: matchAndAverage.matches);
+                        // GameServices().cardTotal(roomId: 'test', stats: value);
+                      },
+                child: Row(
+                  children: [
+                    Container(
                       width: 120.sp,
                       height: 65.sp,
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
-                          color: stats['selectedKey'] == 'batAvg' &&
-                                  stats['hostId'] !=
-                                      FirebaseAuth.instance.currentUser!.uid
-                              ? Colors.red
-                              : selectedFeature ==
-                                      '${createAvgModel.batAvg}-${index}'
-                                  ? Colors.green
-                                  : const Color(0xff243b55),
+                          color: selectedFeature ==
+                                  '${matchAndAverage.matches}-${index}'
+                              ? Colors.green
+                              : const Color(0xff243b55),
                           borderRadius:
                               BorderRadius.all(Radius.circular(12.sp))),
                       child: Column(
@@ -156,17 +167,75 @@ class PlayerCardWidget extends StatelessWidget {
                         children: [
                           FittedBox(
                             fit: BoxFit.contain,
-                            child: Text('Bat.Avg : ${createAvgModel.batAvg}',
+                            child: Text(
+                              'Matches : ${matchAndAverage.matches}',
+                              style: AppTextStyles.instance.playersStats,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          // Text(
+                          //   bowlingAvg['selectedKey'] == 'matches' &&
+                          //           bowlingAvg['hostId'] !=
+                          //               FirebaseAuth.instance.currentUser!.uid
+                          //       ? 'vs ${bowlingAvg['selectedValue']}'
+                          //       : '',
+                          //   style: AppTextStyles.instance.playersStat1,
+                          //   textAlign: TextAlign.center,
+                          // ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+            return const CircularProgressIndicator();
+          },
+        ),
+        StreamBuilder(
+          stream: getStats().onValue,
+          builder: (context, snapShot) {
+            if (snapShot.data != null) {
+              var stats =
+                  snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
+              return InkWell(
+                onTap: !canClick()
+                    ? () {
+                        showDialog(
+                            barrierColor: Colors.black87,
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alertDialogWidget(context);
+                            });
+                      }
+                    : () {
+                        GameServices().createSelectStats(
+                            selectedKey: 'batAvg',
+                            selectedValue: matchAndAverage.batAvg,
+                            currentPlayer: currentPlayer);
+                        onFeatureSelect('${matchAndAverage.batAvg}-${index}');
+                      },
+                child: Row(children: [
+                  Container(
+                      width: 120.sp,
+                      height: 65.sp,
+                      padding: EdgeInsets.all(8.sp),
+                      decoration: BoxDecoration(
+                          color: selectedFeature ==
+                                  '${matchAndAverage.batAvg}-${index}'
+                              ? Colors.green
+                              : const Color(0xff243b55),
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(12.sp))),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text('Bat.Avg : ${matchAndAverage.batAvg}',
                                 style: AppTextStyles.instance.playersStats),
                           ),
-                          Text(
-                            stats['selectedKey'] == 'batAvg' &&
-                                    stats['hostId'] !=
-                                        FirebaseAuth.instance.currentUser!.uid
-                                ? 'vs ${stats['selectedValue']}'
-                                : '',
-                            style: AppTextStyles.instance.playersStat1,
-                          )
                         ],
                       ))
                 ]),
@@ -175,100 +244,51 @@ class PlayerCardWidget extends StatelessWidget {
             return const CircularProgressIndicator();
           },
         ),
-        GestureDetector(
-            onTap: () {
-              GameServices().createSelectStats(
-                  selectedKey: 'bowlAvg',
-                  selectedValue: createAvgModel.bowlAvg);
-              onFeatureSelect('${createAvgModel.bowlAvg}-${index}');
-            },
-            child: StreamBuilder(
-              stream: getStats().onValue,
-              builder: (context, snapShot) {
-                if (snapShot.data != null) {
-                  var bowlingAvg =
-                      snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-                  return Row(
-                    children: [
-                      Container(
-                        width: 120.sp,
-                        height: 65.sp,
-                        padding: EdgeInsets.all(8.sp),
-                        decoration: BoxDecoration(
-                            color: bowlingAvg['selectedKey'] == 'bowlAvg' &&
-                                    bowlingAvg['hostId'] !=
-                                        FirebaseAuth.instance.currentUser!.uid
-                                ? Colors.red
-                                : selectedFeature ==
-                                        '${createAvgModel.bowlAvg}-${index}'
-                                    ? Colors.green
-                                    : const Color(0xff243b55),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.sp))),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            FittedBox(
-                              fit: BoxFit.contain,
-                              child: Text(
-                                'Bowl Avg : ${createAvgModel.bowlAvg}',
-                                style: AppTextStyles.instance.playersStats,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            Text(
-                              bowlingAvg['selectedKey'] == 'bowlAvg' &&
-                                      bowlingAvg['hostId'] !=
-                                          FirebaseAuth.instance.currentUser!.uid
-                                  ? 'vs ${bowlingAvg['selectedValue']}'
-                                  : '',
-                              style: AppTextStyles.instance.playersStat1,
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  );
-                }
-                return const CircularProgressIndicator();
-              },
-            )),
       ],
     );
   }
 
-  strikeAndEconomyWidget(CreatePlayerModel seData, int index) {
+  strikeRateAndRuns(CreatePlayerModel strikeAndRuns, int index) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        GestureDetector(
-          onTap: () {
-            GameServices().createSelectStats(
-                selectedKey: 'strRate', selectedValue: seData.strikeRate);
-            onFeatureSelect('${seData.strikeRate}-${index}');
-          },
-          child: StreamBuilder(
-            stream: getStats().onValue,
-            builder: (context, snapShot) {
-              if (snapShot.data != null) {
-                var strikeRate =
-                    snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
-                return Row(
+        StreamBuilder(
+          stream: getStats().onValue,
+          builder: (context, snapShot) {
+            if (snapShot.data != null) {
+              var strikeRate =
+                  snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
+              return InkWell(
+                onTap: !canClick()
+                    ? () {
+                        showDialog(
+                            barrierColor: Colors.black87,
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alertDialogWidget(context);
+                            });
+                      }
+                    : () {
+                        GameServices().createSelectStats(
+                            selectedKey: 'strikeRate',
+                            selectedValue: strikeAndRuns.strikeRate,
+                            currentPlayer: currentPlayer);
+                        onFeatureSelect('${strikeAndRuns.strikeRate}-${index}');
+                        log(strikeRate['selectedKey']);
+                        log('Striker');
+                      },
+                child: Row(
                   children: [
                     Container(
                       width: 120.sp,
                       height: 65.sp,
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
-                          color: strikeRate['selectedKey'] == 'strRate' &&
-                                  strikeRate['hostId'] !=
-                                      FirebaseAuth.instance.currentUser!.uid
-                              ? Colors.red
-                              : selectedFeature ==
-                                      '${seData.strikeRate}-${index}'
-                                  ? Colors.green
-                                  : const Color(0xff243b55),
+                          color: selectedFeature ==
+                                  '${strikeAndRuns.strikeRate}-${index}'
+                              ? Colors.green
+                              : const Color(0xff243b55),
                           borderRadius:
                               BorderRadius.all(Radius.circular(12.sp))),
                       child: Column(
@@ -277,150 +297,148 @@ class PlayerCardWidget extends StatelessWidget {
                           FittedBox(
                             fit: BoxFit.contain,
                             child: Text(
-                              'Str.Rate : ${seData.strikeRate}',
+                              'Str.Rate : ${strikeAndRuns.strikeRate}',
                               style: AppTextStyles.instance.playersStats,
                             ),
                           ),
-                          Text(
-                            strikeRate['selectedKey'] == 'strRate' &&
-                                    strikeRate['hostId'] !=
-                                        FirebaseAuth.instance.currentUser!.uid
-                                ? 'vs ${strikeRate['selectedValue']}'
-                                : '',
-                            style: AppTextStyles.instance.playersStat1,
-                            textAlign: TextAlign.center,
-                          ),
+                          // Text(
+                          //   strikeRate['selectedKey'] == 'strRate' &&
+                          //           strikeRate['hostId'] !=
+                          //               FirebaseAuth.instance.currentUser!.uid
+                          //       ? 'vs ${strikeRate['selectedValue']}'
+                          //       : '',
+                          //   style: AppTextStyles.instance.playersStat1,
+                          //   textAlign: TextAlign.center,
+                          // ),
                         ],
                       ),
                     ),
                   ],
-                );
-              }
-              return const CircularProgressIndicator();
-            },
-          ),
+                ),
+              );
+            }
+            return const CircularProgressIndicator();
+          },
         ),
         SizedBox(height: 10.sp),
-        GestureDetector(
-          onTap: () {
-            GameServices().createSelectStats(
-                selectedKey: 'ecoRate', selectedValue: seData.economyRate);
-            onFeatureSelect('${seData.economyRate}-${index}');
-          },
-          child: StreamBuilder(
-            stream: getStats().onValue,
-            builder: (context, snapShot) {
-              var economyRate =
-                  snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-              if (snapShot.data != null) {
-                return Row(
-                  children: [
-                    Container(
+        StreamBuilder(
+          stream: getStats().onValue,
+          builder: (context, snapShot) {
+            if (snapShot.data != null) {
+              var runs = snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
+              return InkWell(
+                onTap: !canClick()
+                    ? () {
+                        showDialog(
+                            barrierColor: Colors.black87,
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alertDialogWidget(context);
+                            });
+                      }
+                    : () {
+                        log(runs['selectedValue'].toString());
+                        log('New Turns');
+                        GameServices().createSelectStats(
+                            selectedKey: 'runs',
+                            selectedValue: strikeAndRuns.runs,
+                            currentPlayer: currentPlayer);
+                        onFeatureSelect('${strikeAndRuns.runs}-${index}');
+                      },
+                child: Row(children: [
+                  Container(
                       width: 120.sp,
                       height: 65.sp,
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
-                          color: economyRate['selectedKey'] == 'ecoRate' &&
-                                  economyRate['hostId'] !=
-                                      FirebaseAuth.instance.currentUser!.uid
-                              ? Colors.red
-                              : selectedFeature ==
-                                      '${seData.economyRate}-${index}'
-                                  ? Colors.green
-                                  : const Color(0xff243b55),
+                          color: selectedFeature ==
+                                  '${strikeAndRuns.runs}-${index}'
+                              ? Colors.green
+                              : const Color(0xff243b55),
                           borderRadius:
                               BorderRadius.all(Radius.circular(12.sp))),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          FittedBox(
-                            fit: BoxFit.contain,
-                            child: Text(
-                              'Eco.Rate : ${seData.economyRate}',
-                              style: AppTextStyles.instance.playersStats,
-                            ),
+                          Center(
+                            child: Text('Runs : ${strikeAndRuns.runs}',
+                                style: AppTextStyles.instance.playersStats),
                           ),
-                          Text(
-                            economyRate['selectedKey'] == 'ecoRate' &&
-                                    economyRate['hostId'] !=
-                                        FirebaseAuth.instance.currentUser!.uid
-                                ? 'vs ${economyRate['selectedValue']}'
-                                : '',
-                            style: AppTextStyles.instance.playersStat1,
-                            textAlign: TextAlign.center,
-                          ),
+                          // Text(
+                          //   runs['selectedKey'] == 'runs' &&
+                          //           runs['hostId'] !=
+                          //               FirebaseAuth.instance.currentUser!.uid
+                          //       ? 'vs ${runs['selectedValue']}'
+                          //       : '',
+                          //   style: AppTextStyles.instance.playersStat1,
+                          //   textAlign: TextAlign.center,
+                          // ),
                         ],
-                      ),
-                    ),
-                  ],
-                );
-              }
-              return const CircularProgressIndicator();
-            },
-          ),
+                      ))
+                ]),
+              );
+            }
+            return const CircularProgressIndicator();
+          },
         ),
       ],
     );
   }
 
-  runsAndWickets(CreatePlayerModel runsWickets, int index) {
+  hundredsAndFifties(CreatePlayerModel hundredsAndFifties, int index) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
       StreamBuilder(
         stream: getStats().onValue,
         builder: (context, snapShot) {
           if (snapShot.data != null) {
             var runs = snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
-            return GestureDetector(
-              onTap: () {
-                log(runs['selectedValue'].toString());
-                log('New Turns');
-                GameServices().createSelectStats(
-                    selectedKey: 'runs', selectedValue: runsWickets.runs);
-                onFeatureSelect('${runsWickets.runs}-${index}');
-                if (int.parse(runs['selectedValue']) >
-                    int.parse(runsWickets.runs)) {
-                  log('You Win');
-                  log(FirebaseAuth.instance.currentUser!.uid);
-                } else {
-                  log('You Lose');
-                  runs['selectedValue'] =
-                      FirebaseAuth.instance.currentUser!.uid;
-                  runs['players'][FirebaseAuth.instance.currentUser!.uid]
-                      ['playerCharacters'];
-                  log(FirebaseAuth.instance.currentUser!.uid);
-                  // log(playerList.removeAt(index).runs.toString());
-                }
-              },
+            return InkWell(
+              onTap: !canClick()
+                  ? () {
+                      showDialog(
+                          barrierColor: Colors.black87,
+                          barrierDismissible: true,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return alertDialogWidget(context);
+                          });
+                    }
+                  : () {
+                      GameServices().createSelectStats(
+                          selectedKey: 'hundreds',
+                          selectedValue: hundredsAndFifties.hundreds,
+                          currentPlayer: currentPlayer);
+                      onFeatureSelect(
+                          '${hundredsAndFifties.hundreds}-${index}');
+                    },
               child: Row(children: [
                 Container(
                     width: 120.sp,
                     height: 65.sp,
                     padding: EdgeInsets.all(8.sp),
                     decoration: BoxDecoration(
-                        color: runs['selectedKey'] == 'runs' &&
-                                runs['hostId'] !=
-                                    FirebaseAuth.instance.currentUser!.uid
-                            ? Colors.red
-                            : selectedFeature == '${runsWickets.runs}-${index}'
-                                ? Colors.green
-                                : const Color(0xff243b55),
+                        color: selectedFeature ==
+                                '${hundredsAndFifties.hundreds}-${index}'
+                            ? Colors.green
+                            : const Color(0xff243b55),
                         borderRadius: BorderRadius.all(Radius.circular(12.sp))),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Center(
-                          child: Text('Runs : ${runsWickets.runs}',
+                          child: Text('100\'s : ${hundredsAndFifties.hundreds}',
                               style: AppTextStyles.instance.playersStats),
                         ),
-                        Text(
-                          runs['selectedKey'] == 'runs' &&
-                                  runs['hostId'] !=
-                                      FirebaseAuth.instance.currentUser!.uid
-                              ? 'vs ${runs['selectedValue']}'
-                              : '',
-                          style: AppTextStyles.instance.playersStat1,
-                          textAlign: TextAlign.center,
-                        ),
+                        // Text(
+                        //   runs['selectedKey'] == 'hundreds' &&
+                        //           runs['hostId'] !=
+                        //               FirebaseAuth.instance.currentUser!.uid
+                        //       ? 'vs ${runs['selectedValue']}'
+                        //       : '',
+                        //   style: AppTextStyles.instance.playersStat1,
+                        //   textAlign: TextAlign.center,
+                        // ),
                       ],
                     ))
               ]),
@@ -429,106 +447,196 @@ class PlayerCardWidget extends StatelessWidget {
           return const CircularProgressIndicator();
         },
       ),
-      GestureDetector(
-        onTap: () {
-          GameServices().createSelectStats(
-              selectedKey: 'wickets', selectedValue: runsWickets.wickets);
-          onFeatureSelect('${runsWickets.wickets}-${index}');
-        },
-        child: StreamBuilder(
-          stream: getStats().onValue,
-          builder: (context, snapShot) {
-            if (snapShot.data != null) {
-              var wickets =
-                  snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
-              return Row(children: [
+      StreamBuilder(
+        stream: getStats().onValue,
+        builder: (context, snapShot) {
+          if (snapShot.data != null) {
+            var wickets =
+                snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
+            return InkWell(
+              onTap: !canClick()
+                  ? () {
+                      showDialog(
+                          barrierColor: Colors.black87,
+                          barrierDismissible: true,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return alertDialogWidget(context);
+                          });
+                    }
+                  : () {
+                      GameServices().createSelectStats(
+                          selectedKey: 'fifties',
+                          selectedValue: hundredsAndFifties.fifties,
+                          currentPlayer: currentPlayer);
+                      onFeatureSelect('${hundredsAndFifties.fifties}-${index}');
+                    },
+              child: Row(children: [
                 Container(
                   width: 120.sp,
                   height: 65.sp,
                   padding: EdgeInsets.all(8.sp),
                   decoration: BoxDecoration(
-                      color: wickets['selectedKey'] == 'wickets' &&
-                              wickets['hostId'] !=
-                                  FirebaseAuth.instance.currentUser!.uid
-                          ? Colors.red
-                          : selectedFeature == '${runsWickets.wickets}-${index}'
-                              ? Colors.green
-                              : const Color(0xff243b55),
+                      color: selectedFeature ==
+                              '${hundredsAndFifties.fifties}-${index}'
+                          ? Colors.green
+                          : const Color(0xff243b55),
                       borderRadius: BorderRadius.all(Radius.circular(12.sp))),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Wickets : ${runsWickets.wickets}',
+                      Text('50\'s : ${hundredsAndFifties.fifties}',
                           style: AppTextStyles.instance.playersStats),
-                      Visibility(
-                        child: Text(
-                          wickets['selectedKey'] == 'wickets' &&
-                                  wickets['hostId'] !=
-                                      FirebaseAuth.instance.currentUser!.uid
-                              ? 'vs ${wickets['selectedValue']}'
-                              : '',
-                          style: AppTextStyles.instance.playersStat1,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+                      // Visibility(
+                      //   child: Text(
+                      //     wickets['selectedKey'] == 'fifties' &&
+                      //             wickets['hostId'] !=
+                      //                 FirebaseAuth.instance.currentUser!.uid
+                      //         ? 'vs ${wickets['selectedValue']}'
+                      //         : '',
+                      //     style: AppTextStyles.instance.playersStat1,
+                      //     textAlign: TextAlign.center,
+                      //   ),
+                      // ),
                     ],
                   ),
                 )
-              ]);
-            }
-            return const CircularProgressIndicator();
-          },
-        ),
+              ]),
+            );
+          }
+          return const CircularProgressIndicator();
+        },
       )
     ]);
   }
 
-  highScore(CreatePlayerModel highScore, int index) {
-    return GestureDetector(
-        onTap: () {
-          GameServices().createSelectStats(
-              selectedKey: 'topScore', selectedValue: highScore.topScore);
-          onFeatureSelect('${highScore.topScore}-${index}');
-        },
-        child: StreamBuilder(
+  topScoreAndWickets(CreatePlayerModel highScoreAndWickets, int index) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        StreamBuilder(
           stream: getStats().onValue,
           builder: (context, snapShot) {
             if (snapShot.data != null) {
               var topScore =
                   snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
-              return Container(
-                  width: 300.sp,
-                  height: 65.sp,
-                  padding: EdgeInsets.all(8.sp),
-                  decoration: BoxDecoration(
-                      color: topScore['selectedKey'] == 'topScore' &&
-                              topScore['hostId'] !=
-                                  FirebaseAuth.instance.currentUser!.uid
-                          ? Colors.red
-                          : selectedFeature == '${highScore.topScore}-${index}'
-                              ? Colors.green
-                              : const Color(0xff243b55),
-                      borderRadius: BorderRadius.all(Radius.circular(12.sp))),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Top Score : ${highScore.topScore}',
-                          style: AppTextStyles.instance.playersStats),
-                      Text(
-                        topScore['selectedKey'] == 'topScore' &&
-                                topScore['hostId'] !=
-                                    FirebaseAuth.instance.currentUser!.uid
-                            ? 'vs ${topScore['selectedValue']}'
-                            : '',
-                        style: AppTextStyles.instance.playersStat1,
-                        textAlign: TextAlign.center,
-                      )
-                    ],
-                  ));
+              return InkWell(
+                onTap: !canClick()
+                    ? () {
+                        showDialog(
+                            barrierColor: Colors.black87,
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alertDialogWidget(context);
+                            });
+                      }
+                    : () {
+                        GameServices().createSelectStats(
+                            selectedKey: 'topScore',
+                            selectedValue: highScoreAndWickets.topScore,
+                            currentPlayer: currentPlayer);
+                        onFeatureSelect(
+                            '${highScoreAndWickets.topScore}-${index}');
+                      },
+                child: Container(
+                    width: 120.sp,
+                    height: 65.sp,
+                    padding: EdgeInsets.all(8.sp),
+                    decoration: BoxDecoration(
+                        color: selectedFeature ==
+                                '${highScoreAndWickets.topScore}-${index}'
+                            ? Colors.green
+                            : const Color(0xff243b55),
+                        borderRadius: BorderRadius.all(Radius.circular(12.sp))),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FittedBox(
+                          fit: BoxFit.contain,
+                          child: Text(
+                              'Top Score : ${highScoreAndWickets.topScore}',
+                              style: AppTextStyles.instance.playersStats),
+                        ),
+                        // Text(
+                        //   topScore['selectedKey'] == 'topScore' &&
+                        //           topScore['hostId'] !=
+                        //               FirebaseAuth.instance.currentUser!.uid
+                        //       ? 'vs ${topScore['selectedValue']}'
+                        //       : '',
+                        //   style: AppTextStyles.instance.playersStat1,
+                        //   textAlign: TextAlign.center,
+                        // )
+                      ],
+                    )),
+              );
             }
             return const CircularProgressIndicator();
           },
-        ));
+        ),
+        StreamBuilder(
+          stream: getStats().onValue,
+          builder: (context, snapShot) {
+            if (snapShot.data != null) {
+              var wickets =
+                  snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
+              return InkWell(
+                onTap: !canClick()
+                    ? () {
+                        showDialog(
+                            barrierColor: Colors.black87,
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alertDialogWidget(context);
+                            });
+                      }
+                    : () {
+                        GameServices().createSelectStats(
+                            selectedKey: 'wickets',
+                            selectedValue: highScoreAndWickets.wickets,
+                            currentPlayer: currentPlayer);
+                        onFeatureSelect(
+                            '${highScoreAndWickets.wickets}-${index}');
+                      },
+                child: Row(children: [
+                  Container(
+                    width: 120.sp,
+                    height: 65.sp,
+                    padding: EdgeInsets.all(8.sp),
+                    decoration: BoxDecoration(
+                        color: selectedFeature ==
+                                '${highScoreAndWickets.wickets}-${index}'
+                            ? Colors.green
+                            : const Color(0xff243b55),
+                        borderRadius: BorderRadius.all(Radius.circular(12.sp))),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Wickets : ${highScoreAndWickets.wickets}',
+                            style: AppTextStyles.instance.playersStats),
+                        // Visibility(
+                        //   child: Text(
+                        //     wickets['selectedKey'] == 'wickets' &&
+                        //             wickets['hostId'] !=
+                        //                 FirebaseAuth.instance.currentUser!.uid
+                        //         ? 'vs ${wickets['selectedValue']}'
+                        //         : '',
+                        //     style: AppTextStyles.instance.playersStat1,
+                        //     textAlign: TextAlign.center,
+                        //   ),
+                        // ),
+                      ],
+                    ),
+                  )
+                ]),
+              );
+            }
+            return const CircularProgressIndicator();
+          },
+        )
+      ],
+    );
   }
 
   playerHeaderWidget(CreatePlayerModel playerHeaderData) {
@@ -548,7 +656,7 @@ class PlayerCardWidget extends StatelessWidget {
                 style: AppTextStyles.instance.countryName),
           ]),
           Image.asset('assets/images/Virat-Kohli-T20I2020.png',
-              height: 150.sp, width: 130.sp)
+              height: 70.sp, width: 70.sp)
         ],
       ),
     );
@@ -578,5 +686,33 @@ class PlayerCardWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  getMatchStatus(int index) {
+    return StreamBuilder(
+        stream: getStats().onValue,
+        builder: (context, snapShot) {
+          if (snapShot.data != null) {
+            var getWon = snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
+            return currentPlayer != getWon['hostId']
+                ? Text(
+                    (currentPlayer != getWon['hostId'] &&
+                            getWon['hostId'] !=
+                                FirebaseAuth.instance.currentUser!.uid)
+                        ? 'You Won'
+                        : 'You Loss',
+                    style: AppTextStyles.instance.tossStatus,
+                  )
+                : Text(
+                    (currentPlayer == getWon['hostId'] &&
+                            getWon['hostId'] ==
+                                FirebaseAuth.instance.currentUser!.uid)
+                        ? 'You Won'
+                        : 'You Loss',
+                    style: AppTextStyles.instance.tossStatus,
+                  );
+          }
+          return Container();
+        });
   }
 }

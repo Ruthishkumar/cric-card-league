@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
+import 'package:ds_game/views/dashboard/screens/card_template_page.dart';
+import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/views/dashboard/update_screens/game_services1.dart';
 import 'package:ds_game/views/dashboard/update_screens/card_template_page1.dart';
 import 'package:ds_game/widgets/animation_route.dart';
