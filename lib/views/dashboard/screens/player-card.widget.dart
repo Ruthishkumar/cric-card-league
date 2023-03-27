@@ -55,6 +55,7 @@ class PlayerCardWidget extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(16.sp))),
                 child: Column(
                   children: [
+                    Text(currentPlayer),
                     ...[playerList.first].map((data) {
                       if (playerList.isNotEmpty) {
                         return Column(
@@ -124,7 +125,7 @@ class PlayerCardWidget extends StatelessWidget {
           stream: getStats().onValue,
           builder: (context, snapShot) {
             if (snapShot.data != null) {
-              var bowlingAvg =
+              var matches =
                   snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
               return InkWell(
                 onTap: !canClick()
@@ -172,15 +173,28 @@ class PlayerCardWidget extends StatelessWidget {
                               textAlign: TextAlign.center,
                             ),
                           ),
-                          // Text(
-                          //   bowlingAvg['selectedKey'] == 'matches' &&
-                          //           bowlingAvg['hostId'] !=
-                          //               FirebaseAuth.instance.currentUser!.uid
-                          //       ? 'vs ${bowlingAvg['selectedValue']}'
-                          //       : '',
-                          //   style: AppTextStyles.instance.playersStat1,
-                          //   textAlign: TextAlign.center,
-                          // ),
+                          currentPlayer != matches['hostId'] &&
+                                  matches['selectedKey'] == 'matches'
+                              ? Text(
+                                  (currentPlayer != matches['hostId'] &&
+                                          matches['hostId'] !=
+                                              FirebaseAuth
+                                                  .instance.currentUser!.uid &&
+                                          matches['selectedKey'] == 'matches')
+                                      ? 'vs ${matches['selectedValue']}'
+                                      : '',
+                                  style: AppTextStyles.instance.tossStatus,
+                                )
+                              : Text(
+                                  (currentPlayer == matches['hostId'] &&
+                                          matches['hostId'] ==
+                                              FirebaseAuth
+                                                  .instance.currentUser!.uid &&
+                                          matches['selectedKey'] == 'matches')
+                                      ? 'vs ${matches['selectedValue']}'
+                                      : '',
+                                  style: AppTextStyles.instance.tossStatus,
+                                )
                         ],
                       ),
                     ),
@@ -696,7 +710,6 @@ class PlayerCardWidget extends StatelessWidget {
         builder: (context, snapShot) {
           if (snapShot.data != null) {
             var getWon = snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-
             return (getWon['selectedKey'] == 'matches' ||
                         getWon['selectedKey'] == 'batAvg' ||
                         getWon['selectedKey'] == 'strikeRate' ||
