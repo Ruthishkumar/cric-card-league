@@ -195,8 +195,8 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                           stream: getCardSelect().onValue,
                           builder: (context, snapShot) {
                             if (snapShot.data != null) {
-                              var data = snapShot.data!.snapshot.value
-                                  as Map<dynamic, dynamic>;
+                              Map<dynamic, dynamic> data = snapShot.data!
+                                  .snapshot.value as Map<dynamic, dynamic>;
                               log(data.entries.length.toString() ?? '');
                               return data.entries.length > 1
                                   ? Column(

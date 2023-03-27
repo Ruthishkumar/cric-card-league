@@ -395,6 +395,9 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
+                                                SizedBox(
+                                                  height: 80.sp,
+                                                ),
                                                 Lottie.asset(
                                                   'assets/lottie_images/congratulations.json',
                                                 ),
@@ -406,7 +409,7 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                                                 Text('You won the match',
                                                     style: AppTextStyles
                                                         .instance.alert),
-                                                SizedBox(height: 15.sp),
+                                                SizedBox(height: 50.sp),
                                                 GameStartButton(
                                                     text: 'Rematch',
                                                     color: Colors.green,
@@ -421,7 +424,9 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                                                         SystemNavigator.pop();
                                                       });
                                                     }),
-                                                SizedBox(height: 20.sp),
+                                                SizedBox(
+                                                  height: 30.sp,
+                                                ),
                                                 GameStartButton(
                                                     text: 'Exit Game',
                                                     color: Colors.red,

@@ -108,7 +108,7 @@ class PlayerCardWidget extends StatelessWidget {
         ...[playerList.first].map((status) {
           return Column(
             children: [
-              getMatchStatus(status.toJson().length),
+              getMatchStatus(status, status.toJson().length),
             ],
           );
         }),
@@ -222,7 +222,9 @@ class PlayerCardWidget extends StatelessWidget {
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
                           color: currentPlayer ==
-                                  FirebaseAuth.instance.currentUser!.uid
+                                      FirebaseAuth.instance.currentUser!.uid &&
+                                  currentPlayer !=
+                                      FirebaseAuth.instance.currentUser!.uid
                               ? Colors.red
                               : selectedFeature ==
                                       '${matchAndAverage.batAvg}-${index}'
@@ -690,29 +692,42 @@ class PlayerCardWidget extends StatelessWidget {
     );
   }
 
-  getMatchStatus(int index) {
+  getMatchStatus(CreatePlayerModel status, int index) {
     return StreamBuilder(
         stream: getStats().onValue,
         builder: (context, snapShot) {
           if (snapShot.data != null) {
             var getWon = snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-            return currentPlayer != getWon['hostId']
-                ? Text(
-                    (currentPlayer != getWon['hostId'] &&
-                            getWon['hostId'] !=
-                                FirebaseAuth.instance.currentUser!.uid)
-                        ? 'You Won'
-                        : 'You Loss',
-                    style: AppTextStyles.instance.tossStatus,
-                  )
-                : Text(
-                    (currentPlayer == getWon['hostId'] &&
-                            getWon['hostId'] ==
-                                FirebaseAuth.instance.currentUser!.uid)
-                        ? 'You Won'
-                        : 'You Loss',
-                    style: AppTextStyles.instance.tossStatus,
-                  );
+
+            return (getWon['selectedKey'] == 'matches' ||
+                        getWon['selectedKey'] == 'batAvg' ||
+                        getWon['selectedKey'] == 'strikeRate' ||
+                        getWon['selectedKey'] == 'runs' ||
+                        getWon['selectedKey'] == 'hundreds' ||
+                        getWon['selectedKey'] == 'fifties' ||
+                        getWon['selectedKey'] == 'topScore' ||
+                        getWon['selectedKey'] == 'wickets') &&
+                    (getWon['hostId'] !=
+                            FirebaseAuth.instance.currentUser!.uid) !=
+                        ''
+                ? currentPlayer != getWon['hostId']
+                    ? Text(
+                        (currentPlayer != getWon['hostId'] &&
+                                getWon['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid)
+                            ? 'You Won'
+                            : 'You Loss',
+                        style: AppTextStyles.instance.tossStatus,
+                      )
+                    : Text(
+                        (currentPlayer == getWon['hostId'] &&
+                                getWon['hostId'] ==
+                                    FirebaseAuth.instance.currentUser!.uid)
+                            ? 'You Won'
+                            : 'You Loss',
+                        style: AppTextStyles.instance.tossStatus,
+                      )
+                : Text('');
           }
           return Container();
         });
