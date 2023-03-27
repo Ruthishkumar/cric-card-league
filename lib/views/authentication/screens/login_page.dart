@@ -196,7 +196,10 @@ class _LoginPageState extends State<LoginPage> {
                   auth: auth1,
                 ));
           },
-          codeAutoRetrievalTimeout: (String verificationId) {},
+          timeout: const Duration(seconds: 0),
+          codeAutoRetrievalTimeout: (String verificationId) {
+            verificationID = verificationId;
+          },
         );
       } catch (e, stack) {
         log(e.toString());

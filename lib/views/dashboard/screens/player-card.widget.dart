@@ -659,8 +659,6 @@ class PlayerCardWidget extends StatelessWidget {
             Text(playerHeaderData.country.toUpperCase(),
                 style: AppTextStyles.instance.countryName),
           ]),
-          Image.asset('assets/images/Virat-Kohli-T20I2020.png',
-              height: 70.sp, width: 70.sp)
         ],
       ),
     );

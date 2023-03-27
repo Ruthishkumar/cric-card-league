@@ -76,6 +76,18 @@ class AppTextStyles {
     fontWeight: FontWeight.w200,
     fontSize: 25.sp,
   );
+  final TextStyle? visibleNames = GoogleFonts.poppins(
+    color: Colors.white,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w400,
+    fontSize: 20.sp,
+  );
+  final TextStyle? visibleCountry = GoogleFonts.poppins(
+    color: Colors.white,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w400,
+    fontSize: 20.sp,
+  );
 
   final TextStyle? cardSecondName = GoogleFonts.poppins(
     color: Colors.white,

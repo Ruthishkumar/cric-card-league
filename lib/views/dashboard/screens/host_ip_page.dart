@@ -261,7 +261,7 @@ class _HostIpPageState extends State<HostIpPage> {
                                               strikeRate: '87.31',
                                               wickets: '4'),
                                           '4': CreatePlayerModel(
-                                              firstName: 'Mohmd.',
+                                              firstName: 'Mohammed',
                                               lastName: 'Siraj',
                                               country: 'India',
                                               batAvg: '6.75',

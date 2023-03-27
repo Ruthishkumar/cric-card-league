@@ -14,7 +14,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:pinput/pinput.dart';
+
+import 'package:pin_code_fields/pin_code_fields.dart';
 
 class OtpPage extends StatefulWidget {
   final String mobileNumber;
@@ -89,35 +90,52 @@ class _OtpPageState extends State<OtpPage> {
                       ],
                     ),
                     SizedBox(height: 20.sp),
-                    Pinput(
-                      showCursor: true,
-                      length: 6,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(6),
-                      ],
-                      androidSmsAutofillMethod:
-                          AndroidSmsAutofillMethod.smsUserConsentApi,
-                      defaultPinTheme: defaultPinTheme,
-                      focusNode: otpFocusNode,
-                      focusedPinTheme: defaultPinTheme.copyDecorationWith(
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.circular(12),
+                    PinCodeTextField(
+                      appContext: context,
+                      pastedTextStyle: TextStyle(
+                        color: Colors.green.shade600,
+                        fontWeight: FontWeight.bold,
                       ),
+                      textStyle: GoogleFonts.prompt(
+                          fontSize: 16.sp,
+                          fontStyle: FontStyle.normal,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400),
+                      length: 6,
+                      obscureText: false,
+                      animationType: AnimationType.fade,
+                      pinTheme: PinTheme(
+                        shape: PinCodeFieldShape.box,
+                        borderRadius: BorderRadius.circular(10.sp),
+                        fieldHeight: 50,
+                        fieldWidth: 50,
+                        inactiveFillColor: Colors.white,
+                        inactiveColor: Colors.white,
+                        selectedColor: Colors.grey.withOpacity(0.8),
+                        selectedFillColor: Colors.white,
+                        activeFillColor: Colors.white,
+                        activeColor: Colors.white,
+                      ),
+                      cursorColor: Colors.black,
+                      animationDuration: const Duration(milliseconds: 300),
+                      enableActiveFill: true,
+                      controller: otpController,
+                      keyboardType: TextInputType.number,
+                      boxShadows: const [
+                        BoxShadow(
+                          offset: Offset(0, 1),
+                          color: Colors.black12,
+                          blurRadius: 10,
+                        )
+                      ],
+                      onCompleted: (v) {
+                        _otp = v;
+                      },
                       onChanged: (value) {
                         setState(() {
                           _otp = value;
                         });
                       },
-                      controller: otpController,
-                      autofillHints: const [AutofillHints.oneTimeCode],
-                      pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-                      submittedPinTheme: defaultPinTheme.copyWith(
-                          decoration: defaultPinTheme.decoration?.copyWith(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(12),
-                              border:
-                                  Border.all(color: const Color(0xff1E1E26)))),
                     ),
                   ],
                 ),
@@ -135,20 +153,6 @@ class _OtpPageState extends State<OtpPage> {
   }
 
   /// pin put default theme
-  final defaultPinTheme = PinTheme(
-    width: 48.sp,
-    height: 48.sp,
-    textStyle: GoogleFonts.openSans(
-        fontSize: 16.sp,
-        fontStyle: FontStyle.normal,
-        color: Colors.white,
-        fontWeight: FontWeight.w400),
-    decoration: BoxDecoration(
-      border: Border.all(color: const Color(0xffD2D2D4)),
-      color: Colors.grey.withOpacity(0.8),
-      borderRadius: BorderRadius.circular(12),
-    ),
-  );
 
   /// verify otp summit
   _onVerifyOtp() async {
@@ -167,7 +171,7 @@ class _OtpPageState extends State<OtpPage> {
               (route) => false);
         });
       }
-    } on FirebaseAuthException catch (e, stack) {
+    } catch (e, stack) {
       log(e.toString());
       log(stack.toString());
     }
@@ -175,7 +179,7 @@ class _OtpPageState extends State<OtpPage> {
 
   /// validate otp
   bool validate() {
-    if (otpController.text == '') {
+    if (_otp == '') {
       Fluttertoast.showToast(
           msg: "Invalid Otp",
           toastLength: Toast.LENGTH_SHORT,

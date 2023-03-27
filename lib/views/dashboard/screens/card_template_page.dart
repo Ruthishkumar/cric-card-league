@@ -6,6 +6,7 @@ import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/authentication/screens/success_page.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/screens/player-card.widget.dart';
+import 'package:ds_game/views/dashboard/screens/total_player_visible_screen.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
@@ -164,6 +165,8 @@ class _CardTemplatePageState extends State<CardTemplatePage>
         });
   }
 
+  bool isTotalCardVisible = false;
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -174,364 +177,339 @@ class _CardTemplatePageState extends State<CardTemplatePage>
         builder: (context, snapShot) {
           if (snapShot.data != null) {
             var cards = snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-            return cards['players'] == null
-                ? Stack(
-                    fit: StackFit.expand,
+            if (cards['players'] == null) {
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.asset(
+                    'assets/images/home_bg.jpg',
+                    fit: BoxFit.cover,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset(
-                        'assets/images/home_bg.jpg',
-                        fit: BoxFit.cover,
+                      Lottie.asset('assets/lottie_images/alert.json',
+                          width: 200, height: 200),
+                      Text('Your Opponent has exit the game',
+                          style: AppTextStyles.instance.tossStatus),
+                      SizedBox(height: 50.sp),
+                      HostingButton(
+                        text: 'Exit Game',
+                        color: Colors.red,
+                        onPressed: () {
+                          SystemNavigator.pop();
+                          DatabaseReference refDb =
+                              FirebaseDatabase.instance.ref('Room');
+                          return refDb.remove();
+                        },
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Lottie.asset('assets/lottie_images/alert.json',
-                              width: 200, height: 200),
-                          Text('Your Opponent has exit the game',
-                              style: AppTextStyles.instance.tossStatus),
-                          SizedBox(height: 50.sp),
-                          HostingButton(
-                            text: 'Exit Game',
-                            color: Colors.red,
-                            onPressed: () {
-                              SystemNavigator.pop();
-                              DatabaseReference refDb =
-                                  FirebaseDatabase.instance.ref('Room');
-                              return refDb.remove();
-                            },
-                          ),
-                        ],
-                      )
                     ],
                   )
-                : Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Image.asset(
-                        'assets/images/home_bg.jpg',
-                        fit: BoxFit.cover,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Center(
-                            child: Container(
-                              padding: EdgeInsets.fromLTRB(
-                                  20.sp, 50.sp, 20.sp, 20.sp),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Stack(
-                                        alignment: Alignment.bottomLeft,
-                                        children: [
-                                          Container(
-                                              width: 250.sp,
-                                              decoration: BoxDecoration(
-                                                  color:
-                                                      const Color(0xffF2C94C),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              16.sp))),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Container(
-                                                      width: 57,
-                                                      height: 57,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius.circular(
-                                                                      16.sp)),
-                                                          color: Colors.white),
-                                                      child: const Icon(
-                                                        Icons.person,
-                                                        color: Colors.black,
-                                                      )),
-                                                  Container(
-                                                    padding:
-                                                        EdgeInsets.all(16.sp),
-                                                    child: Text(
-                                                      'Your Cards',
-                                                      style: GoogleFonts.prompt(
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          fontStyle:
-                                                              FontStyle.normal,
-                                                          fontSize: 15.sp,
-                                                          color: Colors.white),
-                                                    ),
+                ],
+              );
+            } else {
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.asset(
+                    'assets/images/home_bg.jpg',
+                    fit: BoxFit.cover,
+                  ),
+                  SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Center(
+                          child: Container(
+                            padding:
+                                EdgeInsets.fromLTRB(20.sp, 50.sp, 20.sp, 20.sp),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        dev.log('Your Cards');
+                                        setState(() {
+                                          isTotalCardVisible =
+                                              !isTotalCardVisible;
+                                        });
+                                      },
+                                      child: Container(
+                                          width: 250.sp,
+                                          decoration: BoxDecoration(
+                                              gradient: const LinearGradient(
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter,
+                                                  colors: [
+                                                    Color(0xff141E30),
+                                                    Color(0xff243B55),
+                                                  ]),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(16.sp))),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                  width: 57,
+                                                  height: 57,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  16.sp)),
+                                                      color: Colors.white),
+                                                  child: const Icon(
+                                                    Icons.person,
+                                                    color: Colors.black,
+                                                  )),
+                                              Container(
+                                                padding: EdgeInsets.all(16.sp),
+                                                child: Text(
+                                                  isTotalCardVisible == true
+                                                      ? 'Hide Cards'
+                                                      : 'Your Cards',
+                                                  style: GoogleFonts.prompt(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontStyle:
+                                                          FontStyle.normal,
+                                                      fontSize: 15.sp,
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                              Container(
+                                                  width: 57,
+                                                  height: 57,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                16.sp)),
                                                   ),
-                                                  Container(
-                                                      width: 57,
-                                                      height: 57,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    16.sp)),
-                                                      ),
-                                                      child: Center(
-                                                          child: Text(
-                                                              cards['players'][FirebaseAuth.instance.currentUser!.uid]['playerCharacters'] == null
-                                                                  ? '0'
-                                                                  : cards['players'][FirebaseAuth.instance.currentUser!.uid][
-                                                                          'playerCharacters']
-                                                                      .length
-                                                                      .toString(),
-                                                              style: GoogleFonts.prompt(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontStyle:
-                                                                      FontStyle
-                                                                          .normal,
-                                                                  fontSize:
-                                                                      15.sp,
-                                                                  color: Colors
-                                                                      .black))))
-                                                ],
-                                              )),
-                                        ],
-                                      ),
-                                      SizedBox(height: 15.sp),
-                                      _showWidget
-                                          ? Text(
-                                              cards['players'][FirebaseAuth
-                                                          .instance
-                                                          .currentUser!
-                                                          .uid]['wonToss'] ==
-                                                      true
-                                                  ? 'You Select the card first'
-                                                  : 'Your opponent select the card first',
-                                              style: AppTextStyles
-                                                  .instance.tossStatus,
-                                            )
-                                          : Container(),
-                                    ],
-                                  ),
-                                  SizedBox(height: 30.sp),
-                                  if (cards['players'][FirebaseAuth
-                                          .instance
-                                          .currentUser!
-                                          .uid]['playerCharacters'] ==
-                                      null)
-                                    Container(
-                                      padding: EdgeInsets.only(top: 100.sp),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Lottie.asset(
-                                              'assets/lottie_images/lose.json',
-                                              width: 130,
-                                              height: 130),
-                                          SizedBox(height: 20.sp),
-                                          Text(
-                                            'You Lose the match',
-                                            style: AppTextStyles
-                                                .instance.tossHeader,
-                                          ),
-                                          SizedBox(height: 50.sp),
-                                          GameStartButton(
-                                              text: 'Rematch',
-                                              color: Colors.green,
-                                              onPressed: () {
-                                                Navigator.of(context)
-                                                    .push(MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      const SuccessPage(),
-                                                ))
-                                                    .then((value) {
-                                                  SystemNavigator.pop();
-                                                });
-                                              }),
-                                          SizedBox(height: 40.sp),
-                                          GameStartButton(
-                                              text: 'Exit Game',
-                                              color: Colors.red,
-                                              onPressed: () {
-                                                SystemNavigator.pop();
-                                              }),
-                                        ],
-                                      ),
+                                                  child: Center(
+                                                      child: Text(
+                                                          cards['players'][FirebaseAuth.instance.currentUser!.uid]['playerCharacters'] == null
+                                                              ? '0'
+                                                              : cards['players'][FirebaseAuth
+                                                                          .instance
+                                                                          .currentUser!
+                                                                          .uid][
+                                                                      'playerCharacters']
+                                                                  .length
+                                                                  .toString(),
+                                                          style: GoogleFonts.prompt(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontStyle: FontStyle
+                                                                  .normal,
+                                                              fontSize: 15.sp,
+                                                              color: Colors.black))))
+                                            ],
+                                          )),
                                     ),
-                                  if (playerList.isNotEmpty)
-                                    Stack(
-                                      alignment: Alignment.center,
+                                    SizedBox(height: 15.sp),
+                                    _showWidget
+                                        ? Text(
+                                            cards['players'][FirebaseAuth
+                                                        .instance
+                                                        .currentUser!
+                                                        .uid]['wonToss'] ==
+                                                    true
+                                                ? 'You Select the card first'
+                                                : 'Your opponent select the card first',
+                                            style: AppTextStyles
+                                                .instance.tossStatus,
+                                          )
+                                        : Container(),
+                                  ],
+                                ),
+                                Visibility(
+                                  visible: isTotalCardVisible,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        isTotalCardVisible =
+                                            !isTotalCardVisible;
+                                      });
+                                    },
+                                    child: TotalPlayerVisibleScreen(
+                                      playerList: playerList,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 30.sp),
+                                if (cards['players'][FirebaseAuth
+                                        .instance
+                                        .currentUser!
+                                        .uid]['playerCharacters'] ==
+                                    null)
+                                  Container(
+                                    padding: EdgeInsets.only(top: 100.sp),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        if (playerList.isNotEmpty)
-                                          PlayerCardWidget(
-                                            currentPlayer: currentPlayer,
-                                            playerList: playerList,
-                                            onFeatureSelect: (selectedFeature) {
-                                              setState(() {
-                                                selectedPlayerFeature =
-                                                    selectedFeature;
+                                        Lottie.asset(
+                                            'assets/lottie_images/lose.json',
+                                            width: 130,
+                                            height: 130),
+                                        SizedBox(height: 20.sp),
+                                        Text(
+                                          'You Lose the match',
+                                          style:
+                                              AppTextStyles.instance.tossHeader,
+                                        ),
+                                        SizedBox(height: 50.sp),
+                                        GameStartButton(
+                                            text: 'Rematch',
+                                            color: Colors.green,
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .push(MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const SuccessPage(),
+                                              ))
+                                                  .then((value) {
+                                                SystemNavigator.pop();
                                               });
-                                            },
-                                            selectedFeature:
-                                                selectedPlayerFeature,
-                                          ),
-                                        if (cards['players'][FirebaseAuth
-                                                    .instance
-                                                    .currentUser!
-                                                    .uid]['playerCharacters']
-                                                .length >
-                                            9)
-                                          AlertDialog(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10.sp))),
-                                            clipBehavior: Clip.none,
-                                            title: Column(
-                                              mainAxisSize: MainAxisSize.max,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                SizedBox(
-                                                  height: 80.sp,
-                                                ),
-                                                Lottie.asset(
-                                                  'assets/lottie_images/congratulations.json',
-                                                ),
-                                                SizedBox(height: 15.sp),
-                                                Text('Congratulations',
-                                                    style: AppTextStyles
-                                                        .instance.alert),
-                                                SizedBox(height: 4.sp),
-                                                Text('You won the match',
-                                                    style: AppTextStyles
-                                                        .instance.alert),
-                                                SizedBox(height: 50.sp),
-                                                GameStartButton(
-                                                    text: 'Rematch',
-                                                    color: Colors.green,
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .push(
-                                                              MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            const SuccessPage(),
-                                                      ))
-                                                          .then((value) {
-                                                        SystemNavigator.pop();
-                                                      });
-                                                    }),
-                                                SizedBox(
-                                                  height: 30.sp,
-                                                ),
-                                                GameStartButton(
-                                                    text: 'Exit Game',
-                                                    color: Colors.red,
-                                                    onPressed: () {
-                                                      SystemNavigator.pop();
-                                                    }),
-                                              ],
-                                            ),
-                                          ),
+                                            }),
+                                        SizedBox(height: 40.sp),
+                                        GameStartButton(
+                                            text: 'Exit Game',
+                                            color: Colors.red,
+                                            onPressed: () {
+                                              SystemNavigator.pop();
+                                            }),
                                       ],
                                     ),
-                                ],
-                              ),
+                                  ),
+                                if (playerList.isNotEmpty)
+                                  Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      if (playerList.isNotEmpty)
+                                        PlayerCardWidget(
+                                          currentPlayer: currentPlayer,
+                                          playerList: playerList,
+                                          onFeatureSelect: (selectedFeature) {
+                                            setState(() {
+                                              selectedPlayerFeature =
+                                                  selectedFeature;
+                                            });
+                                          },
+                                          selectedFeature:
+                                              selectedPlayerFeature,
+                                        ),
+                                      if (cards['players'][FirebaseAuth
+                                                  .instance
+                                                  .currentUser!
+                                                  .uid]['playerCharacters']
+                                              .length >
+                                          9)
+                                        AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.sp))),
+                                          clipBehavior: Clip.none,
+                                          title: Column(
+                                            mainAxisSize: MainAxisSize.max,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              SizedBox(
+                                                height: 80.sp,
+                                              ),
+                                              Lottie.asset(
+                                                'assets/lottie_images/congratulations.json',
+                                              ),
+                                              SizedBox(height: 15.sp),
+                                              Text('Congratulations',
+                                                  style: AppTextStyles
+                                                      .instance.alert),
+                                              SizedBox(height: 4.sp),
+                                              Text('You won the match',
+                                                  style: AppTextStyles
+                                                      .instance.alert),
+                                              SizedBox(height: 50.sp),
+                                              GameStartButton(
+                                                  text: 'Rematch',
+                                                  color: Colors.green,
+                                                  onPressed: () {
+                                                    Navigator.of(context)
+                                                        .push(MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          const SuccessPage(),
+                                                    ))
+                                                        .then((value) {
+                                                      SystemNavigator.pop();
+                                                    });
+                                                  }),
+                                              SizedBox(
+                                                height: 30.sp,
+                                              ),
+                                              GameStartButton(
+                                                  text: 'Exit Game',
+                                                  color: Colors.red,
+                                                  onPressed: () {
+                                                    SystemNavigator.pop();
+                                                  }),
+                                            ],
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                              ],
                             ),
                           ),
-                          // Container(
-                          //   padding: EdgeInsets.all(18.sp),
-                          //   decoration: BoxDecoration(
-                          //     borderRadius: BorderRadius.only(
-                          //         topRight: Radius.circular(100.sp),
-                          //         topLeft: Radius.circular(100.sp)),
-                          //     color: const Color(0xffF2C94C),
-                          //   ),
-                          //   child: Column(
-                          //     children: [
-                          //       Text(
-                          //         'Total Points',
-                          //         style: AppTextStyles.instance.ipAddress,
-                          //       ),
-                          //       SizedBox(height: 5.sp),
-                          //       Text(
-                          //         cards['players'][FirebaseAuth
-                          //                     .instance
-                          //                     .currentUser!
-                          //                     .uid]['playerCharacters'] ==
-                          //                 null
-                          //             ? '0'
-                          //             : cards['players'][FirebaseAuth
-                          //                     .instance
-                          //                     .currentUser!
-                          //                     .uid]['playerCharacters']
-                          //                 .length
-                          //                 .toString(),
-                          //         style: AppTextStyles.instance.ipAddress,
-                          //       ),
-                          //     ],
-                          //   ),
-                          // )
-                        ],
-                      )
-                    ],
-                  );
+                        ),
+                        // Container(
+                        //   padding: EdgeInsets.all(18.sp),
+                        //   decoration: BoxDecoration(
+                        //     borderRadius: BorderRadius.only(
+                        //         topRight: Radius.circular(100.sp),
+                        //         topLeft: Radius.circular(100.sp)),
+                        //     color: const Color(0xffF2C94C),
+                        //   ),
+                        //   child: Column(
+                        //     children: [
+                        //       Text(
+                        //         'Total Points',
+                        //         style: AppTextStyles.instance.ipAddress,
+                        //       ),
+                        //       SizedBox(height: 5.sp),
+                        //       Text(
+                        //         cards['players'][FirebaseAuth
+                        //                     .instance
+                        //                     .currentUser!
+                        //                     .uid]['playerCharacters'] ==
+                        //                 null
+                        //             ? '0'
+                        //             : cards['players'][FirebaseAuth
+                        //                     .instance
+                        //                     .currentUser!
+                        //                     .uid]['playerCharacters']
+                        //                 .length
+                        //                 .toString(),
+                        //         style: AppTextStyles.instance.ipAddress,
+                        //       ),
+                        //     ],
+                        //   ),
+                        // )
+                      ],
+                    ),
+                  )
+                ],
+              );
+            }
           }
           return const CircularProgressIndicator();
         },
       )),
-    );
-  }
-
-  wonPopUp(BuildContext context) async {
-    return await showDialog(
-        context: context,
-        barrierColor: Colors.black54,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.sp))),
-            clipBehavior: Clip.none,
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Lottie.asset('assets/lottie_images/alert.json',
-                    width: 100, height: 100),
-                SizedBox(height: 15.sp),
-                Text('Congratulations', style: AppTextStyles.instance.alert),
-                SizedBox(height: 4.sp),
-                Text('You won the match', style: AppTextStyles.instance.alert),
-                SizedBox(height: 15.sp),
-              ],
-            ),
-          );
-        });
-  }
-
-  scorePoints() {
-    if (Provider.of<NameProvider>(context, listen: false).noOfCards == 0) {
-      return Text(
-        '1000\nPoints',
-        style: AppTextStyles.instance.points,
-      );
-    } else if (Provider.of<NameProvider>(context, listen: false).noOfCards ==
-        1) {
-      return Text(
-        '2000\nPoints',
-        style: AppTextStyles.instance.points,
-      );
-    } else if (Provider.of<NameProvider>(context, listen: false).noOfCards ==
-        2) {
-      return Text(
-        '3000\nPoints',
-        style: AppTextStyles.instance.points,
-      );
-    }
-    return const Text(
-      'No Points',
     );
   }
 }
