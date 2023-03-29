@@ -855,7 +855,9 @@ class PlayerCardWidget extends StatelessWidget {
                                 border:
                                     Border.all(color: Colors.white, width: 1)),
                             child: Text(
-                              'You Won',
+                              getWon['matchDrawn'] == true
+                                  ? 'Match Drawn'
+                                  : 'You Won',
                               style: AppTextStyles.instance.winStatus,
                             ),
                           )
@@ -868,7 +870,9 @@ class PlayerCardWidget extends StatelessWidget {
                                 border:
                                     Border.all(color: Colors.white, width: 1)),
                             child: Text(
-                              'You Loss',
+                              getWon['matchDrawn'] == true
+                                  ? 'Match Drawn'
+                                  : 'You Loss',
                               style: AppTextStyles.instance.loseStatus,
                             ),
                           )

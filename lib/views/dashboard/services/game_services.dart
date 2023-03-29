@@ -176,13 +176,17 @@ class GameServices {
             winnerId: playerBId,
             loserId: playerAId);
 
-        // return FirebaseDatabase.instance.ref('Room').child('test').update({
-        //   'selectedKey': selectedKey,
-        //   'selectedValue': selectedValue,
-        //   'currentPlayer': map['hostId'],
-        //   'playerName': playerName,
-        //   'playerCountry': country
-        // });
+        return FirebaseDatabase.instance.ref('Room').child('test').update({
+          'selectedKey': selectedKey,
+          'selectedValue': selectedValue,
+          'matchDrawn': true,
+          'currentPlayer':
+              double.parse(playerAValue) == double.parse(playerBValue)
+                  ? map['hostId']
+                  : playerBId,
+          'playerName': playerName,
+          'playerCountry': country
+        });
       } else {
         var isPlayerAWon =
             double.parse(playerAValue) > double.parse(playerBValue);
@@ -208,7 +212,8 @@ class GameServices {
           'selectedValue': selectedValue,
           'currentPlayer': isPlayerAWon ? map['hostId'] : playerBId,
           'playerName': playerName,
-          'playerCountry': country
+          'playerCountry': country,
+          'matchDrawn': false,
         });
       }
     } catch (e, stack) {
