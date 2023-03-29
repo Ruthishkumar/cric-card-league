@@ -164,3 +164,15 @@ Map<String, dynamic> _$GameSelectedStatsToJson(GameSelectedStats instance) =>
       'selectedKey': instance.selectedKey,
       'selectedValue': instance.selectedValue,
     };
+
+FeatureSelect _$FeatureSelectFromJson(Map<String, dynamic> json) =>
+    FeatureSelect(
+      selectStats: json['selectStats'] as bool,
+      selectStatValue: json['selectStatValue'] as String,
+    );
+
+Map<String, dynamic> _$FeatureSelectToJson(FeatureSelect instance) =>
+    <String, dynamic>{
+      'selectStats': instance.selectStats,
+      'selectStatValue': instance.selectStatValue,
+    };

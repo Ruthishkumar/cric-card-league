@@ -63,6 +63,25 @@ class AppTextStyles {
     fontSize: 15.sp,
   );
 
+  final TextStyle? cardWinStatus = GoogleFonts.prompt(
+    color: Colors.white,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w500,
+    fontSize: 20.sp,
+  );
+  final TextStyle? winStatus = GoogleFonts.prompt(
+    color: Colors.green,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w500,
+    fontSize: 20.sp,
+  );
+  final TextStyle? loseStatus = GoogleFonts.prompt(
+    color: Colors.red,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w500,
+    fontSize: 20.sp,
+  );
+
   final TextStyle? points = GoogleFonts.prompt(
     color: Colors.white,
     fontStyle: FontStyle.normal,

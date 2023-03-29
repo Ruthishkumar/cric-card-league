@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
@@ -141,8 +139,19 @@ class PlayerCardWidget extends StatelessWidget {
                         GameServices().createSelectStats(
                             selectedKey: 'matches',
                             selectedValue: matchAndAverage.matches,
-                            currentPlayer: currentPlayer);
+                            currentPlayer: currentPlayer,
+                            playerName:
+                                '${matchAndAverage.firstName} ${matchAndAverage.lastName}',
+                            country: matchAndAverage.country);
                         onFeatureSelect('${matchAndAverage.matches}-${index}');
+                        FeatureSelect featureSelect = FeatureSelect(
+                            selectStatValue: 'Ruthish',
+                            selectStats: selectedFeature ==
+                                    '${matchAndAverage.matches}-${index}'
+                                ? true
+                                : false);
+                        GameServices().selectFeature(
+                            roomId: 'test', featureSelect: featureSelect);
                       },
                 child: Row(
                   children: [
@@ -153,8 +162,15 @@ class PlayerCardWidget extends StatelessWidget {
                       decoration: BoxDecoration(
                           color: selectedFeature ==
                                   '${matchAndAverage.matches}-${index}'
-                              ? Colors.green
-                              : const Color(0xff243b55),
+                              ? const Color(0xff2C7744)
+                              : (matches['selectedKey'] == 'matches' &&
+                                      matches['players'][FirebaseAuth
+                                              .instance
+                                              .currentUser!
+                                              .uid]['selectStats'] ==
+                                          true)
+                                  ? const Color(0xffC02425)
+                                  : const Color(0xff243b55),
                           borderRadius:
                               BorderRadius.all(Radius.circular(12.sp))),
                       child: Column(
@@ -168,12 +184,16 @@ class PlayerCardWidget extends StatelessWidget {
                               textAlign: TextAlign.center,
                             ),
                           ),
-                          matches['selectedKey'] == 'matches'
-                              ? Text(
-                                  'vs ${matches['selectedValue']}',
-                                  style: AppTextStyles.instance.tossStatus,
-                                )
-                              : const Text('')
+                          Text(
+                            (matches['selectedKey'] == 'matches' &&
+                                    matches['players'][FirebaseAuth.instance
+                                            .currentUser!.uid]['selectStats'] ==
+                                        true)
+                                ? 'vs ${matches['selectedValue']}'
+                                : '',
+                            style: AppTextStyles.instance.playersStat1,
+                            textAlign: TextAlign.center,
+                          )
                         ],
                       ),
                     ),
@@ -205,8 +225,19 @@ class PlayerCardWidget extends StatelessWidget {
                         GameServices().createSelectStats(
                             selectedKey: 'batAvg',
                             selectedValue: matchAndAverage.batAvg,
-                            currentPlayer: currentPlayer);
+                            currentPlayer: currentPlayer,
+                            playerName:
+                                '${matchAndAverage.firstName} ${matchAndAverage.lastName}',
+                            country: matchAndAverage.country);
                         onFeatureSelect('${matchAndAverage.batAvg}-${index}');
+                        FeatureSelect featureSelect = FeatureSelect(
+                            selectStatValue: 'Ruthish',
+                            selectStats: selectedFeature ==
+                                    '${matchAndAverage.batAvg}-${index}'
+                                ? true
+                                : false);
+                        GameServices().selectFeature(
+                            roomId: 'test', featureSelect: featureSelect);
                       },
                 child: Row(children: [
                   Container(
@@ -214,14 +245,16 @@ class PlayerCardWidget extends StatelessWidget {
                       height: 65.sp,
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
-                          color: currentPlayer ==
-                                      FirebaseAuth.instance.currentUser!.uid &&
-                                  currentPlayer !=
-                                      FirebaseAuth.instance.currentUser!.uid
-                              ? Colors.red
-                              : selectedFeature ==
-                                      '${matchAndAverage.batAvg}-${index}'
-                                  ? Colors.green
+                          color: selectedFeature ==
+                                  '${matchAndAverage.batAvg}-${index}'
+                              ? const Color(0xff2C7744)
+                              : (stats['selectedKey'] == 'batAvg' &&
+                                      stats['players'][FirebaseAuth
+                                              .instance
+                                              .currentUser!
+                                              .uid]['selectStats'] ==
+                                          true)
+                                  ? const Color(0xffC02425)
                                   : const Color(0xff243b55),
                           borderRadius:
                               BorderRadius.all(Radius.circular(12.sp))),
@@ -233,6 +266,16 @@ class PlayerCardWidget extends StatelessWidget {
                             child: Text('Bat.Avg : ${matchAndAverage.batAvg}',
                                 style: AppTextStyles.instance.playersStats),
                           ),
+                          Text(
+                            (stats['selectedKey'] == 'batAvg' &&
+                                    stats['players'][FirebaseAuth.instance
+                                            .currentUser!.uid]['selectStats'] ==
+                                        true)
+                                ? 'vs ${stats['selectedValue']}'
+                                : '',
+                            style: AppTextStyles.instance.playersStat1,
+                            textAlign: TextAlign.center,
+                          )
                         ],
                       ))
                 ]),
@@ -270,10 +313,19 @@ class PlayerCardWidget extends StatelessWidget {
                         GameServices().createSelectStats(
                             selectedKey: 'strikeRate',
                             selectedValue: strikeAndRuns.strikeRate,
-                            currentPlayer: currentPlayer);
+                            currentPlayer: currentPlayer,
+                            playerName:
+                                '${strikeAndRuns.firstName} ${strikeAndRuns.lastName}',
+                            country: strikeAndRuns.country);
                         onFeatureSelect('${strikeAndRuns.strikeRate}-${index}');
-                        log(strikeRate['selectedKey']);
-                        log('Striker');
+                        FeatureSelect featureSelect = FeatureSelect(
+                            selectStatValue: 'Ruthish',
+                            selectStats: selectedFeature ==
+                                    '${strikeAndRuns.strikeRate}-${index}'
+                                ? true
+                                : false);
+                        GameServices().selectFeature(
+                            roomId: 'test', featureSelect: featureSelect);
                       },
                 child: Row(
                   children: [
@@ -284,8 +336,15 @@ class PlayerCardWidget extends StatelessWidget {
                       decoration: BoxDecoration(
                           color: selectedFeature ==
                                   '${strikeAndRuns.strikeRate}-${index}'
-                              ? Colors.green
-                              : const Color(0xff243b55),
+                              ? const Color(0xff2C7744)
+                              : (strikeRate['selectedKey'] == 'strikeRate' &&
+                                      strikeRate['players'][FirebaseAuth
+                                              .instance
+                                              .currentUser!
+                                              .uid]['selectStats'] ==
+                                          true)
+                                  ? const Color(0xffC02425)
+                                  : const Color(0xff243b55),
                           borderRadius:
                               BorderRadius.all(Radius.circular(12.sp))),
                       child: Column(
@@ -298,15 +357,16 @@ class PlayerCardWidget extends StatelessWidget {
                               style: AppTextStyles.instance.playersStats,
                             ),
                           ),
-                          // Text(
-                          //   strikeRate['selectedKey'] == 'strRate' &&
-                          //           strikeRate['hostId'] !=
-                          //               FirebaseAuth.instance.currentUser!.uid
-                          //       ? 'vs ${strikeRate['selectedValue']}'
-                          //       : '',
-                          //   style: AppTextStyles.instance.playersStat1,
-                          //   textAlign: TextAlign.center,
-                          // ),
+                          Text(
+                            (strikeRate['selectedKey'] == 'strikeRate' &&
+                                    strikeRate['players'][FirebaseAuth.instance
+                                            .currentUser!.uid]['selectStats'] ==
+                                        true)
+                                ? 'vs ${strikeRate['selectedValue']}'
+                                : '',
+                            style: AppTextStyles.instance.playersStat1,
+                            textAlign: TextAlign.center,
+                          )
                         ],
                       ),
                     ),
@@ -335,13 +395,22 @@ class PlayerCardWidget extends StatelessWidget {
                             });
                       }
                     : () {
-                        log(runs['selectedValue'].toString());
-                        log('New Turns');
                         GameServices().createSelectStats(
                             selectedKey: 'runs',
                             selectedValue: strikeAndRuns.runs,
-                            currentPlayer: currentPlayer);
+                            currentPlayer: currentPlayer,
+                            playerName:
+                                '${strikeAndRuns.firstName} ${strikeAndRuns.lastName}',
+                            country: strikeAndRuns.country);
                         onFeatureSelect('${strikeAndRuns.runs}-${index}');
+                        FeatureSelect featureSelect = FeatureSelect(
+                            selectStatValue: 'Ruthish',
+                            selectStats: selectedFeature ==
+                                    '${strikeAndRuns.runs}-${index}'
+                                ? true
+                                : false);
+                        GameServices().selectFeature(
+                            roomId: 'test', featureSelect: featureSelect);
                       },
                 child: Row(children: [
                   Container(
@@ -351,8 +420,15 @@ class PlayerCardWidget extends StatelessWidget {
                       decoration: BoxDecoration(
                           color: selectedFeature ==
                                   '${strikeAndRuns.runs}-${index}'
-                              ? Colors.green
-                              : const Color(0xff243b55),
+                              ? const Color(0xff2C7744)
+                              : (runs['selectedKey'] == 'runs' &&
+                                      runs['players'][FirebaseAuth
+                                              .instance
+                                              .currentUser!
+                                              .uid]['selectStats'] ==
+                                          true)
+                                  ? const Color(0xffC02425)
+                                  : const Color(0xff243b55),
                           borderRadius:
                               BorderRadius.all(Radius.circular(12.sp))),
                       child: Column(
@@ -362,15 +438,16 @@ class PlayerCardWidget extends StatelessWidget {
                             child: Text('Runs : ${strikeAndRuns.runs}',
                                 style: AppTextStyles.instance.playersStats),
                           ),
-                          // Text(
-                          //   runs['selectedKey'] == 'runs' &&
-                          //           runs['hostId'] !=
-                          //               FirebaseAuth.instance.currentUser!.uid
-                          //       ? 'vs ${runs['selectedValue']}'
-                          //       : '',
-                          //   style: AppTextStyles.instance.playersStat1,
-                          //   textAlign: TextAlign.center,
-                          // ),
+                          Text(
+                            (runs['selectedKey'] == 'runs' &&
+                                    runs['players'][FirebaseAuth.instance
+                                            .currentUser!.uid]['selectStats'] ==
+                                        true)
+                                ? 'vs ${runs['selectedValue']}'
+                                : '',
+                            style: AppTextStyles.instance.playersStat1,
+                            textAlign: TextAlign.center,
+                          )
                         ],
                       ))
                 ]),
@@ -389,7 +466,8 @@ class PlayerCardWidget extends StatelessWidget {
         stream: getStats().onValue,
         builder: (context, snapShot) {
           if (snapShot.data != null) {
-            var runs = snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
+            var hundreds =
+                snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
             return InkWell(
               onTap: !canClick()
                   ? () {
@@ -405,9 +483,20 @@ class PlayerCardWidget extends StatelessWidget {
                       GameServices().createSelectStats(
                           selectedKey: 'hundreds',
                           selectedValue: hundredsAndFifties.hundreds,
-                          currentPlayer: currentPlayer);
+                          currentPlayer: currentPlayer,
+                          playerName:
+                              '${hundredsAndFifties.firstName} ${hundredsAndFifties.lastName}',
+                          country: hundredsAndFifties.country);
                       onFeatureSelect(
                           '${hundredsAndFifties.hundreds}-${index}');
+                      FeatureSelect featureSelect = FeatureSelect(
+                          selectStatValue: 'Ruthish',
+                          selectStats: selectedFeature ==
+                                  '${hundredsAndFifties.hundreds}-${index}'
+                              ? true
+                              : false);
+                      GameServices().selectFeature(
+                          roomId: 'test', featureSelect: featureSelect);
                     },
               child: Row(children: [
                 Container(
@@ -417,8 +506,13 @@ class PlayerCardWidget extends StatelessWidget {
                     decoration: BoxDecoration(
                         color: selectedFeature ==
                                 '${hundredsAndFifties.hundreds}-${index}'
-                            ? Colors.green
-                            : const Color(0xff243b55),
+                            ? const Color(0xff2C7744)
+                            : (hundreds['selectedKey'] == 'hundreds' &&
+                                    hundreds['players'][FirebaseAuth.instance
+                                            .currentUser!.uid]['selectStats'] ==
+                                        true)
+                                ? const Color(0xffC02425)
+                                : const Color(0xff243b55),
                         borderRadius: BorderRadius.all(Radius.circular(12.sp))),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -427,15 +521,16 @@ class PlayerCardWidget extends StatelessWidget {
                           child: Text('100\'s : ${hundredsAndFifties.hundreds}',
                               style: AppTextStyles.instance.playersStats),
                         ),
-                        // Text(
-                        //   runs['selectedKey'] == 'hundreds' &&
-                        //           runs['hostId'] !=
-                        //               FirebaseAuth.instance.currentUser!.uid
-                        //       ? 'vs ${runs['selectedValue']}'
-                        //       : '',
-                        //   style: AppTextStyles.instance.playersStat1,
-                        //   textAlign: TextAlign.center,
-                        // ),
+                        Text(
+                          (hundreds['selectedKey'] == 'hundreds' &&
+                                  hundreds['players'][FirebaseAuth.instance
+                                          .currentUser!.uid]['selectStats'] ==
+                                      true)
+                              ? 'vs ${hundreds['selectedValue']}'
+                              : '',
+                          style: AppTextStyles.instance.playersStat1,
+                          textAlign: TextAlign.center,
+                        )
                       ],
                     ))
               ]),
@@ -448,7 +543,7 @@ class PlayerCardWidget extends StatelessWidget {
         stream: getStats().onValue,
         builder: (context, snapShot) {
           if (snapShot.data != null) {
-            var wickets =
+            var fifties =
                 snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
             return InkWell(
               onTap: !canClick()
@@ -465,8 +560,19 @@ class PlayerCardWidget extends StatelessWidget {
                       GameServices().createSelectStats(
                           selectedKey: 'fifties',
                           selectedValue: hundredsAndFifties.fifties,
-                          currentPlayer: currentPlayer);
+                          currentPlayer: currentPlayer,
+                          playerName:
+                              '${hundredsAndFifties.firstName} ${hundredsAndFifties.lastName}',
+                          country: hundredsAndFifties.country);
                       onFeatureSelect('${hundredsAndFifties.fifties}-${index}');
+                      FeatureSelect featureSelect = FeatureSelect(
+                          selectStatValue: 'Ruthish',
+                          selectStats: selectedFeature ==
+                                  '${hundredsAndFifties.fifties}-${index}'
+                              ? true
+                              : false);
+                      GameServices().selectFeature(
+                          roomId: 'test', featureSelect: featureSelect);
                     },
               child: Row(children: [
                 Container(
@@ -476,25 +582,29 @@ class PlayerCardWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: selectedFeature ==
                               '${hundredsAndFifties.fifties}-${index}'
-                          ? Colors.green
-                          : const Color(0xff243b55),
+                          ? const Color(0xff2C7744)
+                          : (fifties['selectedKey'] == 'fifties' &&
+                                  fifties['players'][FirebaseAuth.instance
+                                          .currentUser!.uid]['selectStats'] ==
+                                      true)
+                              ? const Color(0xffC02425)
+                              : const Color(0xff243b55),
                       borderRadius: BorderRadius.all(Radius.circular(12.sp))),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('50\'s : ${hundredsAndFifties.fifties}',
                           style: AppTextStyles.instance.playersStats),
-                      // Visibility(
-                      //   child: Text(
-                      //     wickets['selectedKey'] == 'fifties' &&
-                      //             wickets['hostId'] !=
-                      //                 FirebaseAuth.instance.currentUser!.uid
-                      //         ? 'vs ${wickets['selectedValue']}'
-                      //         : '',
-                      //     style: AppTextStyles.instance.playersStat1,
-                      //     textAlign: TextAlign.center,
-                      //   ),
-                      // ),
+                      Text(
+                        (fifties['selectedKey'] == 'fifties' &&
+                                fifties['players'][FirebaseAuth.instance
+                                        .currentUser!.uid]['selectStats'] ==
+                                    true)
+                            ? 'vs ${fifties['selectedValue']}'
+                            : '',
+                        style: AppTextStyles.instance.playersStat1,
+                        textAlign: TextAlign.center,
+                      )
                     ],
                   ),
                 )
@@ -532,9 +642,20 @@ class PlayerCardWidget extends StatelessWidget {
                         GameServices().createSelectStats(
                             selectedKey: 'topScore',
                             selectedValue: highScoreAndWickets.topScore,
-                            currentPlayer: currentPlayer);
+                            currentPlayer: currentPlayer,
+                            playerName:
+                                '${highScoreAndWickets.firstName} ${highScoreAndWickets.lastName}',
+                            country: highScoreAndWickets.country);
                         onFeatureSelect(
                             '${highScoreAndWickets.topScore}-${index}');
+                        FeatureSelect featureSelect = FeatureSelect(
+                            selectStatValue: 'Ruthish',
+                            selectStats: selectedFeature ==
+                                    '${highScoreAndWickets.topScore}-${index}'
+                                ? true
+                                : false);
+                        GameServices().selectFeature(
+                            roomId: 'test', featureSelect: featureSelect);
                       },
                 child: Container(
                     width: 120.sp,
@@ -543,8 +664,13 @@ class PlayerCardWidget extends StatelessWidget {
                     decoration: BoxDecoration(
                         color: selectedFeature ==
                                 '${highScoreAndWickets.topScore}-${index}'
-                            ? Colors.green
-                            : const Color(0xff243b55),
+                            ? const Color(0xff2C7744)
+                            : (topScore['selectedKey'] == 'topScore' &&
+                                    topScore['players'][FirebaseAuth.instance
+                                            .currentUser!.uid]['selectStats'] ==
+                                        true)
+                                ? const Color(0xffC02425)
+                                : const Color(0xff243b55),
                         borderRadius: BorderRadius.all(Radius.circular(12.sp))),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -555,15 +681,16 @@ class PlayerCardWidget extends StatelessWidget {
                               'Top Score : ${highScoreAndWickets.topScore}',
                               style: AppTextStyles.instance.playersStats),
                         ),
-                        // Text(
-                        //   topScore['selectedKey'] == 'topScore' &&
-                        //           topScore['hostId'] !=
-                        //               FirebaseAuth.instance.currentUser!.uid
-                        //       ? 'vs ${topScore['selectedValue']}'
-                        //       : '',
-                        //   style: AppTextStyles.instance.playersStat1,
-                        //   textAlign: TextAlign.center,
-                        // )
+                        Text(
+                          (topScore['selectedKey'] == 'topScore' &&
+                                  topScore['players'][FirebaseAuth.instance
+                                          .currentUser!.uid]['selectStats'] ==
+                                      true)
+                              ? 'vs ${topScore['selectedValue']}'
+                              : '',
+                          style: AppTextStyles.instance.playersStat1,
+                          textAlign: TextAlign.center,
+                        )
                       ],
                     )),
               );
@@ -592,9 +719,20 @@ class PlayerCardWidget extends StatelessWidget {
                         GameServices().createSelectStats(
                             selectedKey: 'wickets',
                             selectedValue: highScoreAndWickets.wickets,
-                            currentPlayer: currentPlayer);
+                            currentPlayer: currentPlayer,
+                            playerName:
+                                '${highScoreAndWickets.firstName} ${highScoreAndWickets.lastName}',
+                            country: highScoreAndWickets.country);
                         onFeatureSelect(
                             '${highScoreAndWickets.wickets}-${index}');
+                        FeatureSelect featureSelect = FeatureSelect(
+                            selectStatValue: 'Ruthish',
+                            selectStats: selectedFeature ==
+                                    '${highScoreAndWickets.wickets}-${index}'
+                                ? true
+                                : false);
+                        GameServices().selectFeature(
+                            roomId: 'test', featureSelect: featureSelect);
                       },
                 child: Row(children: [
                   Container(
@@ -604,25 +742,29 @@ class PlayerCardWidget extends StatelessWidget {
                     decoration: BoxDecoration(
                         color: selectedFeature ==
                                 '${highScoreAndWickets.wickets}-${index}'
-                            ? Colors.green
-                            : const Color(0xff243b55),
+                            ? const Color(0xff2C7744)
+                            : (wickets['selectedKey'] == 'wickets' &&
+                                    wickets['players'][FirebaseAuth.instance
+                                            .currentUser!.uid]['selectStats'] ==
+                                        true)
+                                ? const Color(0xffC02425)
+                                : const Color(0xff243b55),
                         borderRadius: BorderRadius.all(Radius.circular(12.sp))),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text('Wickets : ${highScoreAndWickets.wickets}',
                             style: AppTextStyles.instance.playersStats),
-                        // Visibility(
-                        //   child: Text(
-                        //     wickets['selectedKey'] == 'wickets' &&
-                        //             wickets['hostId'] !=
-                        //                 FirebaseAuth.instance.currentUser!.uid
-                        //         ? 'vs ${wickets['selectedValue']}'
-                        //         : '',
-                        //     style: AppTextStyles.instance.playersStat1,
-                        //     textAlign: TextAlign.center,
-                        //   ),
-                        // ),
+                        Text(
+                          (wickets['selectedKey'] == 'wickets' &&
+                                  wickets['players'][FirebaseAuth.instance
+                                          .currentUser!.uid]['selectStats'] ==
+                                      true)
+                              ? 'vs ${wickets['selectedValue']}'
+                              : '',
+                          style: AppTextStyles.instance.playersStat1,
+                          textAlign: TextAlign.center,
+                        )
                       ],
                     ),
                   )
@@ -674,7 +816,7 @@ class PlayerCardWidget extends StatelessWidget {
           SizedBox(height: 15.sp),
           HeadTailsButton(
               text: 'Okay',
-              color: Colors.red,
+              color: const Color(0xffC02425),
               onPressed: () {
                 Navigator.of(context).pop();
               })
@@ -690,35 +832,49 @@ class PlayerCardWidget extends StatelessWidget {
           if (snapShot.data != null) {
             var getWon = snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
 
-            return (getWon['selectedKey'] == 'matches' ||
-                        getWon['selectedKey'] == 'batAvg' ||
-                        getWon['selectedKey'] == 'strikeRate' ||
-                        getWon['selectedKey'] == 'runs' ||
-                        getWon['selectedKey'] == 'hundreds' ||
-                        getWon['selectedKey'] == 'fifties' ||
-                        getWon['selectedKey'] == 'topScore' ||
-                        getWon['selectedKey'] == 'wickets') &&
-                    (getWon['hostId'] !=
-                            FirebaseAuth.instance.currentUser!.uid) !=
-                        ''
-                ? currentPlayer != getWon['hostId']
-                    ? Text(
-                        (currentPlayer != getWon['hostId'] &&
-                                getWon['hostId'] !=
-                                    FirebaseAuth.instance.currentUser!.uid)
-                            ? 'You Won'
-                            : 'You Loss',
-                        style: AppTextStyles.instance.tossStatus,
-                      )
-                    : Text(
-                        (currentPlayer == getWon['hostId'] &&
-                                getWon['hostId'] ==
-                                    FirebaseAuth.instance.currentUser!.uid)
-                            ? 'You Won'
-                            : 'You Loss',
-                        style: AppTextStyles.instance.tossStatus,
-                      )
-                : Text('');
+            return Column(
+              children: [
+                (getWon['selectedKey'] == 'matches' ||
+                            getWon['selectedKey'] == 'batAvg' ||
+                            getWon['selectedKey'] == 'strikeRate' ||
+                            getWon['selectedKey'] == 'runs' ||
+                            getWon['selectedKey'] == 'hundreds' ||
+                            getWon['selectedKey'] == 'fifties' ||
+                            getWon['selectedKey'] == 'topScore' ||
+                            getWon['selectedKey'] == 'wickets') &&
+                        (getWon['hostId'] !=
+                                FirebaseAuth.instance.currentUser!.uid) !=
+                            ''
+                    ? canClick() == true
+                        ? Container(
+                            padding: EdgeInsets.all(8.sp),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12.sp)),
+                                color: const Color(0xff243b55),
+                                border:
+                                    Border.all(color: Colors.white, width: 1)),
+                            child: Text(
+                              'You Won',
+                              style: AppTextStyles.instance.winStatus,
+                            ),
+                          )
+                        : Container(
+                            padding: EdgeInsets.all(8.sp),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12.sp)),
+                                color: const Color(0xff243b55),
+                                border:
+                                    Border.all(color: Colors.white, width: 1)),
+                            child: Text(
+                              'You Loss',
+                              style: AppTextStyles.instance.loseStatus,
+                            ),
+                          )
+                    : Container()
+              ],
+            );
           }
           return Container();
         });

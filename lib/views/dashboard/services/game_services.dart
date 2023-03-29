@@ -134,7 +134,9 @@ class GameServices {
       //TODO::Change actual room ID;
       {required String selectedKey,
       required String selectedValue,
-      required String currentPlayer}) async {
+      required String currentPlayer,
+      required String playerName,
+      required String country}) async {
     try {
       DatabaseEvent snap =
           await FirebaseDatabase.instance.ref('Room').child('test').once();
@@ -157,30 +159,58 @@ class GameServices {
       if (playerBCharacter.isNotEmpty) {
         playerBValue = playerBCharacter[0][selectedKey];
       }
-      var isPlayerAWon =
-          double.parse(playerAValue) > double.parse(playerBValue);
-      if (isPlayerAWon) {
-        Future.delayed(const Duration(seconds: 1), () async {
-          movePlayer(
+      if (double.parse(playerAValue) == double.parse(playerBValue)) {
+        log(map['hostId'].toString());
+        log('MAPHOSTID');
+        log("Match Drawn");
+        Future.delayed(const Duration(seconds: 2), () async {
+          drawPlayer(
               loser: playerBCharacter,
               winner: playerACharacter,
               winnerId: playerAId,
               loserId: playerBId);
         });
+        drawPlayer(
+            loser: playerACharacter,
+            winner: playerBCharacter,
+            winnerId: playerBId,
+            loserId: playerAId);
+
+        // return FirebaseDatabase.instance.ref('Room').child('test').update({
+        //   'selectedKey': selectedKey,
+        //   'selectedValue': selectedValue,
+        //   'currentPlayer': map['hostId'],
+        //   'playerName': playerName,
+        //   'playerCountry': country
+        // });
       } else {
-        Future.delayed(const Duration(seconds: 1), () async {
-          movePlayer(
-              loser: playerACharacter,
-              winner: playerBCharacter,
-              winnerId: playerBId,
-              loserId: playerAId);
+        var isPlayerAWon =
+            double.parse(playerAValue) > double.parse(playerBValue);
+        if (isPlayerAWon) {
+          Future.delayed(const Duration(seconds: 1), () async {
+            movePlayer(
+                loser: playerBCharacter,
+                winner: playerACharacter,
+                winnerId: playerAId,
+                loserId: playerBId);
+          });
+        } else {
+          Future.delayed(const Duration(seconds: 1), () async {
+            movePlayer(
+                loser: playerACharacter,
+                winner: playerBCharacter,
+                winnerId: playerBId,
+                loserId: playerAId);
+          });
+        }
+        return FirebaseDatabase.instance.ref('Room').child('test').update({
+          'selectedKey': selectedKey,
+          'selectedValue': selectedValue,
+          'currentPlayer': isPlayerAWon ? map['hostId'] : playerBId,
+          'playerName': playerName,
+          'playerCountry': country
         });
       }
-      return FirebaseDatabase.instance.ref('Room').child('test').update({
-        'selectedKey': selectedKey,
-        'selectedValue': selectedValue,
-        'currentPlayer': isPlayerAWon ? map['hostId'] : playerBId
-      });
     } catch (e, stack) {
       log(e.toString());
       log(stack.toString());
@@ -193,24 +223,20 @@ class GameServices {
       required String winnerId,
       required String loserId}) {
     Future.delayed(const Duration(seconds: 2), () async {
-      var winnerUpdated = [];
-      // for (var value in winner) {
-      //   winnerUpdated.add(value);
-      // }
-      // if (loser.isNotEmpty) {
-      //   winnerUpdated.add(loser[0]);
-      // }
       Map<dynamic, dynamic> winnerFinalMap = {};
-      for (int i = 1; i < winnerUpdated.length; i++) {
-        winnerFinalMap[(i - 1).toString()] = winnerUpdated[i];
+      for (int i = 1; i < winner.length; i++) {
+        winnerFinalMap[(i - 1).toString()] = winner[i];
       }
-      log(winnerUpdated.toString());
-      log('Winner Card List');
-      winnerFinalMap[(winnerUpdated.length - 1).toString()] = winnerUpdated[0];
+      log(winner.toString());
+      log('Player A Card List');
+      winnerFinalMap[(winner.length - 1).toString()] = winner[0];
       Map<dynamic, dynamic> loserFinalMap = {};
       for (int i = 1; i < loser.length; i++) {
         loserFinalMap[(i - 1).toString()] = loser[i];
       }
+      loserFinalMap[(loser.length - 1).toString()] = loser[0];
+      log(loser.toString());
+      log('Player B Card List');
       await FirebaseDatabase.instance
           .ref('Room')
           .child('test')
@@ -269,9 +295,8 @@ class GameServices {
     });
   }
 
-  Future cardTotal(
-      {required String roomId, required GameSelectedStats stats}) async {
-    // TODO::Change actual room ID;
+  Future selectFeature(
+      {required String roomId, required FeatureSelect featureSelect}) async {
     DataSnapshot playerData = await FirebaseDatabase.instance
         .ref('Room')
         .child('/$roomId/players')
@@ -282,25 +307,20 @@ class GameServices {
             .ref('Room')
             .child(
                 '/$roomId/players/${FirebaseAuth.instance.currentUser!.uid}');
-        reference.update(stats.toJson());
+        reference.update(featureSelect.toJson());
       } else {
-        GameSelectedStats oppToss = GameSelectedStats(
-            selectedKey: 'kjdkdjkf', selectedValue: 'jsfskjdksj');
+        FeatureSelect oppToss = FeatureSelect(
+            selectStats: !featureSelect.selectStats,
+            selectStatValue: featureSelect.selectStatValue);
         DatabaseReference reference = FirebaseDatabase.instance
             .ref('Room')
             .child('/$roomId/players/$playerId');
         reference.update(oppToss.toJson());
       }
-      DatabaseReference reference = FirebaseDatabase.instance
-          .ref('Room')
-          .child('/$roomId/players/${FirebaseAuth.instance.currentUser!.uid}');
-      await reference.update(stats.toJson());
     }
-  }
-
-  Future cardUpdate(String totalCards) {
     DatabaseReference reference = FirebaseDatabase.instance
-        .ref('Room/test/players/${FirebaseAuth.instance.currentUser?.uid}');
-    return reference.update({'totalCards': totalCards});
+        .ref('Room')
+        .child('/$roomId/players/${FirebaseAuth.instance.currentUser!.uid}');
+    await reference.update(featureSelect.toJson());
   }
 }

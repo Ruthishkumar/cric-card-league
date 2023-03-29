@@ -200,3 +200,15 @@ class GameSelectedStats {
       _$GameSelectedStatsFromJson(json);
   Map<String, dynamic> toJson() => _$GameSelectedStatsToJson(this);
 }
+
+@JsonSerializable()
+class FeatureSelect {
+  bool selectStats;
+  String selectStatValue;
+
+  FeatureSelect({required this.selectStats, required this.selectStatValue});
+
+  factory FeatureSelect.fromJson(Map<String, dynamic> json) =>
+      _$FeatureSelectFromJson(json);
+  Map<String, dynamic> toJson() => _$FeatureSelectToJson(this);
+}
