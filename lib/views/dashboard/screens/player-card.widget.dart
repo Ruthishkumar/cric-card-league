@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
@@ -75,8 +77,8 @@ class PlayerCardWidget extends StatelessWidget {
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(16.sp))),
                                     child: Column(children: [
-                                      matchesAndBatAvg(
-                                          data, data.toJson().length),
+                                      matchesAndBatAvg(data,
+                                          data.toJson().length, playerList),
                                       SizedBox(height: 10.sp),
                                       strikeRateAndRuns(
                                           data, data.toJson().length),
@@ -103,18 +105,17 @@ class PlayerCardWidget extends StatelessWidget {
           ),
         ),
         SizedBox(height: 25.sp),
-        ...[playerList.first].map((status) {
-          return Column(
-            children: [
-              getMatchStatus(status, status.toJson().length),
-            ],
-          );
-        }),
+        Column(
+          children: [
+            getMatchStatus(playerList, playerList.length),
+          ],
+        ),
       ],
     );
   }
 
-  matchesAndBatAvg(CreatePlayerModel matchAndAverage, int index) {
+  matchesAndBatAvg(CreatePlayerModel matchAndAverage, int index,
+      List<CreatePlayerModel> ffj) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -152,6 +153,8 @@ class PlayerCardWidget extends StatelessWidget {
                                 : false);
                         GameServices().selectFeature(
                             roomId: 'test', featureSelect: featureSelect);
+                        log(selectedFeature.toString());
+                        log('SelectFeature');
                       },
                 child: Row(
                   children: [
@@ -833,66 +836,67 @@ class PlayerCardWidget extends StatelessWidget {
     );
   }
 
-  getMatchStatus(CreatePlayerModel status, int index) {
+  getMatchStatus(List<CreatePlayerModel> playerList, int index) {
     return StreamBuilder(
-        stream: getStats().onValue,
-        builder: (context, snapShot) {
-          if (snapShot.data != null) {
-            var getWon = snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-
-            return Column(
-              children: [
-                (getWon['selectedKey'] == 'matches' ||
-                            getWon['selectedKey'] == 'batAvg' ||
-                            getWon['selectedKey'] == 'strikeRate' ||
-                            getWon['selectedKey'] == 'runs' ||
-                            getWon['selectedKey'] == 'hundreds' ||
-                            getWon['selectedKey'] == 'fifties' ||
-                            getWon['selectedKey'] == 'topScore' ||
-                            getWon['selectedKey'] == 'wickets') &&
-                        (getWon['hostId'] !=
-                                FirebaseAuth.instance.currentUser!.uid) !=
-                            ''
-                    ? canClick() == true
-                        ? Container(
-                            padding: EdgeInsets.all(8.sp),
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12.sp)),
-                                color: const Color(0xff243b55),
-                                border:
-                                    Border.all(color: Colors.white, width: 1)),
-                            child: Text(
-                              getWon['matchDrawn'] == true
-                                  ? 'Match Drawn'
-                                  : 'You Won',
-                              style: getWon['matchDrawn'] == true
-                                  ? AppTextStyles.instance.cardWinStatus
-                                  : AppTextStyles.instance.winStatus,
-                            ),
-                          )
-                        : Container(
-                            padding: EdgeInsets.all(8.sp),
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12.sp)),
-                                color: const Color(0xff243b55),
-                                border:
-                                    Border.all(color: Colors.white, width: 1)),
-                            child: Text(
-                              getWon['matchDrawn'] == true
-                                  ? 'Match Drawn'
-                                  : 'You Loss',
-                              style: getWon['matchDrawn'] == true
-                                  ? AppTextStyles.instance.cardWinStatus
-                                  : AppTextStyles.instance.loseStatus,
-                            ),
-                          )
-                    : Container()
-              ],
-            );
-          }
-          return Container();
-        });
+      stream: getStats().onValue,
+      builder: (context, snapShot) {
+        if (snapShot.data != null) {
+          var getWon = snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
+          Future.delayed(const Duration(milliseconds: 1000)).then((value) =>
+              Column(
+                children: [
+                  (getWon['selectedKey'] == 'matches' ||
+                              getWon['selectedKey'] == 'batAvg' ||
+                              getWon['selectedKey'] == 'strikeRate' ||
+                              getWon['selectedKey'] == 'runs' ||
+                              getWon['selectedKey'] == 'hundreds' ||
+                              getWon['selectedKey'] == 'fifties' ||
+                              getWon['selectedKey'] == 'topScore' ||
+                              getWon['selectedKey'] == 'wickets') &&
+                          (getWon['hostId'] !=
+                                  FirebaseAuth.instance.currentUser!.uid) !=
+                              ''
+                      ? canClick() == true && playerList.length == index
+                          ? Container(
+                              padding: EdgeInsets.all(8.sp),
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12.sp)),
+                                  color: const Color(0xff243b55),
+                                  border: Border.all(
+                                      color: Colors.white, width: 1)),
+                              child: Text(
+                                getWon['matchDrawn'] == true
+                                    ? 'Match Drawn'
+                                    : 'You Won',
+                                style: getWon['matchDrawn'] == true
+                                    ? AppTextStyles.instance.cardWinStatus
+                                    : AppTextStyles.instance.winStatus,
+                              ),
+                            )
+                          : Container(
+                              padding: EdgeInsets.all(8.sp),
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12.sp)),
+                                  color: const Color(0xff243b55),
+                                  border: Border.all(
+                                      color: Colors.white, width: 1)),
+                              child: Text(
+                                getWon['matchDrawn'] == true
+                                    ? 'Match Drawn'
+                                    : 'You Loss',
+                                style: getWon['matchDrawn'] == true
+                                    ? AppTextStyles.instance.cardWinStatus
+                                    : AppTextStyles.instance.loseStatus,
+                              ),
+                            )
+                      : Container()
+                ],
+              ));
+        }
+        return Container();
+      },
+    );
   }
 }
