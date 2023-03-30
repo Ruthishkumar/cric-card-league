@@ -180,10 +180,7 @@ class GameServices {
           'selectedKey': selectedKey,
           'selectedValue': selectedValue,
           'matchDrawn': true,
-          'currentPlayer':
-              double.parse(playerAValue) == double.parse(playerBValue)
-                  ? map['hostId']
-                  : playerBId,
+          'currentPlayer': FirebaseAuth.instance.currentUser!.uid.toString(),
           'playerName': playerName,
           'playerCountry': country
         });

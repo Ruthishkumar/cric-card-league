@@ -161,7 +161,8 @@ class PlayerCardWidget extends StatelessWidget {
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
                           color: selectedFeature ==
-                                  '${matchAndAverage.matches}-${index}'
+                                      '${matchAndAverage.matches}-${index}' &&
+                                  matches['selectedKey'] == 'matches'
                               ? const Color(0xff2C7744)
                               : (matches['selectedKey'] == 'matches' &&
                                       matches['players'][FirebaseAuth
@@ -246,7 +247,8 @@ class PlayerCardWidget extends StatelessWidget {
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
                           color: selectedFeature ==
-                                  '${matchAndAverage.batAvg}-${index}'
+                                      '${matchAndAverage.batAvg}-${index}' &&
+                                  stats['selectedKey'] == 'batAvg'
                               ? const Color(0xff2C7744)
                               : (stats['selectedKey'] == 'batAvg' &&
                                       stats['players'][FirebaseAuth
@@ -335,7 +337,8 @@ class PlayerCardWidget extends StatelessWidget {
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
                           color: selectedFeature ==
-                                  '${strikeAndRuns.strikeRate}-${index}'
+                                      '${strikeAndRuns.strikeRate}-${index}' &&
+                                  strikeRate['selectedKey'] == 'strikeRate'
                               ? const Color(0xff2C7744)
                               : (strikeRate['selectedKey'] == 'strikeRate' &&
                                       strikeRate['players'][FirebaseAuth
@@ -419,7 +422,8 @@ class PlayerCardWidget extends StatelessWidget {
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
                           color: selectedFeature ==
-                                  '${strikeAndRuns.runs}-${index}'
+                                      '${strikeAndRuns.runs}-${index}' &&
+                                  runs['selectedKey'] == 'runs'
                               ? const Color(0xff2C7744)
                               : (runs['selectedKey'] == 'runs' &&
                                       runs['players'][FirebaseAuth
@@ -505,7 +509,8 @@ class PlayerCardWidget extends StatelessWidget {
                     padding: EdgeInsets.all(8.sp),
                     decoration: BoxDecoration(
                         color: selectedFeature ==
-                                '${hundredsAndFifties.hundreds}-${index}'
+                                    '${hundredsAndFifties.hundreds}-${index}' &&
+                                hundreds['selectedKey'] == 'hundreds'
                             ? const Color(0xff2C7744)
                             : (hundreds['selectedKey'] == 'hundreds' &&
                                     hundreds['players'][FirebaseAuth.instance
@@ -581,7 +586,8 @@ class PlayerCardWidget extends StatelessWidget {
                   padding: EdgeInsets.all(8.sp),
                   decoration: BoxDecoration(
                       color: selectedFeature ==
-                              '${hundredsAndFifties.fifties}-${index}'
+                                  '${hundredsAndFifties.fifties}-${index}' &&
+                              fifties['selectedKey'] == 'fifties'
                           ? const Color(0xff2C7744)
                           : (fifties['selectedKey'] == 'fifties' &&
                                   fifties['players'][FirebaseAuth.instance
@@ -663,7 +669,8 @@ class PlayerCardWidget extends StatelessWidget {
                     padding: EdgeInsets.all(8.sp),
                     decoration: BoxDecoration(
                         color: selectedFeature ==
-                                '${highScoreAndWickets.topScore}-${index}'
+                                    '${highScoreAndWickets.topScore}-${index}' &&
+                                topScore['selectedKey'] == 'topScore'
                             ? const Color(0xff2C7744)
                             : (topScore['selectedKey'] == 'topScore' &&
                                     topScore['players'][FirebaseAuth.instance
@@ -741,7 +748,8 @@ class PlayerCardWidget extends StatelessWidget {
                     padding: EdgeInsets.all(8.sp),
                     decoration: BoxDecoration(
                         color: selectedFeature ==
-                                '${highScoreAndWickets.wickets}-${index}'
+                                    '${highScoreAndWickets.wickets}-${index}' &&
+                                wickets['selectedKey'] == 'wickets'
                             ? const Color(0xff2C7744)
                             : (wickets['selectedKey'] == 'wickets' &&
                                     wickets['players'][FirebaseAuth.instance
@@ -858,7 +866,9 @@ class PlayerCardWidget extends StatelessWidget {
                               getWon['matchDrawn'] == true
                                   ? 'Match Drawn'
                                   : 'You Won',
-                              style: AppTextStyles.instance.winStatus,
+                              style: getWon['matchDrawn'] == true
+                                  ? AppTextStyles.instance.cardWinStatus
+                                  : AppTextStyles.instance.winStatus,
                             ),
                           )
                         : Container(
@@ -873,7 +883,9 @@ class PlayerCardWidget extends StatelessWidget {
                               getWon['matchDrawn'] == true
                                   ? 'Match Drawn'
                                   : 'You Loss',
-                              style: AppTextStyles.instance.loseStatus,
+                              style: getWon['matchDrawn'] == true
+                                  ? AppTextStyles.instance.cardWinStatus
+                                  : AppTextStyles.instance.loseStatus,
                             ),
                           )
                     : Container()
