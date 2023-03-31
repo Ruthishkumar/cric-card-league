@@ -1,14 +1,7 @@
-import 'dart:developer';
-
 import 'package:ds_game/views/dashboard/model/game_model.dart';
-import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
-import 'package:ds_game/widgets/login_fancy_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class TotalPlayerVisibleScreen extends StatelessWidget {
   final List<CreatePlayerModel> playerList;

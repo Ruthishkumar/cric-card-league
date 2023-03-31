@@ -197,7 +197,6 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                             if (snapShot.data != null) {
                               Map<dynamic, dynamic> data = snapShot.data!
                                   .snapshot.value as Map<dynamic, dynamic>;
-                              log(data.entries.length.toString() ?? '');
                               return data.entries.length > 1
                                   ? Column(
                                       children: [

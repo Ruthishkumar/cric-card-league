@@ -204,11 +204,22 @@ class GameSelectedStats {
 @JsonSerializable()
 class FeatureSelect {
   bool selectStats;
-  String selectStatValue;
 
-  FeatureSelect({required this.selectStats, required this.selectStatValue});
+  FeatureSelect({required this.selectStats});
 
   factory FeatureSelect.fromJson(Map<String, dynamic> json) =>
       _$FeatureSelectFromJson(json);
   Map<String, dynamic> toJson() => _$FeatureSelectToJson(this);
+}
+
+@JsonSerializable()
+class LoserCardStatus {
+  String playerName;
+  String playerCountry;
+
+  LoserCardStatus({required this.playerName, required this.playerCountry});
+
+  factory LoserCardStatus.fromJson(Map<String, dynamic> json) =>
+      _$LoserCardStatusFromJson(json);
+  Map<String, dynamic> toJson() => _$LoserCardStatusToJson(this);
 }

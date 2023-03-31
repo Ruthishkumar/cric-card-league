@@ -2,18 +2,14 @@ import 'dart:developer';
 
 import 'package:ds_game/views/authentication/screens/success_page.dart';
 import 'package:ds_game/views/authentication/services/storage_services.dart';
-import 'package:ds_game/widgets/animation_route.dart';
-import 'package:ds_game/widgets/app_button.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 
 import 'package:pin_code_fields/pin_code_fields.dart';
 

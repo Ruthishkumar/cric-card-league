@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:developer' as dev;
 import 'dart:math';
-
-import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/authentication/screens/success_page.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/screens/player-card.widget.dart';
@@ -18,7 +16,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
 
 class CardTemplatePage extends StatefulWidget {
   const CardTemplatePage({Key? key}) : super(key: key);

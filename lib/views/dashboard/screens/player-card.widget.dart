@@ -1,10 +1,12 @@
 import 'dart:developer';
 
+import 'package:delayed_display/delayed_display.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -110,6 +112,8 @@ class PlayerCardWidget extends StatelessWidget {
             getMatchStatus(playerList, playerList.length),
           ],
         ),
+        SizedBox(height: 10.sp),
+        getLoserCard(),
       ],
     );
   }
@@ -141,20 +145,23 @@ class PlayerCardWidget extends StatelessWidget {
                             selectedKey: 'matches',
                             selectedValue: matchAndAverage.matches,
                             currentPlayer: currentPlayer,
-                            playerName:
-                                '${matchAndAverage.firstName} ${matchAndAverage.lastName}',
-                            country: matchAndAverage.country);
+                            selectedName: matchAndAverage.firstName);
                         onFeatureSelect('${matchAndAverage.matches}-${index}');
                         FeatureSelect featureSelect = FeatureSelect(
-                            selectStatValue: 'Ruthish',
                             selectStats: selectedFeature ==
                                     '${matchAndAverage.matches}-${index}'
                                 ? true
                                 : false);
                         GameServices().selectFeature(
                             roomId: 'test', featureSelect: featureSelect);
-                        log(selectedFeature.toString());
-                        log('SelectFeature');
+                        LoserCardStatus loserCardStatus = LoserCardStatus(
+                            playerName: matches['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? matchAndAverage.firstName
+                                : matchAndAverage.firstName,
+                            playerCountry: 'India');
+                        GameServices().loserCardStatus(
+                            roomId: 'test', loserCardStatus: loserCardStatus);
                       },
                 child: Row(
                   children: [
@@ -230,12 +237,9 @@ class PlayerCardWidget extends StatelessWidget {
                             selectedKey: 'batAvg',
                             selectedValue: matchAndAverage.batAvg,
                             currentPlayer: currentPlayer,
-                            playerName:
-                                '${matchAndAverage.firstName} ${matchAndAverage.lastName}',
-                            country: matchAndAverage.country);
+                            selectedName: matchAndAverage.firstName);
                         onFeatureSelect('${matchAndAverage.batAvg}-${index}');
                         FeatureSelect featureSelect = FeatureSelect(
-                            selectStatValue: 'Ruthish',
                             selectStats: selectedFeature ==
                                     '${matchAndAverage.batAvg}-${index}'
                                 ? true
@@ -319,12 +323,9 @@ class PlayerCardWidget extends StatelessWidget {
                             selectedKey: 'strikeRate',
                             selectedValue: strikeAndRuns.strikeRate,
                             currentPlayer: currentPlayer,
-                            playerName:
-                                '${strikeAndRuns.firstName} ${strikeAndRuns.lastName}',
-                            country: strikeAndRuns.country);
+                            selectedName: strikeAndRuns.firstName);
                         onFeatureSelect('${strikeAndRuns.strikeRate}-${index}');
                         FeatureSelect featureSelect = FeatureSelect(
-                            selectStatValue: 'Ruthish',
                             selectStats: selectedFeature ==
                                     '${strikeAndRuns.strikeRate}-${index}'
                                 ? true
@@ -405,12 +406,9 @@ class PlayerCardWidget extends StatelessWidget {
                             selectedKey: 'runs',
                             selectedValue: strikeAndRuns.runs,
                             currentPlayer: currentPlayer,
-                            playerName:
-                                '${strikeAndRuns.firstName} ${strikeAndRuns.lastName}',
-                            country: strikeAndRuns.country);
+                            selectedName: strikeAndRuns.firstName);
                         onFeatureSelect('${strikeAndRuns.runs}-${index}');
                         FeatureSelect featureSelect = FeatureSelect(
-                            selectStatValue: 'Ruthish',
                             selectStats: selectedFeature ==
                                     '${strikeAndRuns.runs}-${index}'
                                 ? true
@@ -491,13 +489,10 @@ class PlayerCardWidget extends StatelessWidget {
                           selectedKey: 'hundreds',
                           selectedValue: hundredsAndFifties.hundreds,
                           currentPlayer: currentPlayer,
-                          playerName:
-                              '${hundredsAndFifties.firstName} ${hundredsAndFifties.lastName}',
-                          country: hundredsAndFifties.country);
+                          selectedName: hundredsAndFifties.firstName);
                       onFeatureSelect(
                           '${hundredsAndFifties.hundreds}-${index}');
                       FeatureSelect featureSelect = FeatureSelect(
-                          selectStatValue: 'Ruthish',
                           selectStats: selectedFeature ==
                                   '${hundredsAndFifties.hundreds}-${index}'
                               ? true
@@ -569,12 +564,9 @@ class PlayerCardWidget extends StatelessWidget {
                           selectedKey: 'fifties',
                           selectedValue: hundredsAndFifties.fifties,
                           currentPlayer: currentPlayer,
-                          playerName:
-                              '${hundredsAndFifties.firstName} ${hundredsAndFifties.lastName}',
-                          country: hundredsAndFifties.country);
+                          selectedName: hundredsAndFifties.firstName);
                       onFeatureSelect('${hundredsAndFifties.fifties}-${index}');
                       FeatureSelect featureSelect = FeatureSelect(
-                          selectStatValue: 'Ruthish',
                           selectStats: selectedFeature ==
                                   '${hundredsAndFifties.fifties}-${index}'
                               ? true
@@ -652,13 +644,11 @@ class PlayerCardWidget extends StatelessWidget {
                             selectedKey: 'topScore',
                             selectedValue: highScoreAndWickets.topScore,
                             currentPlayer: currentPlayer,
-                            playerName:
-                                '${highScoreAndWickets.firstName} ${highScoreAndWickets.lastName}',
-                            country: highScoreAndWickets.country);
+                            selectedName: highScoreAndWickets.firstName);
                         onFeatureSelect(
-                            '${highScoreAndWickets.topScore}-${index}');
+                          '${highScoreAndWickets.topScore}-${index}',
+                        );
                         FeatureSelect featureSelect = FeatureSelect(
-                            selectStatValue: 'Ruthish',
                             selectStats: selectedFeature ==
                                     '${highScoreAndWickets.topScore}-${index}'
                                 ? true
@@ -730,13 +720,10 @@ class PlayerCardWidget extends StatelessWidget {
                             selectedKey: 'wickets',
                             selectedValue: highScoreAndWickets.wickets,
                             currentPlayer: currentPlayer,
-                            playerName:
-                                '${highScoreAndWickets.firstName} ${highScoreAndWickets.lastName}',
-                            country: highScoreAndWickets.country);
+                            selectedName: highScoreAndWickets.firstName);
                         onFeatureSelect(
                             '${highScoreAndWickets.wickets}-${index}');
                         FeatureSelect featureSelect = FeatureSelect(
-                            selectStatValue: 'Ruthish',
                             selectStats: selectedFeature ==
                                     '${highScoreAndWickets.wickets}-${index}'
                                 ? true
@@ -842,58 +829,103 @@ class PlayerCardWidget extends StatelessWidget {
       builder: (context, snapShot) {
         if (snapShot.data != null) {
           var getWon = snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-          Future.delayed(const Duration(milliseconds: 1000)).then((value) =>
-              Column(
-                children: [
-                  (getWon['selectedKey'] == 'matches' ||
-                              getWon['selectedKey'] == 'batAvg' ||
-                              getWon['selectedKey'] == 'strikeRate' ||
-                              getWon['selectedKey'] == 'runs' ||
-                              getWon['selectedKey'] == 'hundreds' ||
-                              getWon['selectedKey'] == 'fifties' ||
-                              getWon['selectedKey'] == 'topScore' ||
-                              getWon['selectedKey'] == 'wickets') &&
-                          (getWon['hostId'] !=
-                                  FirebaseAuth.instance.currentUser!.uid) !=
-                              ''
-                      ? canClick() == true && playerList.length == index
-                          ? Container(
-                              padding: EdgeInsets.all(8.sp),
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12.sp)),
-                                  color: const Color(0xff243b55),
-                                  border: Border.all(
-                                      color: Colors.white, width: 1)),
-                              child: Text(
-                                getWon['matchDrawn'] == true
-                                    ? 'Match Drawn'
-                                    : 'You Won',
-                                style: getWon['matchDrawn'] == true
-                                    ? AppTextStyles.instance.cardWinStatus
-                                    : AppTextStyles.instance.winStatus,
-                              ),
-                            )
-                          : Container(
-                              padding: EdgeInsets.all(8.sp),
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12.sp)),
-                                  color: const Color(0xff243b55),
-                                  border: Border.all(
-                                      color: Colors.white, width: 1)),
-                              child: Text(
-                                getWon['matchDrawn'] == true
-                                    ? 'Match Drawn'
-                                    : 'You Loss',
-                                style: getWon['matchDrawn'] == true
-                                    ? AppTextStyles.instance.cardWinStatus
+          return Column(
+            children: [
+              (getWon['selectedKey'] == 'matches' ||
+                          getWon['selectedKey'] == 'batAvg' ||
+                          getWon['selectedKey'] == 'strikeRate' ||
+                          getWon['selectedKey'] == 'runs' ||
+                          getWon['selectedKey'] == 'hundreds' ||
+                          getWon['selectedKey'] == 'fifties' ||
+                          getWon['selectedKey'] == 'topScore' ||
+                          getWon['selectedKey'] == 'wickets') &&
+                      (getWon['hostId'] !=
+                              FirebaseAuth.instance.currentUser!.uid) !=
+                          ''
+                  ? DelayedDisplay(
+                      slidingBeginOffset: const Offset(-1, 0),
+                      delay: const Duration(microseconds: 1),
+                      child: Container(
+                          padding: EdgeInsets.all(8.sp),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12.sp)),
+                              color: const Color(0xff243b55),
+                              border:
+                                  Border.all(color: Colors.white, width: 1)),
+                          child: Text(
+                            getWon['matchDrawn'] == true
+                                ? 'Match Drawn'
+                                : canClick() == true
+                                    ? 'You Won'
+                                    : 'You Lose',
+                            style: getWon['matchDrawn'] == true
+                                ? AppTextStyles.instance.cardWinStatus
+                                : canClick() == true
+                                    ? AppTextStyles.instance.winStatus
                                     : AppTextStyles.instance.loseStatus,
-                              ),
-                            )
-                      : Container()
-                ],
-              ));
+                          )),
+                    )
+                  // : DelayedDisplay(
+                  //     slidingBeginOffset: const Offset(-1, 0),
+                  //     delay: const Duration(microseconds: 1),
+                  //     child: Container(
+                  //       padding: EdgeInsets.all(8.sp),
+                  //       decoration: BoxDecoration(
+                  //           borderRadius:
+                  //               BorderRadius.all(Radius.circular(12.sp)),
+                  //           color: const Color(0xff243b55),
+                  //           border:
+                  //               Border.all(color: Colors.white, width: 1)),
+                  //       child: Text(
+                  //         getWon['matchDrawn'] == true && getWon['players'][FirebaseAuth.instance
+                  //             .currentUser!.uid]['selectStats'] ==
+                  //             true
+                  //             ? 'Match Drawn'
+                  //             : 'You Loss',
+                  //         style: getWon['matchDrawn'] == true
+                  //             ? AppTextStyles.instance.cardWinStatus
+                  //             : AppTextStyles.instance.loseStatus,
+                  //       ),
+                  //     ),
+                  //   )
+                  : Container()
+            ],
+          );
+        }
+        return Container();
+      },
+    );
+  }
+
+  /// loser card banner
+  getLoserCard() {
+    return StreamBuilder(
+      stream: getStats().onValue,
+      builder: (context, snapShot) {
+        if (snapShot.data != null) {
+          var getLoserCard =
+              snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
+          return canClick() == true
+              ? Container(
+                  padding: EdgeInsets.all(8.sp),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(12.sp)),
+                      // color: const Color(0xff243b55),
+                      border: Border.all(color: Colors.white, width: 1)),
+                  child: Column(
+                    children: [
+                      // Text(
+                      //   getLoserCard['playerName'],
+                      //   style: AppTextStyles.instance.cardWinStatus,
+                      // ),
+                      // SizedBox(height: 5.sp),
+                      // Text(getLoserCard['playerCountry'],
+                      //     style: AppTextStyles.instance.cardWinStatus),
+                    ],
+                  ),
+                )
+              : Container();
         }
         return Container();
       },

@@ -168,11 +168,21 @@ Map<String, dynamic> _$GameSelectedStatsToJson(GameSelectedStats instance) =>
 FeatureSelect _$FeatureSelectFromJson(Map<String, dynamic> json) =>
     FeatureSelect(
       selectStats: json['selectStats'] as bool,
-      selectStatValue: json['selectStatValue'] as String,
     );
 
 Map<String, dynamic> _$FeatureSelectToJson(FeatureSelect instance) =>
     <String, dynamic>{
       'selectStats': instance.selectStats,
-      'selectStatValue': instance.selectStatValue,
+    };
+
+LoserCardStatus _$LoserCardStatusFromJson(Map<String, dynamic> json) =>
+    LoserCardStatus(
+      playerName: json['playerName'] as String,
+      playerCountry: json['playerCountry'] as String,
+    );
+
+Map<String, dynamic> _$LoserCardStatusToJson(LoserCardStatus instance) =>
+    <String, dynamic>{
+      'playerName': instance.playerName,
+      'playerCountry': instance.playerCountry,
     };

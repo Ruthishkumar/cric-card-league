@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:ds_game/widgets/fancy_button.dart';
