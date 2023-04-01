@@ -31,18 +31,10 @@ class TotalPlayerVisibleScreen extends StatelessWidget {
                           border: Border.all(color: Colors.white, width: 1.sp),
                           borderRadius:
                               BorderRadius.all(Radius.circular(10.sp))),
-                      child: Stack(
-                        alignment: Alignment.bottomLeft,
-                        children: [
-                          Image.asset(
-                            'assets/images/Virat-Kohli-T20I2020.png',
-                            height: 180.sp,
-                            width: 190.sp,
-                            colorBlendMode: BlendMode.colorDodge,
-                          ),
-                          Positioned(
-                              top: 70.sp, child: playerHeaderWidget(data)),
-                        ],
+                      child: SizedBox(
+                        height: 180.sp,
+                        width: 190.sp,
+                        child: playerHeaderWidget(data),
                       ),
                     );
                   }
@@ -213,24 +205,18 @@ class TotalPlayerVisibleScreen extends StatelessWidget {
   }
 
   playerHeaderWidget(CreatePlayerModel playerHeaderData) {
-    return Container(
-      padding: EdgeInsets.only(left: 20.sp),
-      child: FittedBox(
-        fit: BoxFit.contain,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(playerHeaderData.firstName,
-              style: AppTextStyles.instance.visibleNames),
-          SizedBox(height: 2.sp),
-          Text(
-            playerHeaderData.lastName,
-            style: AppTextStyles.instance.visibleNames,
-          ),
-          SizedBox(height: 2.sp),
-          Text(playerHeaderData.country.toUpperCase(),
-              style: AppTextStyles.instance.visibleCountry),
-        ]),
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Text(playerHeaderData.firstName,
+          style: AppTextStyles.instance.visibleNames),
+      SizedBox(height: 2.sp),
+      Text(
+        playerHeaderData.lastName,
+        style: AppTextStyles.instance.visibleNames,
       ),
-    );
+      SizedBox(height: 2.sp),
+      Text(playerHeaderData.country.toUpperCase(),
+          style: AppTextStyles.instance.visibleCountry),
+    ]);
   }
 }
 

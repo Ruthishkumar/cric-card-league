@@ -872,42 +872,15 @@ class PlayerCardWidget extends StatelessWidget {
                                     border: Border.all(
                                         color: Colors.white, width: 1)),
                                 child: Text(
-                                  getWon['matchDrawn'] == true
-                                      ? 'Match Drawn'
-                                      : canClick() == true
-                                          ? 'You Won'
-                                          : 'You Lose',
-                                  style: getWon['matchDrawn'] == true
-                                      ? AppTextStyles.instance.cardWinStatus
-                                      : canClick() == true
-                                          ? AppTextStyles.instance.winStatus
-                                          : AppTextStyles.instance.loseStatus,
-                                )),
+                                    getWon['matchDrawn'] == true
+                                        ? 'Match Drawn'
+                                        : canClick() == true
+                                            ? 'You Won'
+                                            : 'You Lose',
+                                    style:
+                                        AppTextStyles.instance.cardWinStatus)),
                           )
                         : Container()
-                    // : DelayedDisplay(
-                    //     slidingBeginOffset: const Offset(-1, 0),
-                    //     delay: const Duration(microseconds: 1),
-                    //     child: Container(
-                    //       padding: EdgeInsets.all(8.sp),
-                    //       decoration: BoxDecoration(
-                    //           borderRadius:
-                    //               BorderRadius.all(Radius.circular(12.sp)),
-                    //           color: const Color(0xff243b55),
-                    //           border:
-                    //               Border.all(color: Colors.white, width: 1)),
-                    //       child: Text(
-                    //         getWon['matchDrawn'] == true && getWon['players'][FirebaseAuth.instance
-                    //             .currentUser!.uid]['selectStats'] ==
-                    //             true
-                    //             ? 'Match Drawn'
-                    //             : 'You Loss',
-                    //         style: getWon['matchDrawn'] == true
-                    //             ? AppTextStyles.instance.cardWinStatus
-                    //             : AppTextStyles.instance.loseStatus,
-                    //       ),
-                    //     ),
-                    //   )
                   ],
                 )
               : Container();
