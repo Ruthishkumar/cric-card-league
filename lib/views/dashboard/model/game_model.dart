@@ -223,3 +223,14 @@ class LoserCardStatus {
       _$LoserCardStatusFromJson(json);
   Map<String, dynamic> toJson() => _$LoserCardStatusToJson(this);
 }
+
+@JsonSerializable()
+class SelectTossFace {
+  String chooseCall;
+
+  SelectTossFace({required this.chooseCall});
+
+  factory SelectTossFace.fromJson(Map<String, dynamic> json) =>
+      _$SelectTossFaceFromJson(json);
+  Map<String, dynamic> toJson() => _$SelectTossFaceToJson(this);
+}

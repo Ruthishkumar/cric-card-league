@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:delayed_display/delayed_display.dart';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
@@ -41,8 +42,23 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
 
   @override
   void initState() {
+    autoNav();
     super.initState();
     _showFrontSide = true;
+  }
+
+  autoNav() {
+    GameServices().autoNavSelectToss().asStream().listen((event) {
+      event.onValue.listen((event) {
+        event.snapshot.value == true
+            ? Future.delayed(const Duration(seconds: 3), () {
+                NavigationRoute()
+                    .animationRoute(context, const CardTemplatePage());
+              })
+            : null;
+        setState(() {});
+      });
+    });
   }
 
   @override
@@ -70,161 +86,68 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
       builder: (context, snapShot) {
         if (snapShot.data != null) {
           var roomData = snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
-          return (roomData['selectCard'] != true ||
-                      roomData['selectToss'] != true) &&
-                  roomData['hostId'] != FirebaseAuth.instance.currentUser!.uid
-              ? Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.asset(
-                      'assets/images/home_bg.jpg',
-                      fit: BoxFit.cover,
-                    ),
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // showToss(context),
-                          Lottie.asset(
-                            'assets/lottie_images/dlf10_3bCWbEJWSv.json',
-                          ),
-                          Text(
-                            "Toss In Progress",
-                            style: AppTextStyles.instance.tossHeader,
-                          ),
-                          SizedBox(height: 50.sp),
-                        ],
+          if ((roomData['selectCard'] != true ||
+                  roomData['selectToss'] != true) &&
+              roomData['hostId'] != FirebaseAuth.instance.currentUser!.uid) {
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.asset(
+                  'assets/images/home_bg.jpg',
+                  fit: BoxFit.cover,
+                ),
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // showToss(context),
+                      Lottie.asset(
+                        'assets/lottie_images/dlf10_3bCWbEJWSv.json',
                       ),
-                    )
-                  ],
+                      Text(
+                        "Toss In Progress",
+                        style: AppTextStyles.instance.tossHeader,
+                      ),
+                      SizedBox(height: 50.sp),
+                      DelayedDisplay(
+                        slidingBeginOffset: const Offset(-1, 0),
+                        delay: const Duration(microseconds: 1),
+                        child: Text(
+                          roomData['chooseCall'] != null
+                              ? 'Your Opponent call is ${roomData['chooseCall']}'
+                              : '',
+                          style: AppTextStyles.instance.tossHeader,
+                        ),
+                      )
+                    ],
+                  ),
                 )
-              : roomData['selectCard'] == true &&
-                      roomData['selectToss'] == true &&
-                      roomData['hostId'] !=
-                          FirebaseAuth.instance.currentUser!.uid
-                  ? Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Image.asset(
-                          'assets/images/home_bg.jpg',
-                          fit: BoxFit.cover,
-                        ),
-                        Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                roomData['players'][FirebaseAuth.instance
-                                            .currentUser!.uid]['wonToss'] ==
-                                        true
-                                    ? 'You Won the Toss'
-                                    : 'You Loss the Toss'.toString(),
-                                style: AppTextStyles.instance.tossHeader,
-                              ),
-                              SizedBox(height: 50.sp),
-                              HostingButton(
-                                text: 'Start Game',
-                                color: Colors.green,
-                                onPressed: () {
-                                  NavigationRoute().animationRoute(
-                                      context, const CardTemplatePage());
-                                },
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    )
-                  : Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Image.asset(
-                          'assets/images/home_bg.jpg',
-                          fit: BoxFit.cover,
-                        ),
-                        isActive == false
-                            ? Align(
-                                alignment: const Alignment(-0.01, 0.15),
-                                child: AnimatedOpacity(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Choose the call',
-                                        style:
-                                            AppTextStyles.instance.tossHeader,
-                                      ),
-                                      SizedBox(height: 40.sp),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          HeadTailsButton(
-                                            text: 'Heads',
-                                            color: Colors.green,
-                                            onPressed: () {
-                                              if (!isActive) {
-                                                coinSpin = "Heads";
-                                                isActive = true;
-                                                int faceIndex = Random()
-                                                    .nextInt(faces.length);
-                                                _flipCoin(faces[faceIndex]);
-                                              }
-                                            },
-                                          ),
-                                          HeadTailsButton(
-                                            text: 'Tails',
-                                            color: Colors.blue,
-                                            onPressed: () {
-                                              if (!isActive) {
-                                                coinSpin = "Tails";
-                                                isActive = true;
-                                                int faceIndex = Random()
-                                                    .nextInt(faces.length);
-                                                _flipCoin(faces[faceIndex]);
-                                              }
-                                            },
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                  duration: const Duration(seconds: 1),
-                                  opacity: isActive == false
-                                      ? beforeTossOpacity
-                                      : afterTossOpacity,
-                                ),
-                              )
-                            : Container(),
-                        AnimatedPositioned(
-                          duration: const Duration(seconds: 2),
-                          curve: Curves.bounceOut,
-                          bottom: _distanceFromBottom,
-                          right: MediaQuery.of(context).size.width * 0.31,
-                          child: AnimatedSwitcher(
-                            duration: Duration(milliseconds: flipDuration),
-                            transitionBuilder: __transitionBuilder,
-                            child:
-                                _showFrontSide ? _buildHeads() : _buildTails(),
-                            switchOutCurve: Curves.easeIn.flipped,
-                          ),
-                        ),
-                        SizedBox(height: 100.sp),
-                        Align(
-                          alignment: const Alignment(-0.01, 0.20),
-                          child: AnimatedOpacity(
-                            child: Text(
-                              _face.toUpperCase(),
-                              style: AppTextStyles.instance.tossHeader,
+              ],
+            );
+          } else {
+            return roomData['selectCard'] == true &&
+                    roomData['selectToss'] == true &&
+                    roomData['hostId'] != FirebaseAuth.instance.currentUser!.uid
+                ? Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.asset(
+                        'assets/images/home_bg.jpg',
+                        fit: BoxFit.cover,
+                      ),
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 150.sp,
+                              child: Image.asset(
+                                  roomData['chooseCall'] == "Heads"
+                                      ? 'assets/images/tails.png'
+                                      : 'assets/images/heads.png'),
                             ),
-                            duration: const Duration(seconds: 1),
-                            opacity: afterTossOpacity,
-                          ),
-                        ),
-                        Align(
-                          alignment: const Alignment(-0.01, 0.40),
-                          child: AnimatedOpacity(
-                            child: Text(
+                            SizedBox(height: 30.sp),
+                            Text(
                               roomData['players'][FirebaseAuth.instance
                                           .currentUser!.uid]['wonToss'] ==
                                       true
@@ -232,13 +155,144 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                                   : 'You Loss the Toss'.toString(),
                               style: AppTextStyles.instance.tossHeader,
                             ),
-                            duration: const Duration(seconds: 1),
-                            opacity: afterTossOpacity,
-                          ),
+                            SizedBox(height: 50.sp),
+                            // autoNav()
+                            // HostingButton(
+                            //   text: 'Start Game',
+                            //   color: Colors.green,
+                            //   onPressed: () {
+                            //     NavigationRoute().animationRoute(
+                            //         context, const CardTemplatePage());
+                            //   },
+                            // ),
+                          ],
                         ),
-                        startGameButton()
-                      ],
-                    );
+                      )
+                    ],
+                  )
+                : Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.asset(
+                        'assets/images/home_bg.jpg',
+                        fit: BoxFit.cover,
+                      ),
+                      isActive == false
+                          ? Align(
+                              alignment: const Alignment(-0.01, 0.15),
+                              child: AnimatedOpacity(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Choose the call',
+                                      style: AppTextStyles.instance.tossHeader,
+                                    ),
+                                    SizedBox(height: 40.sp),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        HeadTailsButton(
+                                          text: 'Heads',
+                                          color: Colors.green,
+                                          onPressed: () {
+                                            if (!isActive) {
+                                              coinSpin = "Heads";
+                                              isActive = true;
+                                              int faceIndex = Random()
+                                                  .nextInt(faces.length);
+                                              _flipCoin(faces[faceIndex]);
+                                              SelectTossFace selectTossFace =
+                                                  SelectTossFace(
+                                                      chooseCall: "Heads");
+                                              GameServices().selectTossFace(
+                                                  roomId:
+                                                      Provider.of<GameProvider>(
+                                                              context,
+                                                              listen: false)
+                                                          .roomId,
+                                                  face: selectTossFace);
+                                            }
+                                          },
+                                        ),
+                                        HeadTailsButton(
+                                          text: 'Tails',
+                                          color: Colors.blue,
+                                          onPressed: () {
+                                            if (!isActive) {
+                                              coinSpin = "Tails";
+                                              isActive = true;
+                                              int faceIndex = Random()
+                                                  .nextInt(faces.length);
+                                              _flipCoin(faces[faceIndex]);
+                                              SelectTossFace selectTossFace =
+                                                  SelectTossFace(
+                                                      chooseCall: "Tails");
+                                              GameServices().selectTossFace(
+                                                  roomId:
+                                                      Provider.of<GameProvider>(
+                                                              context,
+                                                              listen: false)
+                                                          .roomId,
+                                                  face: selectTossFace);
+                                            }
+                                          },
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                duration: const Duration(seconds: 1),
+                                opacity: isActive == false
+                                    ? beforeTossOpacity
+                                    : afterTossOpacity,
+                              ),
+                            )
+                          : Container(),
+                      AnimatedPositioned(
+                        duration: const Duration(seconds: 2),
+                        curve: Curves.bounceOut,
+                        bottom: _distanceFromBottom,
+                        right: MediaQuery.of(context).size.width * 0.31,
+                        child: AnimatedSwitcher(
+                          duration: Duration(milliseconds: flipDuration),
+                          transitionBuilder: __transitionBuilder,
+                          child: _showFrontSide ? _buildHeads() : _buildTails(),
+                          switchOutCurve: Curves.easeIn.flipped,
+                        ),
+                      ),
+                      SizedBox(height: 100.sp),
+                      Align(
+                        alignment: const Alignment(-0.01, 0.20),
+                        child: AnimatedOpacity(
+                          child: Text(
+                            _face.toUpperCase(),
+                            style: AppTextStyles.instance.tossHeader,
+                          ),
+                          duration: const Duration(seconds: 1),
+                          opacity: afterTossOpacity,
+                        ),
+                      ),
+                      Align(
+                        alignment: const Alignment(-0.01, 0.40),
+                        child: AnimatedOpacity(
+                          child: Text(
+                            roomData['players'][FirebaseAuth.instance
+                                        .currentUser!.uid]['wonToss'] ==
+                                    true
+                                ? 'You Won the Toss'
+                                : 'You Loss the Toss'.toString(),
+                            style: AppTextStyles.instance.tossHeader,
+                          ),
+                          duration: const Duration(seconds: 1),
+                          opacity: afterTossOpacity,
+                        ),
+                      ),
+                      // startGameButton()
+                    ],
+                  );
+          }
         }
         return Stack(
           fit: StackFit.expand,

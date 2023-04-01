@@ -121,6 +121,13 @@ class GameServices {
     return reference;
   }
 
+  Future<DatabaseReference> autoNavSelectToss() async {
+    //TODO::Change actual room ID;
+    DatabaseReference reference =
+        FirebaseDatabase.instance.ref('Room').child('test/selectToss');
+    return reference;
+  }
+
   /// For Player Shown
   Future<DatabaseReference> getCurrentPlayer() async {
     //TODO::Change actual room ID;
@@ -332,5 +339,12 @@ class GameServices {
     DatabaseReference reference =
         FirebaseDatabase.instance.ref('Room').child('/$roomId');
     await reference.update(loserCardStatus.toJson());
+  }
+
+  Future selectTossFace(
+      {required String roomId, required SelectTossFace face}) async {
+    DatabaseReference reference =
+        FirebaseDatabase.instance.ref('Room').child('/$roomId');
+    await reference.update(face.toJson());
   }
 }
