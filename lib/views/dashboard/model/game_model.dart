@@ -234,3 +234,14 @@ class SelectTossFace {
       _$SelectTossFaceFromJson(json);
   Map<String, dynamic> toJson() => _$SelectTossFaceToJson(this);
 }
+
+@JsonSerializable()
+class HideStatus {
+  bool statusHide;
+
+  HideStatus({required this.statusHide});
+
+  factory HideStatus.fromJson(Map<String, dynamic> json) =>
+      _$HideStatusFromJson(json);
+  Map<String, dynamic> toJson() => _$HideStatusToJson(this);
+}

@@ -1,12 +1,9 @@
-import 'dart:developer';
-
 import 'package:delayed_display/delayed_display.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -107,17 +104,14 @@ class PlayerCardWidget extends StatelessWidget {
           ),
         ),
         SizedBox(height: 25.sp),
-        Column(
-          children: [
-            getMatchStatus(playerList, playerList.length),
-          ],
-        ),
+        getMatchStatus(),
         SizedBox(height: 10.sp),
         getLoserCard(),
       ],
     );
   }
 
+  /// matches and batting widget
   matchesAndBatAvg(CreatePlayerModel matchAndAverage, int index,
       List<CreatePlayerModel> ffj) {
     return Row(
@@ -154,14 +148,9 @@ class PlayerCardWidget extends StatelessWidget {
                                 : false);
                         GameServices().selectFeature(
                             roomId: 'test', featureSelect: featureSelect);
-                        LoserCardStatus loserCardStatus = LoserCardStatus(
-                            playerName: matches['hostId'] !=
-                                    FirebaseAuth.instance.currentUser!.uid
-                                ? matchAndAverage.firstName
-                                : matchAndAverage.firstName,
-                            playerCountry: 'India');
-                        GameServices().loserCardStatus(
-                            roomId: 'test', loserCardStatus: loserCardStatus);
+                        HideStatus hide = HideStatus(statusHide: true);
+                        GameServices()
+                            .hideStatus(roomId: 'test', hideStatus: hide);
                       },
                 child: Row(
                   children: [
@@ -246,6 +235,9 @@ class PlayerCardWidget extends StatelessWidget {
                                 : false);
                         GameServices().selectFeature(
                             roomId: 'test', featureSelect: featureSelect);
+                        HideStatus hide = HideStatus(statusHide: true);
+                        GameServices()
+                            .hideStatus(roomId: 'test', hideStatus: hide);
                       },
                 child: Row(children: [
                   Container(
@@ -297,6 +289,7 @@ class PlayerCardWidget extends StatelessWidget {
     );
   }
 
+  /// strike rate and runs widget
   strikeRateAndRuns(CreatePlayerModel strikeAndRuns, int index) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -332,6 +325,9 @@ class PlayerCardWidget extends StatelessWidget {
                                 : false);
                         GameServices().selectFeature(
                             roomId: 'test', featureSelect: featureSelect);
+                        HideStatus hide = HideStatus(statusHide: true);
+                        GameServices()
+                            .hideStatus(roomId: 'test', hideStatus: hide);
                       },
                 child: Row(
                   children: [
@@ -415,6 +411,9 @@ class PlayerCardWidget extends StatelessWidget {
                                 : false);
                         GameServices().selectFeature(
                             roomId: 'test', featureSelect: featureSelect);
+                        HideStatus hide = HideStatus(statusHide: true);
+                        GameServices()
+                            .hideStatus(roomId: 'test', hideStatus: hide);
                       },
                 child: Row(children: [
                   Container(
@@ -465,6 +464,7 @@ class PlayerCardWidget extends StatelessWidget {
     );
   }
 
+  /// hundreds and fifties widget
   hundredsAndFifties(CreatePlayerModel hundredsAndFifties, int index) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
       StreamBuilder(
@@ -499,6 +499,9 @@ class PlayerCardWidget extends StatelessWidget {
                               : false);
                       GameServices().selectFeature(
                           roomId: 'test', featureSelect: featureSelect);
+                      HideStatus hide = HideStatus(statusHide: true);
+                      GameServices()
+                          .hideStatus(roomId: 'test', hideStatus: hide);
                     },
               child: Row(children: [
                 Container(
@@ -573,6 +576,9 @@ class PlayerCardWidget extends StatelessWidget {
                               : false);
                       GameServices().selectFeature(
                           roomId: 'test', featureSelect: featureSelect);
+                      HideStatus hide = HideStatus(statusHide: true);
+                      GameServices()
+                          .hideStatus(roomId: 'test', hideStatus: hide);
                     },
               child: Row(children: [
                 Container(
@@ -618,6 +624,7 @@ class PlayerCardWidget extends StatelessWidget {
     ]);
   }
 
+  /// top score and wickets widget
   topScoreAndWickets(CreatePlayerModel highScoreAndWickets, int index) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -655,6 +662,9 @@ class PlayerCardWidget extends StatelessWidget {
                                 : false);
                         GameServices().selectFeature(
                             roomId: 'test', featureSelect: featureSelect);
+                        HideStatus hide = HideStatus(statusHide: true);
+                        GameServices()
+                            .hideStatus(roomId: 'test', hideStatus: hide);
                       },
                 child: Container(
                     width: 120.sp,
@@ -730,6 +740,9 @@ class PlayerCardWidget extends StatelessWidget {
                                 : false);
                         GameServices().selectFeature(
                             roomId: 'test', featureSelect: featureSelect);
+                        HideStatus hide = HideStatus(statusHide: true);
+                        GameServices()
+                            .hideStatus(roomId: 'test', hideStatus: hide);
                       },
                 child: Row(children: [
                   Container(
@@ -776,6 +789,7 @@ class PlayerCardWidget extends StatelessWidget {
     );
   }
 
+  /// player header widget
   playerHeaderWidget(CreatePlayerModel playerHeaderData) {
     return Container(
       width: double.infinity,
@@ -823,76 +837,80 @@ class PlayerCardWidget extends StatelessWidget {
     );
   }
 
-  getMatchStatus(List<CreatePlayerModel> playerList, int index) {
+  /// match status
+  getMatchStatus() {
     return StreamBuilder(
       stream: getStats().onValue,
       builder: (context, snapShot) {
         if (snapShot.data != null) {
           var getWon = snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-
-          return Column(
-            children: [
-              (getWon['selectedKey'] == 'matches' ||
-                          getWon['selectedKey'] == 'batAvg' ||
-                          getWon['selectedKey'] == 'strikeRate' ||
-                          getWon['selectedKey'] == 'runs' ||
-                          getWon['selectedKey'] == 'hundreds' ||
-                          getWon['selectedKey'] == 'fifties' ||
-                          getWon['selectedKey'] == 'topScore' ||
-                          getWon['selectedKey'] == 'wickets') &&
-                      (getWon['hostId'] !=
-                              FirebaseAuth.instance.currentUser!.uid) !=
-                          ''
-                  ? DelayedDisplay(
-                      slidingBeginOffset: const Offset(-1, 0),
-                      delay: const Duration(microseconds: 1),
-                      child: Container(
-                          padding: EdgeInsets.all(8.sp),
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12.sp)),
-                              color: const Color(0xff243b55),
-                              border:
-                                  Border.all(color: Colors.white, width: 1)),
-                          child: Text(
-                            getWon['matchDrawn'] == true
-                                ? 'Match Drawn'
-                                : canClick() == true
-                                    ? 'You Won'
-                                    : 'You Lose',
-                            style: getWon['matchDrawn'] == true
-                                ? AppTextStyles.instance.cardWinStatus
-                                : canClick() == true
-                                    ? AppTextStyles.instance.winStatus
-                                    : AppTextStyles.instance.loseStatus,
-                          )),
-                    )
-                  // : DelayedDisplay(
-                  //     slidingBeginOffset: const Offset(-1, 0),
-                  //     delay: const Duration(microseconds: 1),
-                  //     child: Container(
-                  //       padding: EdgeInsets.all(8.sp),
-                  //       decoration: BoxDecoration(
-                  //           borderRadius:
-                  //               BorderRadius.all(Radius.circular(12.sp)),
-                  //           color: const Color(0xff243b55),
-                  //           border:
-                  //               Border.all(color: Colors.white, width: 1)),
-                  //       child: Text(
-                  //         getWon['matchDrawn'] == true && getWon['players'][FirebaseAuth.instance
-                  //             .currentUser!.uid]['selectStats'] ==
-                  //             true
-                  //             ? 'Match Drawn'
-                  //             : 'You Loss',
-                  //         style: getWon['matchDrawn'] == true
-                  //             ? AppTextStyles.instance.cardWinStatus
-                  //             : AppTextStyles.instance.loseStatus,
-                  //       ),
-                  //     ),
-                  //   )
-                  : Container()
-            ],
-          );
+          return (getWon['statusHide'] == true)
+              ? Column(
+                  children: [
+                    (getWon['selectedKey'] == 'matches' ||
+                                getWon['selectedKey'] == 'batAvg' ||
+                                getWon['selectedKey'] == 'strikeRate' ||
+                                getWon['selectedKey'] == 'runs' ||
+                                getWon['selectedKey'] == 'hundreds' ||
+                                getWon['selectedKey'] == 'fifties' ||
+                                getWon['selectedKey'] == 'topScore' ||
+                                getWon['selectedKey'] == 'wickets') &&
+                            (getWon['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid) !=
+                                ''
+                        ? DelayedDisplay(
+                            slidingBeginOffset: getWon['statusHide'] == true
+                                ? const Offset(-1, 0)
+                                : const Offset(0, -1),
+                            delay: const Duration(microseconds: 1),
+                            child: Container(
+                                padding: EdgeInsets.all(8.sp),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(12.sp)),
+                                    color: const Color(0xff243b55),
+                                    border: Border.all(
+                                        color: Colors.white, width: 1)),
+                                child: Text(
+                                  getWon['matchDrawn'] == true
+                                      ? 'Match Drawn'
+                                      : canClick() == true
+                                          ? 'You Won'
+                                          : 'You Lose',
+                                  style: getWon['matchDrawn'] == true
+                                      ? AppTextStyles.instance.cardWinStatus
+                                      : canClick() == true
+                                          ? AppTextStyles.instance.winStatus
+                                          : AppTextStyles.instance.loseStatus,
+                                )),
+                          )
+                        : Container()
+                    // : DelayedDisplay(
+                    //     slidingBeginOffset: const Offset(-1, 0),
+                    //     delay: const Duration(microseconds: 1),
+                    //     child: Container(
+                    //       padding: EdgeInsets.all(8.sp),
+                    //       decoration: BoxDecoration(
+                    //           borderRadius:
+                    //               BorderRadius.all(Radius.circular(12.sp)),
+                    //           color: const Color(0xff243b55),
+                    //           border:
+                    //               Border.all(color: Colors.white, width: 1)),
+                    //       child: Text(
+                    //         getWon['matchDrawn'] == true && getWon['players'][FirebaseAuth.instance
+                    //             .currentUser!.uid]['selectStats'] ==
+                    //             true
+                    //             ? 'Match Drawn'
+                    //             : 'You Loss',
+                    //         style: getWon['matchDrawn'] == true
+                    //             ? AppTextStyles.instance.cardWinStatus
+                    //             : AppTextStyles.instance.loseStatus,
+                    //       ),
+                    //     ),
+                    //   )
+                  ],
+                )
+              : Container();
         }
         return Container();
       },

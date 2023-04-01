@@ -330,6 +330,18 @@ class GameServices {
     }
   }
 
+  Future hideStatus(
+      {required String roomId, required HideStatus hideStatus}) async {
+    DatabaseReference reference =
+        FirebaseDatabase.instance.ref('Room').child('/$roomId');
+    await reference.update(hideStatus.toJson());
+    Future.delayed(const Duration(seconds: 3), () async {
+      DatabaseReference reference1 =
+          FirebaseDatabase.instance.ref('Room').child('/$roomId/statusHide');
+      await reference1.remove();
+    });
+  }
+
   /// loser card function
   Future loserCardStatus(
       {required String roomId,

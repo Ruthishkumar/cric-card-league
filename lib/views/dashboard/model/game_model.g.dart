@@ -196,3 +196,12 @@ Map<String, dynamic> _$SelectTossFaceToJson(SelectTossFace instance) =>
     <String, dynamic>{
       'chooseCall': instance.chooseCall,
     };
+
+HideStatus _$HideStatusFromJson(Map<String, dynamic> json) => HideStatus(
+      statusHide: json['statusHide'] as bool,
+    );
+
+Map<String, dynamic> _$HideStatusToJson(HideStatus instance) =>
+    <String, dynamic>{
+      'statusHide': instance.statusHide,
+    };
