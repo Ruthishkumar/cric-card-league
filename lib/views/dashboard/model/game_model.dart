@@ -213,18 +213,6 @@ class FeatureSelect {
 }
 
 @JsonSerializable()
-class LoserCardStatus {
-  String playerName;
-  String playerCountry;
-
-  LoserCardStatus({required this.playerName, required this.playerCountry});
-
-  factory LoserCardStatus.fromJson(Map<String, dynamic> json) =>
-      _$LoserCardStatusFromJson(json);
-  Map<String, dynamic> toJson() => _$LoserCardStatusToJson(this);
-}
-
-@JsonSerializable()
 class SelectTossFace {
   String chooseCall;
 

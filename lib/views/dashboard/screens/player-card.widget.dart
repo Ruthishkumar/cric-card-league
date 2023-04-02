@@ -152,25 +152,6 @@ class PlayerCardWidget extends StatelessWidget {
                         HideStatus hide = HideStatus(statusHide: true);
                         GameServices()
                             .hideStatus(roomId: 'test', hideStatus: hide);
-                        if (!canClick()) {
-                          log(matchAndAverage.firstName);
-                          log('HHHHH');
-                          LoserCardStatus loserCard = LoserCardStatus(
-                              playerName:
-                                  '${matchAndAverage.firstName} ${matchAndAverage.lastName}',
-                              playerCountry: matchAndAverage.country);
-                          GameServices().loserCardStatus(
-                              roomId: 'test', loserCardStatus: loserCard);
-                        } else {
-                          log(matchAndAverage.firstName);
-                          log('MMMMM');
-                          LoserCardStatus loserCard = LoserCardStatus(
-                              playerName:
-                                  '${matchAndAverage.firstName} ${matchAndAverage.lastName}',
-                              playerCountry: matchAndAverage.country);
-                          GameServices().loserCardStatus(
-                              roomId: 'test', loserCardStatus: loserCard);
-                        }
                       },
                 child: Row(
                   children: [

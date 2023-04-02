@@ -188,7 +188,7 @@ class GameServices {
         var isPlayerAWon =
             double.parse(playerAValue) > double.parse(playerBValue);
         if (isPlayerAWon) {
-          Future.delayed(const Duration(seconds: 1), () async {
+          Future.delayed(const Duration(seconds: 2), () async {
             movePlayer(
                 loser: playerBCharacter,
                 winner: playerACharacter,
@@ -196,7 +196,7 @@ class GameServices {
                 loserId: playerBId);
           });
         } else {
-          Future.delayed(const Duration(seconds: 1), () async {
+          Future.delayed(const Duration(seconds: 2), () async {
             movePlayer(
               loser: playerACharacter,
               winner: playerBCharacter,
@@ -259,46 +259,45 @@ class GameServices {
       required List<dynamic> winner,
       required String winnerId,
       required String loserId}) {
+    var winnerUpdated = [];
+    for (var value in winner) {
+      winnerUpdated.add(value);
+    }
+    if (loser.isNotEmpty) {
+      winnerUpdated.add(loser[0]);
+    }
+    Map<dynamic, dynamic> winnerFinalMap = {};
+    for (int i = 1; i < winnerUpdated.length; i++) {
+      winnerFinalMap[(i - 1).toString()] = winnerUpdated[i];
+    }
+    winnerFinalMap[(winnerUpdated.length - 1).toString()] = winnerUpdated[0];
+    Map<dynamic, dynamic> loserFinalMap = {};
+    for (int i = 1; i < loser.length; i++) {
+      loserFinalMap[(i - 1).toString()] = loser[i];
+    }
+    FirebaseDatabase.instance
+        .ref('Room')
+        .child('test')
+        .child('players')
+        .child(winnerId)
+        .child('playerCharacters')
+        .set(winnerFinalMap);
+    FirebaseDatabase.instance
+        .ref('Room')
+        .child('test')
+        .child('players')
+        .child(winnerId)
+        .child('recentlyWon')
+        .set(loser[0]);
+    FirebaseDatabase.instance
+        .ref('Room')
+        .child('test')
+        .child('players')
+        .child(loserId)
+        .child('playerCharacters')
+        .set(loserFinalMap);
+
     Future.delayed(const Duration(seconds: 2), () async {
-      var winnerUpdated = [];
-      for (var value in winner) {
-        winnerUpdated.add(value);
-      }
-      if (loser.isNotEmpty) {
-        winnerUpdated.add(loser[0]);
-      }
-      Map<dynamic, dynamic> winnerFinalMap = {};
-      for (int i = 1; i < winnerUpdated.length; i++) {
-        winnerFinalMap[(i - 1).toString()] = winnerUpdated[i];
-      }
-      winnerFinalMap[(winnerUpdated.length - 1).toString()] = winnerUpdated[0];
-      Map<dynamic, dynamic> loserFinalMap = {};
-      for (int i = 1; i < loser.length; i++) {
-        loserFinalMap[(i - 1).toString()] = loser[i];
-      }
-      await FirebaseDatabase.instance
-          .ref('Room')
-          .child('test')
-          .child('players')
-          .child(winnerId)
-          .child('playerCharacters')
-          .set(winnerFinalMap);
-      await FirebaseDatabase.instance
-          .ref('Room')
-          .child('test')
-          .child('players')
-          .child(winnerId)
-          .child('recentlyWon')
-          .set(loser[0]);
-      await FirebaseDatabase.instance
-          .ref('Room')
-          .child('test')
-          .child('players')
-          .child(loserId)
-          .child('playerCharacters')
-          .set(loserFinalMap);
-    });
-    Future.delayed(const Duration(seconds: 6), () async {
       DatabaseReference reference1 = FirebaseDatabase.instance
           .ref('Room')
           .child('test')
@@ -364,19 +363,5 @@ class GameServices {
     DatabaseReference reference =
         FirebaseDatabase.instance.ref('Room').child('/$roomId');
     await reference.update(face.toJson());
-  }
-
-  /// loser card status
-  Future loserCardStatus(
-      {required String roomId,
-      required LoserCardStatus loserCardStatus}) async {
-    var playerAName = "";
-    var playerACountry = "";
-    var playerBName = "";
-    var playerBCountry = "";
-
-    DatabaseReference reference =
-        FirebaseDatabase.instance.ref('Room').child('/$roomId');
-    await reference.update(loserCardStatus.toJson());
   }
 }

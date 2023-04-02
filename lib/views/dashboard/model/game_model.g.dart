@@ -175,18 +175,6 @@ Map<String, dynamic> _$FeatureSelectToJson(FeatureSelect instance) =>
       'selectStats': instance.selectStats,
     };
 
-LoserCardStatus _$LoserCardStatusFromJson(Map<String, dynamic> json) =>
-    LoserCardStatus(
-      playerName: json['playerName'] as String,
-      playerCountry: json['playerCountry'] as String,
-    );
-
-Map<String, dynamic> _$LoserCardStatusToJson(LoserCardStatus instance) =>
-    <String, dynamic>{
-      'playerName': instance.playerName,
-      'playerCountry': instance.playerCountry,
-    };
-
 SelectTossFace _$SelectTossFaceFromJson(Map<String, dynamic> json) =>
     SelectTossFace(
       chooseCall: json['chooseCall'] as String,
