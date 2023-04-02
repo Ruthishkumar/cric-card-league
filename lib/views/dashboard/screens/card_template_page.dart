@@ -114,8 +114,7 @@ class _CardTemplatePageState extends State<CardTemplatePage>
     return refDb;
   }
 
-  quitGame() {}
-
+  /// exit game function
   Future<bool> _onBackPressed() async {
     return await showDialog(
         context: context,
@@ -225,90 +224,131 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                               children: [
                                 Column(
                                   children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        dev.log('Your Cards');
-                                        setState(() {
-                                          isTotalCardVisible =
-                                              !isTotalCardVisible;
-                                        });
-                                      },
-                                      child: Container(
-                                          width: 250.sp,
-                                          decoration: BoxDecoration(
-                                              gradient: const LinearGradient(
-                                                  begin: Alignment.topCenter,
-                                                  end: Alignment.bottomCenter,
-                                                  colors: [
-                                                    Color(0xff141E30),
-                                                    Color(0xff243B55),
-                                                  ]),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(16.sp))),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                  width: 57,
-                                                  height: 57,
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  16.sp)),
-                                                      color: Colors.white),
-                                                  child: const Icon(
-                                                    Icons.person,
-                                                    color: Colors.black,
-                                                  )),
-                                              Container(
-                                                padding: EdgeInsets.all(16.sp),
-                                                child: Text(
-                                                  isTotalCardVisible == true
-                                                      ? 'Hide Cards'
-                                                      : 'Your Cards',
-                                                  style: GoogleFonts.prompt(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontStyle:
-                                                          FontStyle.normal,
-                                                      fontSize: 15.sp,
-                                                      color: Colors.white),
-                                                ),
-                                              ),
-                                              Container(
-                                                  width: 57,
-                                                  height: 57,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
+                                    cards['players'][FirebaseAuth
+                                                    .instance
+                                                    .currentUser!
+                                                    .uid]['playerCharacters'] ==
+                                                null ||
+                                            (cards['players'][FirebaseAuth
+                                                            .instance
+                                                            .currentUser!
+                                                            .uid]
+                                                        ['playerCharacters']
+                                                    .length >
+                                                9)
+                                        ? Container()
+                                        : GestureDetector(
+                                            onTap: () {
+                                              dev.log('Your Cards');
+                                              setState(() {
+                                                isTotalCardVisible =
+                                                    !isTotalCardVisible;
+                                              });
+                                            },
+                                            child: Container(
+                                                width: 250.sp,
+                                                decoration: BoxDecoration(
+                                                    gradient:
+                                                        const LinearGradient(
+                                                            begin: Alignment
+                                                                .topCenter,
+                                                            end: Alignment
+                                                                .bottomCenter,
+                                                            colors: [
+                                                          Color(0xff141E30),
+                                                          Color(0xff243B55),
+                                                        ]),
                                                     borderRadius:
                                                         BorderRadius.all(
                                                             Radius.circular(
-                                                                16.sp)),
-                                                  ),
-                                                  child: Center(
-                                                      child: Text(
-                                                          cards['players'][FirebaseAuth.instance.currentUser!.uid]['playerCharacters'] == null
-                                                              ? '0'
-                                                              : cards['players'][FirebaseAuth
-                                                                          .instance
-                                                                          .currentUser!
-                                                                          .uid][
-                                                                      'playerCharacters']
-                                                                  .length
-                                                                  .toString(),
-                                                          style: GoogleFonts.prompt(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontStyle: FontStyle
-                                                                  .normal,
-                                                              fontSize: 15.sp,
-                                                              color: Colors.black))))
-                                            ],
-                                          )),
-                                    ),
+                                                                16.sp))),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Container(
+                                                        width: 57,
+                                                        height: 57,
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    Radius.circular(
+                                                                        16.sp)),
+                                                            color:
+                                                                Colors.white),
+                                                        child: const Icon(
+                                                          Icons.person,
+                                                          color: Colors.black,
+                                                        )),
+                                                    Container(
+                                                      padding:
+                                                          EdgeInsets.all(16.sp),
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                            isTotalCardVisible ==
+                                                                    true
+                                                                ? 'Hide Cards'
+                                                                : 'Your Cards',
+                                                            style: GoogleFonts.prompt(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                fontStyle:
+                                                                    FontStyle
+                                                                        .normal,
+                                                                fontSize: 15.sp,
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                          SizedBox(width: 3.sp),
+                                                          Icon(
+                                                              isTotalCardVisible ==
+                                                                      true
+                                                                  ? Icons
+                                                                      .keyboard_arrow_up_outlined
+                                                                  : Icons
+                                                                      .keyboard_arrow_down_outlined,
+                                                              size: 20.sp,
+                                                              color:
+                                                                  Colors.white)
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                        width: 57,
+                                                        height: 57,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors.white,
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius.circular(
+                                                                      16.sp)),
+                                                        ),
+                                                        child: Center(
+                                                            child: Text(
+                                                                cards['players'][FirebaseAuth.instance.currentUser!.uid]['playerCharacters'] ==
+                                                                        null
+                                                                    ? '0'
+                                                                    : cards['players'][FirebaseAuth.instance.currentUser!.uid][
+                                                                            'playerCharacters']
+                                                                        .length
+                                                                        .toString(),
+                                                                style: GoogleFonts.prompt(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    fontStyle: FontStyle
+                                                                        .normal,
+                                                                    fontSize:
+                                                                        15.sp,
+                                                                    color: Colors
+                                                                        .black))))
+                                                  ],
+                                                )),
+                                          ),
                                     SizedBox(height: 15.sp),
                                     _showWidget
                                         ? Text(

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:delayed_display/delayed_display.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
@@ -76,8 +78,8 @@ class PlayerCardWidget extends StatelessWidget {
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(16.sp))),
                                     child: Column(children: [
-                                      matchesAndBatAvg(data,
-                                          data.toJson().length, playerList),
+                                      matchesAndBatAvg(
+                                          data, data.toJson().length),
                                       SizedBox(height: 10.sp),
                                       strikeRateAndRuns(
                                           data, data.toJson().length),
@@ -105,15 +107,14 @@ class PlayerCardWidget extends StatelessWidget {
         ),
         SizedBox(height: 25.sp),
         getMatchStatus(),
-        SizedBox(height: 10.sp),
+        SizedBox(height: 15.sp),
         getLoserCard(),
       ],
     );
   }
 
   /// matches and batting widget
-  matchesAndBatAvg(CreatePlayerModel matchAndAverage, int index,
-      List<CreatePlayerModel> ffj) {
+  matchesAndBatAvg(CreatePlayerModel matchAndAverage, int index) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -151,6 +152,25 @@ class PlayerCardWidget extends StatelessWidget {
                         HideStatus hide = HideStatus(statusHide: true);
                         GameServices()
                             .hideStatus(roomId: 'test', hideStatus: hide);
+                        if (!canClick()) {
+                          log(matchAndAverage.firstName);
+                          log('HHHHH');
+                          LoserCardStatus loserCard = LoserCardStatus(
+                              playerName:
+                                  '${matchAndAverage.firstName} ${matchAndAverage.lastName}',
+                              playerCountry: matchAndAverage.country);
+                          GameServices().loserCardStatus(
+                              roomId: 'test', loserCardStatus: loserCard);
+                        } else {
+                          log(matchAndAverage.firstName);
+                          log('MMMMM');
+                          LoserCardStatus loserCard = LoserCardStatus(
+                              playerName:
+                                  '${matchAndAverage.firstName} ${matchAndAverage.lastName}',
+                              playerCountry: matchAndAverage.country);
+                          GameServices().loserCardStatus(
+                              roomId: 'test', loserCardStatus: loserCard);
+                        }
                       },
                 child: Row(
                   children: [
@@ -898,26 +918,63 @@ class PlayerCardWidget extends StatelessWidget {
         if (snapShot.data != null) {
           var getLoserCard =
               snapShot.data?.snapshot.value as Map<dynamic, dynamic>;
-          return canClick() == true
-              ? Container(
-                  padding: EdgeInsets.all(8.sp),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(12.sp)),
-                      // color: const Color(0xff243b55),
-                      border: Border.all(color: Colors.white, width: 1)),
-                  child: Column(
-                    children: [
-                      // Text(
-                      //   getLoserCard['playerName'],
-                      //   style: AppTextStyles.instance.cardWinStatus,
-                      // ),
-                      // SizedBox(height: 5.sp),
-                      // Text(getLoserCard['playerCountry'],
-                      //     style: AppTextStyles.instance.cardWinStatus),
-                    ],
-                  ),
-                )
-              : Container();
+          return getLoserCard['players'][FirebaseAuth.instance.currentUser!.uid]
+                      ['recentlyWon'] ==
+                  null
+              ? Container()
+              : getLoserCard['matchDrawn'] == true
+                  ? Container()
+                  : canClick() == true
+                      ? DelayedDisplay(
+                          slidingBeginOffset: const Offset(0.0, 0.35),
+                          delay: const Duration(milliseconds: 1),
+                          child: Container(
+                            padding: EdgeInsets.all(8.sp),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12.sp)),
+                                color: const Color(0xff243b55),
+                                border: Border.all(
+                                    color: getLoserCard['players'][FirebaseAuth
+                                                .instance
+                                                .currentUser!
+                                                .uid]['recentlyWon'] ==
+                                            null
+                                        ? Colors.transparent
+                                        : Colors.white,
+                                    width: 1)),
+                            child: Column(
+                              children: [
+                                Text(
+                                  getLoserCard['players'][FirebaseAuth
+                                              .instance
+                                              .currentUser!
+                                              .uid]['recentlyWon'] ==
+                                          null
+                                      ? ''
+                                      : '${getLoserCard['players'][FirebaseAuth.instance.currentUser!.uid]['recentlyWon']['firstName']}'
+                                          ' ${getLoserCard['players'][FirebaseAuth.instance.currentUser!.uid]['recentlyWon']['lastName']}',
+                                  style: AppTextStyles.instance.cardWinStatus,
+                                ),
+                                SizedBox(height: 10.sp),
+                                Text(
+                                    getLoserCard['players'][FirebaseAuth
+                                                .instance
+                                                .currentUser!
+                                                .uid]['recentlyWon'] ==
+                                            null
+                                        ? ''
+                                        : getLoserCard['players'][FirebaseAuth
+                                            .instance
+                                            .currentUser!
+                                            .uid]['recentlyWon']['country'],
+                                    style:
+                                        AppTextStyles.instance.cardWinStatus),
+                              ],
+                            ),
+                          ),
+                        )
+                      : Container();
         }
         return Container();
       },

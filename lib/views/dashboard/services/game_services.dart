@@ -210,7 +210,7 @@ class GameServices {
           'selectedValue': selectedValue,
           'currentPlayer': isPlayerAWon ? map['hostId'] : playerBId,
           'matchDrawn': false,
-          'matchWon': isPlayerAWon ? 'PlayerAWon' : 'PlayerBWon',
+          'matchWon': isPlayerAWon ? 'HostWon' : 'JoinWon',
         });
       }
     } catch (e, stack) {
@@ -271,8 +271,6 @@ class GameServices {
       for (int i = 1; i < winnerUpdated.length; i++) {
         winnerFinalMap[(i - 1).toString()] = winnerUpdated[i];
       }
-      log(winnerUpdated.toString());
-      log('Winner Card List');
       winnerFinalMap[(winnerUpdated.length - 1).toString()] = winnerUpdated[0];
       Map<dynamic, dynamic> loserFinalMap = {};
       for (int i = 1; i < loser.length; i++) {
@@ -289,12 +287,29 @@ class GameServices {
           .ref('Room')
           .child('test')
           .child('players')
+          .child(winnerId)
+          .child('recentlyWon')
+          .set(loser[0]);
+      await FirebaseDatabase.instance
+          .ref('Room')
+          .child('test')
+          .child('players')
           .child(loserId)
           .child('playerCharacters')
           .set(loserFinalMap);
     });
+    Future.delayed(const Duration(seconds: 6), () async {
+      DatabaseReference reference1 = FirebaseDatabase.instance
+          .ref('Room')
+          .child('test')
+          .child('players')
+          .child(winnerId)
+          .child('recentlyWon');
+      reference1.remove();
+    });
   }
 
+  /// select feature
   Future selectFeature(
       {required String roomId, required FeatureSelect featureSelect}) async {
     DataSnapshot playerData = await FirebaseDatabase.instance
@@ -330,6 +345,7 @@ class GameServices {
     }
   }
 
+  /// hide card status
   Future hideStatus(
       {required String roomId, required HideStatus hideStatus}) async {
     DatabaseReference reference =
@@ -342,21 +358,25 @@ class GameServices {
     });
   }
 
-  /// loser card function
-  Future loserCardStatus(
-      {required String roomId,
-      required LoserCardStatus loserCardStatus}) async {
-    var playerAName = "";
-    var playerBName = "";
-    DatabaseReference reference =
-        FirebaseDatabase.instance.ref('Room').child('/$roomId');
-    await reference.update(loserCardStatus.toJson());
-  }
-
+  /// select Toss face
   Future selectTossFace(
       {required String roomId, required SelectTossFace face}) async {
     DatabaseReference reference =
         FirebaseDatabase.instance.ref('Room').child('/$roomId');
     await reference.update(face.toJson());
+  }
+
+  /// loser card status
+  Future loserCardStatus(
+      {required String roomId,
+      required LoserCardStatus loserCardStatus}) async {
+    var playerAName = "";
+    var playerACountry = "";
+    var playerBName = "";
+    var playerBCountry = "";
+
+    DatabaseReference reference =
+        FirebaseDatabase.instance.ref('Room').child('/$roomId');
+    await reference.update(loserCardStatus.toJson());
   }
 }
