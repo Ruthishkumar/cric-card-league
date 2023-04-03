@@ -84,6 +84,9 @@ class PlayerCardWidget extends StatelessWidget {
                                       strikeRateAndRuns(
                                           data, data.toJson().length),
                                       SizedBox(height: 10.sp),
+                                      bowlAvgAndEcoRate(
+                                          data, data.toJson().length),
+                                      SizedBox(height: 10.sp),
                                       hundredsAndFifties(
                                           data, data.toJson().length),
                                       SizedBox(height: 10.sp),
@@ -105,9 +108,9 @@ class PlayerCardWidget extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 25.sp),
+        SizedBox(height: 10.sp),
         getMatchStatus(),
-        SizedBox(height: 15.sp),
+        SizedBox(height: 10.sp),
         getLoserCard(),
       ],
     );
@@ -463,6 +466,172 @@ class PlayerCardWidget extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  /// bowl and eco rate widget
+  bowlAvgAndEcoRate(CreatePlayerModel bowlAvgAndEcoRate, int index) {
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+      StreamBuilder(
+        stream: getStats().onValue,
+        builder: (context, snapShot) {
+          if (snapShot.data != null) {
+            var bowlAvg =
+                snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
+            return InkWell(
+              onTap: !canClick()
+                  ? () {
+                      showDialog(
+                          barrierColor: Colors.black87,
+                          barrierDismissible: true,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return alertDialogWidget(context);
+                          });
+                    }
+                  : () {
+                      GameServices().createSelectStats(
+                          selectedKey: 'bowlAvg',
+                          selectedValue: bowlAvgAndEcoRate.bowlAvg,
+                          currentPlayer: currentPlayer,
+                          selectedName: bowlAvgAndEcoRate.firstName);
+                      onFeatureSelect('${bowlAvgAndEcoRate.bowlAvg}-${index}');
+                      FeatureSelect featureSelect = FeatureSelect(
+                          selectStats: selectedFeature ==
+                                  '${bowlAvgAndEcoRate.bowlAvg}-${index}'
+                              ? true
+                              : false);
+                      GameServices().selectFeature(
+                          roomId: 'test', featureSelect: featureSelect);
+                      HideStatus hide = HideStatus(statusHide: true);
+                      GameServices()
+                          .hideStatus(roomId: 'test', hideStatus: hide);
+                    },
+              child: Row(children: [
+                Container(
+                    width: 120.sp,
+                    height: 65.sp,
+                    padding: EdgeInsets.all(8.sp),
+                    decoration: BoxDecoration(
+                        color: selectedFeature ==
+                                    '${bowlAvgAndEcoRate.bowlAvg}-${index}' &&
+                                bowlAvg['selectedKey'] == 'bowlAvg'
+                            ? const Color(0xff2C7744)
+                            : (bowlAvg['selectedKey'] == 'bowlAvg' &&
+                                    bowlAvg['players'][FirebaseAuth.instance
+                                            .currentUser!.uid]['selectStats'] ==
+                                        true)
+                                ? const Color(0xffC02425)
+                                : const Color(0xff243b55),
+                        borderRadius: BorderRadius.all(Radius.circular(12.sp))),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FittedBox(
+                          fit: BoxFit.contain,
+                          child: Center(
+                            child: Text(
+                                'bowl Avg : ${bowlAvgAndEcoRate.bowlAvg}',
+                                style: AppTextStyles.instance.playersStats),
+                          ),
+                        ),
+                        Text(
+                          (bowlAvg['selectedKey'] == 'bowlAvg' &&
+                                  bowlAvg['players'][FirebaseAuth.instance
+                                          .currentUser!.uid]['selectStats'] ==
+                                      true)
+                              ? 'vs ${bowlAvg['selectedValue']}'
+                              : '',
+                          style: AppTextStyles.instance.playersStat1,
+                          textAlign: TextAlign.center,
+                        )
+                      ],
+                    ))
+              ]),
+            );
+          }
+          return const CircularProgressIndicator();
+        },
+      ),
+      StreamBuilder(
+        stream: getStats().onValue,
+        builder: (context, snapShot) {
+          if (snapShot.data != null) {
+            var ecoRate =
+                snapShot.data!.snapshot.value as Map<dynamic, dynamic>;
+            return InkWell(
+              onTap: !canClick()
+                  ? () {
+                      showDialog(
+                          barrierColor: Colors.black87,
+                          barrierDismissible: true,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return alertDialogWidget(context);
+                          });
+                    }
+                  : () {
+                      GameServices().createSelectStats(
+                          selectedKey: 'ecoRate',
+                          selectedValue: bowlAvgAndEcoRate.ecoRate,
+                          currentPlayer: currentPlayer,
+                          selectedName: bowlAvgAndEcoRate.firstName);
+                      onFeatureSelect('${bowlAvgAndEcoRate.ecoRate}-${index}');
+                      FeatureSelect featureSelect = FeatureSelect(
+                          selectStats: selectedFeature ==
+                                  '${bowlAvgAndEcoRate.ecoRate}-${index}'
+                              ? true
+                              : false);
+                      GameServices().selectFeature(
+                          roomId: 'test', featureSelect: featureSelect);
+                      HideStatus hide = HideStatus(statusHide: true);
+                      GameServices()
+                          .hideStatus(roomId: 'test', hideStatus: hide);
+                    },
+              child: Row(children: [
+                Container(
+                  width: 120.sp,
+                  height: 65.sp,
+                  padding: EdgeInsets.all(8.sp),
+                  decoration: BoxDecoration(
+                      color: selectedFeature ==
+                                  '${bowlAvgAndEcoRate.ecoRate}-${index}' &&
+                              ecoRate['selectedKey'] == 'ecoRate'
+                          ? const Color(0xff2C7744)
+                          : (ecoRate['selectedKey'] == 'ecoRate' &&
+                                  ecoRate['players'][FirebaseAuth.instance
+                                          .currentUser!.uid]['selectStats'] ==
+                                      true)
+                              ? const Color(0xffC02425)
+                              : const Color(0xff243b55),
+                      borderRadius: BorderRadius.all(Radius.circular(12.sp))),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text('Eco.Rate : ${bowlAvgAndEcoRate.ecoRate}',
+                            style: AppTextStyles.instance.playersStats),
+                      ),
+                      Text(
+                        (ecoRate['selectedKey'] == 'ecoRate' &&
+                                ecoRate['players'][FirebaseAuth.instance
+                                        .currentUser!.uid]['selectStats'] ==
+                                    true)
+                            ? 'vs ${ecoRate['selectedValue']}'
+                            : '',
+                        style: AppTextStyles.instance.playersStat1,
+                        textAlign: TextAlign.center,
+                      )
+                    ],
+                  ),
+                )
+              ]),
+            );
+          }
+          return const CircularProgressIndicator();
+        },
+      )
+    ]);
   }
 
   /// hundreds and fifties widget
@@ -855,7 +1024,9 @@ class PlayerCardWidget extends StatelessWidget {
                                 getWon['selectedKey'] == 'hundreds' ||
                                 getWon['selectedKey'] == 'fifties' ||
                                 getWon['selectedKey'] == 'topScore' ||
-                                getWon['selectedKey'] == 'wickets') &&
+                                getWon['selectedKey'] == 'wickets' ||
+                                getWon['selectedKey'] == 'bowlAvg' ||
+                                getWon['selectedKey'] == 'ecoRate') &&
                             (getWon['hostId'] !=
                                     FirebaseAuth.instance.currentUser!.uid) !=
                                 ''

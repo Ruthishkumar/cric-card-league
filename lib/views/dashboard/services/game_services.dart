@@ -201,6 +201,62 @@ class GameServices {
           'matchDrawn': true,
           'currentPlayer': FirebaseAuth.instance.currentUser!.uid.toString(),
         });
+      } else if (selectedKey == "bowlAvg") {
+        var isPlayerAWon =
+            double.parse(playerAValue) < double.parse(playerBValue);
+        if (isPlayerAWon) {
+          Future.delayed(const Duration(seconds: 3), () async {
+            movePlayer(
+                loser: playerBCharacter,
+                winner: playerACharacter,
+                winnerId: playerAId,
+                loserId: playerBId);
+          });
+        } else {
+          Future.delayed(const Duration(seconds: 3), () async {
+            movePlayer(
+              loser: playerACharacter,
+              winner: playerBCharacter,
+              winnerId: playerBId,
+              loserId: playerAId,
+            );
+          });
+        }
+        return FirebaseDatabase.instance.ref('Room').child('test').update({
+          'selectedKey': selectedKey,
+          'selectedValue': selectedValue,
+          'currentPlayer': isPlayerAWon ? map['hostId'] : playerBId,
+          'matchDrawn': false,
+          'matchWon': isPlayerAWon ? 'HostWon' : 'JoinWon',
+        });
+      } else if (selectedKey == "ecoRate") {
+        var isPlayerAWon =
+            double.parse(playerAValue) < double.parse(playerBValue);
+        if (isPlayerAWon) {
+          Future.delayed(const Duration(seconds: 3), () async {
+            movePlayer(
+                loser: playerBCharacter,
+                winner: playerACharacter,
+                winnerId: playerAId,
+                loserId: playerBId);
+          });
+        } else {
+          Future.delayed(const Duration(seconds: 3), () async {
+            movePlayer(
+              loser: playerACharacter,
+              winner: playerBCharacter,
+              winnerId: playerBId,
+              loserId: playerAId,
+            );
+          });
+        }
+        return FirebaseDatabase.instance.ref('Room').child('test').update({
+          'selectedKey': selectedKey,
+          'selectedValue': selectedValue,
+          'currentPlayer': isPlayerAWon ? map['hostId'] : playerBId,
+          'matchDrawn': false,
+          'matchWon': isPlayerAWon ? 'HostWon' : 'JoinWon',
+        });
       } else {
         var isPlayerAWon =
             double.parse(playerAValue) > double.parse(playerBValue);

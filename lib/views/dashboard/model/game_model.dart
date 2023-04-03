@@ -165,6 +165,8 @@ class CreatePlayerModel {
   final String wickets;
   final String hundreds;
   final String fifties;
+  final String bowlAvg;
+  final String ecoRate;
 
   CreatePlayerModel({
     required this.firstName,
@@ -178,6 +180,8 @@ class CreatePlayerModel {
     required this.wickets,
     required this.hundreds,
     required this.fifties,
+    required this.bowlAvg,
+    required this.ecoRate,
   });
 
   factory CreatePlayerModel.fromJson(Map<String, dynamic> json) =>
