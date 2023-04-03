@@ -439,7 +439,7 @@ class _HostIpPageState extends State<HostIpPage> {
           hundreds: '27',
           fifties: '39',
           strikeRate: '88.39',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '7': CreatePlayerModel(
@@ -509,7 +509,7 @@ class _HostIpPageState extends State<HostIpPage> {
           hundreds: '17',
           fifties: '29',
           strikeRate: '96.09',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '12': CreatePlayerModel(
@@ -523,7 +523,7 @@ class _HostIpPageState extends State<HostIpPage> {
           hundreds: '11',
           fifties: '24',
           strikeRate: '117.94',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '13': CreatePlayerModel(
@@ -658,7 +658,7 @@ class _HostIpPageState extends State<HostIpPage> {
           hundreds: '27',
           fifties: '39',
           strikeRate: '88.39',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '7': CreatePlayerModel(
@@ -728,7 +728,7 @@ class _HostIpPageState extends State<HostIpPage> {
           hundreds: '17',
           fifties: '29',
           strikeRate: '96.09',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '12': CreatePlayerModel(
@@ -742,7 +742,7 @@ class _HostIpPageState extends State<HostIpPage> {
           hundreds: '11',
           fifties: '24',
           strikeRate: '117.94',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '13': CreatePlayerModel(
@@ -798,7 +798,7 @@ class _HostIpPageState extends State<HostIpPage> {
           hundreds: '2',
           fifties: '12',
           strikeRate: '84.09',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '17': CreatePlayerModel(
@@ -812,7 +812,7 @@ class _HostIpPageState extends State<HostIpPage> {
           hundreds: '11',
           fifties: '15',
           strikeRate: '104.13',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '18': CreatePlayerModel(
@@ -1017,7 +1017,7 @@ class _HostIpPageState extends State<HostIpPage> {
           hundreds: '27',
           fifties: '39',
           strikeRate: '88.39',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '7': CreatePlayerModel(
@@ -1087,7 +1087,7 @@ class _HostIpPageState extends State<HostIpPage> {
           hundreds: '17',
           fifties: '29',
           strikeRate: '96.09',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '12': CreatePlayerModel(
@@ -1101,7 +1101,7 @@ class _HostIpPageState extends State<HostIpPage> {
           hundreds: '11',
           fifties: '24',
           strikeRate: '117.94',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '13': CreatePlayerModel(
@@ -1157,7 +1157,7 @@ class _HostIpPageState extends State<HostIpPage> {
           hundreds: '2',
           fifties: '12',
           strikeRate: '84.09',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '17': CreatePlayerModel(
@@ -1171,7 +1171,7 @@ class _HostIpPageState extends State<HostIpPage> {
           hundreds: '11',
           fifties: '15',
           strikeRate: '104.13',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '18': CreatePlayerModel(

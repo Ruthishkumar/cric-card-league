@@ -865,7 +865,7 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
           hundreds: '17',
           fifties: '24',
           strikeRate: '89.03',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '21': CreatePlayerModel(
@@ -879,7 +879,7 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
           hundreds: '9',
           fifties: '43',
           strikeRate: '79.48',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '22': CreatePlayerModel(
@@ -1223,7 +1223,7 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
           hundreds: '17',
           fifties: '24',
           strikeRate: '89.03',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '21': CreatePlayerModel(
@@ -1237,7 +1237,7 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
           hundreds: '9',
           fifties: '43',
           strikeRate: '79.48',
-          wickets: '0.0',
+          wickets: '0',
           bowlAvg: '0.0',
           ecoRate: '0.0'),
       '22': CreatePlayerModel(
@@ -1353,7 +1353,7 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
         hundreds: '4',
         fifties: '5',
         strikeRate: '107.11',
-        wickets: '0.0',
+        wickets: '0',
         bowlAvg: '0.0',
         ecoRate: '0.0',
       ),

@@ -84,9 +84,9 @@ class PlayerCardWidget extends StatelessWidget {
                                       strikeRateAndRuns(
                                           data, data.toJson().length),
                                       SizedBox(height: 10.sp),
-                                      bowlAvgAndEcoRate(
-                                          data, data.toJson().length),
-                                      SizedBox(height: 10.sp),
+                                      // bowlAvgAndEcoRate(
+                                      //     data, data.toJson().length),
+                                      // SizedBox(height: 10.sp),
                                       hundredsAndFifties(
                                           data, data.toJson().length),
                                       SizedBox(height: 10.sp),
@@ -108,9 +108,9 @@ class PlayerCardWidget extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 10.sp),
+        SizedBox(height: 25.sp),
         getMatchStatus(),
-        SizedBox(height: 10.sp),
+        SizedBox(height: 15.sp),
         getLoserCard(),
       ],
     );
@@ -530,7 +530,7 @@ class PlayerCardWidget extends StatelessWidget {
                           fit: BoxFit.contain,
                           child: Center(
                             child: Text(
-                                'bowl Avg : ${bowlAvgAndEcoRate.bowlAvg}',
+                                'Bowl.Avg : ${bowlAvgAndEcoRate.bowlAvg}',
                                 style: AppTextStyles.instance.playersStats),
                           ),
                         ),
