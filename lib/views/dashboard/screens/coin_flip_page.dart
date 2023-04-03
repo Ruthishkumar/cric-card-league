@@ -101,6 +101,7 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // showToss(context),
+
                       Lottie.asset(
                         'assets/lottie_images/dlf10_3bCWbEJWSv.json',
                       ),
@@ -118,7 +119,12 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                               : '',
                           style: AppTextStyles.instance.tossHeader,
                         ),
-                      )
+                      ),
+                      SizedBox(height: 20.sp),
+                      Text(
+                          'your opponent choose ${roomData['totalCards']} cards match',
+                          style: AppTextStyles.instance.tossHeader,
+                          textAlign: TextAlign.center),
                     ],
                   ),
                 )

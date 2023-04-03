@@ -36,13 +36,11 @@ Map<String, dynamic>? mapPlayerListToJson(
 @JsonSerializable()
 class GameModel {
   String hostId;
-  String? phoneNumber;
   @JsonKey(toJson: mapPlayerToJson)
   Map<String, GamePlayerModel>? players;
   String? roomId;
 
-  GameModel(
-      {required this.hostId, this.phoneNumber, this.players, this.roomId});
+  GameModel({required this.hostId, required this.players, this.roomId});
 
   factory GameModel.fromJson(Map<String, dynamic> json) =>
       _$GameModelFromJson(json);
@@ -53,15 +51,24 @@ class GameModel {
 class GamePlayerModel {
   final String name;
   final int timestamp;
-  @JsonKey(toJson: mapPlayerListToJson)
-  Map<String, CreatePlayerModel>? playerCharacters;
 
-  GamePlayerModel(
-      {required this.name, required this.timestamp, this.playerCharacters});
+  GamePlayerModel({required this.name, required this.timestamp});
 
   factory GamePlayerModel.fromJson(Map<String, dynamic> json) =>
       _$GamePlayerModelFromJson(json);
   Map<String, dynamic> toJson() => _$GamePlayerModelToJson(this);
+}
+
+@JsonSerializable()
+class GamePlayerAdd {
+  @JsonKey(toJson: mapPlayerListToJson)
+  Map<String, CreatePlayerModel>? playerCharacters;
+
+  GamePlayerAdd({required this.playerCharacters});
+
+  factory GamePlayerAdd.fromJson(Map<String, dynamic> json) =>
+      _$GamePlayerAddFromJson(json);
+  Map<String, dynamic> toJson() => _$GamePlayerAddToJson(this);
 }
 
 @JsonSerializable()
@@ -232,4 +239,15 @@ class HideStatus {
   factory HideStatus.fromJson(Map<String, dynamic> json) =>
       _$HideStatusFromJson(json);
   Map<String, dynamic> toJson() => _$HideStatusToJson(this);
+}
+
+@JsonSerializable()
+class WaitCardJoin {
+  bool playerWaiting;
+
+  WaitCardJoin({required this.playerWaiting});
+
+  factory WaitCardJoin.fromJson(Map<String, dynamic> json) =>
+      _$WaitCardJoinFromJson(json);
+  Map<String, dynamic> toJson() => _$WaitCardJoinToJson(this);
 }

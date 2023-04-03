@@ -8,7 +8,6 @@ part of 'game_model.dart';
 
 GameModel _$GameModelFromJson(Map<String, dynamic> json) => GameModel(
       hostId: json['hostId'] as String,
-      phoneNumber: json['phoneNumber'] as String?,
       players: (json['players'] as Map<String, dynamic>?)?.map(
         (k, e) =>
             MapEntry(k, GamePlayerModel.fromJson(e as Map<String, dynamic>)),
@@ -18,7 +17,6 @@ GameModel _$GameModelFromJson(Map<String, dynamic> json) => GameModel(
 
 Map<String, dynamic> _$GameModelToJson(GameModel instance) => <String, dynamic>{
       'hostId': instance.hostId,
-      'phoneNumber': instance.phoneNumber,
       'players': mapPlayerToJson(instance.players),
       'roomId': instance.roomId,
     };
@@ -27,6 +25,16 @@ GamePlayerModel _$GamePlayerModelFromJson(Map<String, dynamic> json) =>
     GamePlayerModel(
       name: json['name'] as String,
       timestamp: json['timestamp'] as int,
+    );
+
+Map<String, dynamic> _$GamePlayerModelToJson(GamePlayerModel instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'timestamp': instance.timestamp,
+    };
+
+GamePlayerAdd _$GamePlayerAddFromJson(Map<String, dynamic> json) =>
+    GamePlayerAdd(
       playerCharacters:
           (json['playerCharacters'] as Map<String, dynamic>?)?.map(
         (k, e) =>
@@ -34,10 +42,8 @@ GamePlayerModel _$GamePlayerModelFromJson(Map<String, dynamic> json) =>
       ),
     );
 
-Map<String, dynamic> _$GamePlayerModelToJson(GamePlayerModel instance) =>
+Map<String, dynamic> _$GamePlayerAddToJson(GamePlayerAdd instance) =>
     <String, dynamic>{
-      'name': instance.name,
-      'timestamp': instance.timestamp,
       'playerCharacters': mapPlayerListToJson(instance.playerCharacters),
     };
 
@@ -192,4 +198,13 @@ HideStatus _$HideStatusFromJson(Map<String, dynamic> json) => HideStatus(
 Map<String, dynamic> _$HideStatusToJson(HideStatus instance) =>
     <String, dynamic>{
       'statusHide': instance.statusHide,
+    };
+
+WaitCardJoin _$WaitCardJoinFromJson(Map<String, dynamic> json) => WaitCardJoin(
+      playerWaiting: json['playerWaiting'] as bool,
+    );
+
+Map<String, dynamic> _$WaitCardJoinToJson(WaitCardJoin instance) =>
+    <String, dynamic>{
+      'playerWaiting': instance.playerWaiting,
     };

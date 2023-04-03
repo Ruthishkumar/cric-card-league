@@ -58,6 +58,14 @@ class GameServices {
     }
   }
 
+  Future createPlayerCharacters(
+      {required String roomId, required GamePlayerAdd gamePlayerAdd}) async {
+    DatabaseReference databaseReference = FirebaseDatabase.instance
+        .ref('Room')
+        .child('/$roomId/players/${FirebaseAuth.instance.currentUser!.uid}');
+    await databaseReference.update(gamePlayerAdd.toJson());
+  }
+
   /// For Card Select
   Future selectCard(
       {required String roomId,
@@ -121,10 +129,19 @@ class GameServices {
     return reference;
   }
 
+  /// auto nav select
   Future<DatabaseReference> autoNavSelectToss() async {
-    //TODO::Change actual room ID;
+    // TODO::Change actual room ID;
     DatabaseReference reference =
         FirebaseDatabase.instance.ref('Room').child('test/selectToss');
+    return reference;
+  }
+
+  /// join total select card
+  Future<DatabaseReference> joinSelectOfCard() async {
+    // TODO::Change actual room ID;
+    DatabaseReference reference =
+        FirebaseDatabase.instance.ref('Room').child('test/totalCards');
     return reference;
   }
 
@@ -188,7 +205,7 @@ class GameServices {
         var isPlayerAWon =
             double.parse(playerAValue) > double.parse(playerBValue);
         if (isPlayerAWon) {
-          Future.delayed(const Duration(seconds: 2), () async {
+          Future.delayed(const Duration(seconds: 3), () async {
             movePlayer(
                 loser: playerBCharacter,
                 winner: playerACharacter,
@@ -196,7 +213,7 @@ class GameServices {
                 loserId: playerBId);
           });
         } else {
-          Future.delayed(const Duration(seconds: 2), () async {
+          Future.delayed(const Duration(seconds: 3), () async {
             movePlayer(
               loser: playerACharacter,
               winner: playerBCharacter,
@@ -363,5 +380,10 @@ class GameServices {
     DatabaseReference reference =
         FirebaseDatabase.instance.ref('Room').child('/$roomId');
     await reference.update(face.toJson());
+  }
+
+  Future waitingCardSelect({required WaitCardJoin waitCardJoin}) async {
+    DatabaseReference reference = FirebaseDatabase.instance.ref('Room');
+    await reference.update(waitCardJoin.toJson());
   }
 }

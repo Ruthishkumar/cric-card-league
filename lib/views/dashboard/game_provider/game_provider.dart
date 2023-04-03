@@ -11,6 +11,8 @@ class GameProvider extends ChangeNotifier {
 
   bool isLoading = false;
 
+  String joinRoomId = "";
+
   final gameServices = GameServices.instance;
 
   void hostRoom(GameModel gameModel) async {
@@ -47,6 +49,11 @@ class GameProvider extends ChangeNotifier {
       required TotalCardModel totalCardModel}) async {
     await gameServices.matchTotalCard(
         roomId: value, totalCardModel: totalCardModel);
+    notifyListeners();
+  }
+
+  void createJoinRoomId({required String value}) {
+    joinRoomId = value;
     notifyListeners();
   }
 }

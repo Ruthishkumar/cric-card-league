@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:ds_game/views/authentication/screens/login_page.dart';
+import 'package:ds_game/views/authentication/screens/success_page.dart';
+import 'package:ds_game/views/authentication/services/storage_services.dart';
+import 'package:ds_game/widgets/screen_container.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -9,36 +13,43 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with TickerProviderStateMixin {
-  late AnimationController _controller;
-
+class _SplashScreenState extends State<SplashScreen> {
+  String userId = "";
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: (10)),
-      vsync: this,
-    );
+    getLoginScreen();
+  }
+
+  getLoginScreen() async {
+    userId = await StorageServices().getUserId();
+    userId == ''
+        ? Timer(const Duration(seconds: 3), () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginPage()),
+            );
+          })
+        : Timer(const Duration(seconds: 3), () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const SuccessPage()),
+            );
+          });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Lottie.asset(
-      'assets/lottie_images/splash_screen.json',
-      controller: _controller,
-      animate: true,
-      width: 600,
-      fit: BoxFit.fill,
-      alignment: Alignment.center,
-      onLoaded: (composition) {
-        _controller
-          ..duration = composition.duration
-          ..forward().whenComplete(() => Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-              ));
-      },
+    return ScreenContainer(
+      bodyWidget: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            'assets/images/splash_screen.png',
+            fit: BoxFit.cover,
+          )
+        ],
+      ),
     );
   }
 }

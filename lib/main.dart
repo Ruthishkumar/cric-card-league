@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/authentication/screens/login_page.dart';
+import 'package:ds_game/views/authentication/screens/splash_screen.dart';
 import 'package:ds_game/views/authentication/screens/success_page.dart';
 import 'package:ds_game/views/authentication/services/storage_services.dart';
 import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
@@ -38,12 +39,12 @@ class MyApp extends StatelessWidget {
           DeviceOrientation.portraitDown,
         ]);
         return MaterialApp(
-            title: 'Flutter Demo',
+            title: 'CCL',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               primarySwatch: Colors.blue,
             ),
-            home: userId == '' ? const LoginPage() : const SuccessPage());
+            home: const SplashScreen());
       },
     );
   }
