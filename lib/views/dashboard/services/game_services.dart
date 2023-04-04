@@ -449,6 +449,7 @@ class GameServices {
     await reference.update(face.toJson());
   }
 
+  /// joining waiting card select
   Future waitingCardSelect({required WaitCardJoin waitCardJoin}) async {
     DatabaseReference reference = FirebaseDatabase.instance.ref('Room');
     await reference.update(waitCardJoin.toJson());
