@@ -15,6 +15,8 @@ class GameProvider extends ChangeNotifier {
 
   final gameServices = GameServices.instance;
 
+  bool host = false;
+
   void hostRoom(GameModel gameModel) async {
     await gameServices.createHostGameService(roomModel: gameModel);
     roomId = gameModel.roomId.toString();
@@ -54,6 +56,11 @@ class GameProvider extends ChangeNotifier {
 
   void createJoinRoomId({required String value}) {
     joinRoomId = value;
+    notifyListeners();
+  }
+
+  void createHost({required bool value}) {
+    host = value;
     notifyListeners();
   }
 }

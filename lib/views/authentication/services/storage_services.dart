@@ -32,4 +32,16 @@ class StorageServices {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool('userStatus') ?? false;
   }
+
+  Future<void> setJoinRoomId(String? roomId) async {
+    if (roomId != null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('roomId', roomId);
+    }
+  }
+
+  Future<String> getJoinRoomId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('roomId') ?? '';
+  }
 }

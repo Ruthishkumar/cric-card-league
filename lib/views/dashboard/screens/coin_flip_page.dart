@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:developer' as dev;
 
 import 'package:delayed_display/delayed_display.dart';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
@@ -48,7 +49,16 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
   }
 
   autoNav() {
-    GameServices().autoNavSelectToss().asStream().listen((event) {
+    GameServices()
+        .autoNavSelectToss(
+            roomId:
+                Provider.of<GameProvider>(context, listen: false).host == true
+                    ? Provider.of<GameProvider>(context, listen: false).roomId
+                    : Provider.of<GameProvider>(context, listen: false)
+                        .joinRoomId
+                        .toString())
+        .asStream()
+        .listen((event) {
       event.onValue.listen((event) {
         event.snapshot.value == true
             ? Future.delayed(const Duration(seconds: 3), () {
@@ -74,7 +84,17 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
   }
 
   DatabaseReference getRoom() {
-    DatabaseReference refDb = FirebaseDatabase.instance.ref('Room/test');
+    dev.log(Provider.of<NameProvider>(context, listen: false)
+        .playerName
+        .toString());
+    dev.log(Provider.of<GameProvider>(context, listen: false)
+        .joinRoomId
+        .toString());
+    dev.log('JOINROOMID');
+    dev.log(Provider.of<GameProvider>(context, listen: false).roomId);
+    dev.log('HOSTROOMID');
+    DatabaseReference refDb = FirebaseDatabase.instance.ref(
+        'Room/${Provider.of<GameProvider>(context, listen: false).host == true ? Provider.of<GameProvider>(context, listen: false).roomId : Provider.of<GameProvider>(context, listen: false).joinRoomId.toString()}');
     return refDb;
   }
 
@@ -100,8 +120,6 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // showToss(context),
-
                       Lottie.asset(
                         'assets/lottie_images/dlf10_3bCWbEJWSv.json',
                       ),
@@ -162,15 +180,6 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                               style: AppTextStyles.instance.tossHeader,
                             ),
                             SizedBox(height: 50.sp),
-                            // autoNav()
-                            // HostingButton(
-                            //   text: 'Start Game',
-                            //   color: Colors.green,
-                            //   onPressed: () {
-                            //     NavigationRoute().animationRoute(
-                            //         context, const CardTemplatePage());
-                            //   },
-                            // ),
                           ],
                         ),
                       )
@@ -367,7 +376,7 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
       GameServices().selectToss(
           roomId: Provider.of<GameProvider>(context, listen: false).roomId,
           selectTossModel: selectCardModel);
-      GameServices().getCurrentPlayer();
+      // GameServices().getCurrentPlayer();
     });
   }
 

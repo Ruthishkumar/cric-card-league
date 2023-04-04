@@ -276,6 +276,7 @@ class _SuccessPageState extends State<SuccessPage> {
           timestamp: DateTime.now().millisecondsSinceEpoch)
     });
     Provider.of<GameProvider>(context, listen: false).hostRoom(gameRoom);
+    Provider.of<GameProvider>(context, listen: false).createHost(value: true);
 
     NavigationRoute().animationRoute(context, const PlayersDetailsPage());
   }

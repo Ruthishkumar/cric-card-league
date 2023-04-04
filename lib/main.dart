@@ -19,8 +19,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   userId = await StorageServices().getUserId();
-  log(userId.toString());
-  log('Get User Id');
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => NameProvider()),
     ChangeNotifierProvider(create: (_) => GameProvider()),

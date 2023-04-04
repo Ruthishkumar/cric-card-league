@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:delayed_display/delayed_display.dart';
+import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/services/game_services.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
@@ -9,8 +10,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
-class PlayerCardWidget extends StatelessWidget {
+class PlayerCardWidget extends StatefulWidget {
   final List<CreatePlayerModel> playerList;
   final Function(String) onFeatureSelect;
   final String selectedFeature;
@@ -23,12 +25,19 @@ class PlayerCardWidget extends StatelessWidget {
       required this.selectedFeature})
       : super(key: key);
 
+  @override
+  State<PlayerCardWidget> createState() => _PlayerCardWidgetState();
+}
+
+class _PlayerCardWidgetState extends State<PlayerCardWidget> {
   canClick() {
-    return currentPlayer == FirebaseAuth.instance.currentUser?.uid.toString();
+    return widget.currentPlayer ==
+        FirebaseAuth.instance.currentUser?.uid.toString();
   }
 
   DatabaseReference getStats() {
-    DatabaseReference refDb = FirebaseDatabase.instance.ref('Room/test');
+    DatabaseReference refDb = FirebaseDatabase.instance.ref(
+        'Room/${Provider.of<GameProvider>(context, listen: false).host == true ? Provider.of<GameProvider>(context, listen: false).roomId : Provider.of<GameProvider>(context, listen: false).joinRoomId.toString()}');
     return refDb;
   }
 
@@ -56,8 +65,8 @@ class PlayerCardWidget extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(16.sp))),
                 child: Column(
                   children: [
-                    ...[playerList.first].map((data) {
-                      if (playerList.isNotEmpty) {
+                    ...[widget.playerList.first].map((data) {
+                      if (widget.playerList.isNotEmpty) {
                         return Column(
                           children: [
                             playerHeaderWidget(data),
@@ -142,19 +151,44 @@ class PlayerCardWidget extends StatelessWidget {
                         GameServices().createSelectStats(
                             selectedKey: 'matches',
                             selectedValue: matchAndAverage.matches,
-                            currentPlayer: currentPlayer,
-                            selectedName: matchAndAverage.firstName);
-                        onFeatureSelect('${matchAndAverage.matches}-${index}');
+                            currentPlayer: widget.currentPlayer,
+                            selectedName: matchAndAverage.firstName,
+                            roomId: matches['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId);
+                        widget.onFeatureSelect(
+                            '${matchAndAverage.matches}-${index}');
                         FeatureSelect featureSelect = FeatureSelect(
-                            selectStats: selectedFeature ==
+                            selectStats: widget.selectedFeature ==
                                     '${matchAndAverage.matches}-${index}'
                                 ? true
                                 : false);
                         GameServices().selectFeature(
-                            roomId: 'test', featureSelect: featureSelect);
+                            roomId: matches['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId,
+                            featureSelect: featureSelect);
                         HideStatus hide = HideStatus(statusHide: true);
-                        GameServices()
-                            .hideStatus(roomId: 'test', hideStatus: hide);
+                        GameServices().hideStatus(
+                            roomId: matches['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId,
+                            hideStatus: hide);
                       },
                 child: Row(
                   children: [
@@ -163,7 +197,7 @@ class PlayerCardWidget extends StatelessWidget {
                       height: 65.sp,
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
-                          color: selectedFeature ==
+                          color: widget.selectedFeature ==
                                       '${matchAndAverage.matches}-${index}' &&
                                   matches['selectedKey'] == 'matches'
                               ? const Color(0xff2C7744)
@@ -229,19 +263,44 @@ class PlayerCardWidget extends StatelessWidget {
                         GameServices().createSelectStats(
                             selectedKey: 'batAvg',
                             selectedValue: matchAndAverage.batAvg,
-                            currentPlayer: currentPlayer,
-                            selectedName: matchAndAverage.firstName);
-                        onFeatureSelect('${matchAndAverage.batAvg}-${index}');
+                            currentPlayer: widget.currentPlayer,
+                            selectedName: matchAndAverage.firstName,
+                            roomId: stats['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId);
+                        widget.onFeatureSelect(
+                            '${matchAndAverage.batAvg}-${index}');
                         FeatureSelect featureSelect = FeatureSelect(
-                            selectStats: selectedFeature ==
+                            selectStats: widget.selectedFeature ==
                                     '${matchAndAverage.batAvg}-${index}'
                                 ? true
                                 : false);
                         GameServices().selectFeature(
-                            roomId: 'test', featureSelect: featureSelect);
+                            roomId: stats['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId,
+                            featureSelect: featureSelect);
                         HideStatus hide = HideStatus(statusHide: true);
-                        GameServices()
-                            .hideStatus(roomId: 'test', hideStatus: hide);
+                        GameServices().hideStatus(
+                            roomId: stats['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId,
+                            hideStatus: hide);
                       },
                 child: Row(children: [
                   Container(
@@ -249,7 +308,7 @@ class PlayerCardWidget extends StatelessWidget {
                       height: 65.sp,
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
-                          color: selectedFeature ==
+                          color: widget.selectedFeature ==
                                       '${matchAndAverage.batAvg}-${index}' &&
                                   stats['selectedKey'] == 'batAvg'
                               ? const Color(0xff2C7744)
@@ -319,19 +378,44 @@ class PlayerCardWidget extends StatelessWidget {
                         GameServices().createSelectStats(
                             selectedKey: 'strikeRate',
                             selectedValue: strikeAndRuns.strikeRate,
-                            currentPlayer: currentPlayer,
-                            selectedName: strikeAndRuns.firstName);
-                        onFeatureSelect('${strikeAndRuns.strikeRate}-${index}');
+                            currentPlayer: widget.currentPlayer,
+                            selectedName: strikeAndRuns.firstName,
+                            roomId: strikeRate['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId);
+                        widget.onFeatureSelect(
+                            '${strikeAndRuns.strikeRate}-${index}');
                         FeatureSelect featureSelect = FeatureSelect(
-                            selectStats: selectedFeature ==
+                            selectStats: widget.selectedFeature ==
                                     '${strikeAndRuns.strikeRate}-${index}'
                                 ? true
                                 : false);
                         GameServices().selectFeature(
-                            roomId: 'test', featureSelect: featureSelect);
+                            roomId: strikeRate['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId,
+                            featureSelect: featureSelect);
                         HideStatus hide = HideStatus(statusHide: true);
-                        GameServices()
-                            .hideStatus(roomId: 'test', hideStatus: hide);
+                        GameServices().hideStatus(
+                            roomId: strikeRate['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId,
+                            hideStatus: hide);
                       },
                 child: Row(
                   children: [
@@ -340,7 +424,7 @@ class PlayerCardWidget extends StatelessWidget {
                       height: 65.sp,
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
-                          color: selectedFeature ==
+                          color: widget.selectedFeature ==
                                       '${strikeAndRuns.strikeRate}-${index}' &&
                                   strikeRate['selectedKey'] == 'strikeRate'
                               ? const Color(0xff2C7744)
@@ -405,19 +489,44 @@ class PlayerCardWidget extends StatelessWidget {
                         GameServices().createSelectStats(
                             selectedKey: 'runs',
                             selectedValue: strikeAndRuns.runs,
-                            currentPlayer: currentPlayer,
-                            selectedName: strikeAndRuns.firstName);
-                        onFeatureSelect('${strikeAndRuns.runs}-${index}');
+                            currentPlayer: widget.currentPlayer,
+                            selectedName: strikeAndRuns.firstName,
+                            roomId: runs['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId);
+                        widget
+                            .onFeatureSelect('${strikeAndRuns.runs}-${index}');
                         FeatureSelect featureSelect = FeatureSelect(
-                            selectStats: selectedFeature ==
+                            selectStats: widget.selectedFeature ==
                                     '${strikeAndRuns.runs}-${index}'
                                 ? true
                                 : false);
                         GameServices().selectFeature(
-                            roomId: 'test', featureSelect: featureSelect);
+                            roomId: runs['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId,
+                            featureSelect: featureSelect);
                         HideStatus hide = HideStatus(statusHide: true);
-                        GameServices()
-                            .hideStatus(roomId: 'test', hideStatus: hide);
+                        GameServices().hideStatus(
+                            roomId: runs['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId,
+                            hideStatus: hide);
                       },
                 child: Row(children: [
                   Container(
@@ -425,7 +534,7 @@ class PlayerCardWidget extends StatelessWidget {
                       height: 65.sp,
                       padding: EdgeInsets.all(8.sp),
                       decoration: BoxDecoration(
-                          color: selectedFeature ==
+                          color: widget.selectedFeature ==
                                       '${strikeAndRuns.runs}-${index}' &&
                                   runs['selectedKey'] == 'runs'
                               ? const Color(0xff2C7744)
@@ -492,19 +601,44 @@ class PlayerCardWidget extends StatelessWidget {
                       GameServices().createSelectStats(
                           selectedKey: 'bowlAvg',
                           selectedValue: bowlAvgAndEcoRate.bowlAvg,
-                          currentPlayer: currentPlayer,
-                          selectedName: bowlAvgAndEcoRate.firstName);
-                      onFeatureSelect('${bowlAvgAndEcoRate.bowlAvg}-${index}');
+                          currentPlayer: widget.currentPlayer,
+                          selectedName: bowlAvgAndEcoRate.firstName,
+                          roomId: bowlAvg['hostId'] !=
+                                  FirebaseAuth.instance.currentUser!.uid
+                              ? Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .joinRoomId
+                              : Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .roomId);
+                      widget.onFeatureSelect(
+                          '${bowlAvgAndEcoRate.bowlAvg}-${index}');
                       FeatureSelect featureSelect = FeatureSelect(
-                          selectStats: selectedFeature ==
+                          selectStats: widget.selectedFeature ==
                                   '${bowlAvgAndEcoRate.bowlAvg}-${index}'
                               ? true
                               : false);
                       GameServices().selectFeature(
-                          roomId: 'test', featureSelect: featureSelect);
+                          roomId: bowlAvg['hostId'] !=
+                                  FirebaseAuth.instance.currentUser!.uid
+                              ? Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .joinRoomId
+                              : Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .roomId,
+                          featureSelect: featureSelect);
                       HideStatus hide = HideStatus(statusHide: true);
-                      GameServices()
-                          .hideStatus(roomId: 'test', hideStatus: hide);
+                      GameServices().hideStatus(
+                          roomId: bowlAvg['hostId'] !=
+                                  FirebaseAuth.instance.currentUser!.uid
+                              ? Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .joinRoomId
+                              : Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .roomId,
+                          hideStatus: hide);
                     },
               child: Row(children: [
                 Container(
@@ -512,7 +646,7 @@ class PlayerCardWidget extends StatelessWidget {
                     height: 65.sp,
                     padding: EdgeInsets.all(8.sp),
                     decoration: BoxDecoration(
-                        color: selectedFeature ==
+                        color: widget.selectedFeature ==
                                     '${bowlAvgAndEcoRate.bowlAvg}-${index}' &&
                                 bowlAvg['selectedKey'] == 'bowlAvg'
                             ? const Color(0xff2C7744)
@@ -573,19 +707,44 @@ class PlayerCardWidget extends StatelessWidget {
                       GameServices().createSelectStats(
                           selectedKey: 'ecoRate',
                           selectedValue: bowlAvgAndEcoRate.ecoRate,
-                          currentPlayer: currentPlayer,
-                          selectedName: bowlAvgAndEcoRate.firstName);
-                      onFeatureSelect('${bowlAvgAndEcoRate.ecoRate}-${index}');
+                          currentPlayer: widget.currentPlayer,
+                          selectedName: bowlAvgAndEcoRate.firstName,
+                          roomId: ecoRate['hostId'] !=
+                                  FirebaseAuth.instance.currentUser!.uid
+                              ? Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .joinRoomId
+                              : Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .roomId);
+                      widget.onFeatureSelect(
+                          '${bowlAvgAndEcoRate.ecoRate}-${index}');
                       FeatureSelect featureSelect = FeatureSelect(
-                          selectStats: selectedFeature ==
+                          selectStats: widget.selectedFeature ==
                                   '${bowlAvgAndEcoRate.ecoRate}-${index}'
                               ? true
                               : false);
                       GameServices().selectFeature(
-                          roomId: 'test', featureSelect: featureSelect);
+                          roomId: ecoRate['hostId'] !=
+                                  FirebaseAuth.instance.currentUser!.uid
+                              ? Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .joinRoomId
+                              : Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .roomId,
+                          featureSelect: featureSelect);
                       HideStatus hide = HideStatus(statusHide: true);
-                      GameServices()
-                          .hideStatus(roomId: 'test', hideStatus: hide);
+                      GameServices().hideStatus(
+                          roomId: ecoRate['hostId'] !=
+                                  FirebaseAuth.instance.currentUser!.uid
+                              ? Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .joinRoomId
+                              : Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .roomId,
+                          hideStatus: hide);
                     },
               child: Row(children: [
                 Container(
@@ -593,7 +752,7 @@ class PlayerCardWidget extends StatelessWidget {
                   height: 65.sp,
                   padding: EdgeInsets.all(8.sp),
                   decoration: BoxDecoration(
-                      color: selectedFeature ==
+                      color: widget.selectedFeature ==
                                   '${bowlAvgAndEcoRate.ecoRate}-${index}' &&
                               ecoRate['selectedKey'] == 'ecoRate'
                           ? const Color(0xff2C7744)
@@ -658,20 +817,44 @@ class PlayerCardWidget extends StatelessWidget {
                       GameServices().createSelectStats(
                           selectedKey: 'hundreds',
                           selectedValue: hundredsAndFifties.hundreds,
-                          currentPlayer: currentPlayer,
-                          selectedName: hundredsAndFifties.firstName);
-                      onFeatureSelect(
+                          currentPlayer: widget.currentPlayer,
+                          selectedName: hundredsAndFifties.firstName,
+                          roomId: hundreds['hostId'] !=
+                                  FirebaseAuth.instance.currentUser!.uid
+                              ? Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .joinRoomId
+                              : Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .roomId);
+                      widget.onFeatureSelect(
                           '${hundredsAndFifties.hundreds}-${index}');
                       FeatureSelect featureSelect = FeatureSelect(
-                          selectStats: selectedFeature ==
+                          selectStats: widget.selectedFeature ==
                                   '${hundredsAndFifties.hundreds}-${index}'
                               ? true
                               : false);
                       GameServices().selectFeature(
-                          roomId: 'test', featureSelect: featureSelect);
+                          roomId: hundreds['hostId'] !=
+                                  FirebaseAuth.instance.currentUser!.uid
+                              ? Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .joinRoomId
+                              : Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .roomId,
+                          featureSelect: featureSelect);
                       HideStatus hide = HideStatus(statusHide: true);
-                      GameServices()
-                          .hideStatus(roomId: 'test', hideStatus: hide);
+                      GameServices().hideStatus(
+                          roomId: hundreds['hostId'] !=
+                                  FirebaseAuth.instance.currentUser!.uid
+                              ? Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .joinRoomId
+                              : Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .roomId,
+                          hideStatus: hide);
                     },
               child: Row(children: [
                 Container(
@@ -679,7 +862,7 @@ class PlayerCardWidget extends StatelessWidget {
                     height: 65.sp,
                     padding: EdgeInsets.all(8.sp),
                     decoration: BoxDecoration(
-                        color: selectedFeature ==
+                        color: widget.selectedFeature ==
                                     '${hundredsAndFifties.hundreds}-${index}' &&
                                 hundreds['selectedKey'] == 'hundreds'
                             ? const Color(0xff2C7744)
@@ -736,19 +919,44 @@ class PlayerCardWidget extends StatelessWidget {
                       GameServices().createSelectStats(
                           selectedKey: 'fifties',
                           selectedValue: hundredsAndFifties.fifties,
-                          currentPlayer: currentPlayer,
-                          selectedName: hundredsAndFifties.firstName);
-                      onFeatureSelect('${hundredsAndFifties.fifties}-${index}');
+                          currentPlayer: widget.currentPlayer,
+                          selectedName: hundredsAndFifties.firstName,
+                          roomId: fifties['hostId'] !=
+                                  FirebaseAuth.instance.currentUser!.uid
+                              ? Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .joinRoomId
+                              : Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .roomId);
+                      widget.onFeatureSelect(
+                          '${hundredsAndFifties.fifties}-${index}');
                       FeatureSelect featureSelect = FeatureSelect(
-                          selectStats: selectedFeature ==
+                          selectStats: widget.selectedFeature ==
                                   '${hundredsAndFifties.fifties}-${index}'
                               ? true
                               : false);
                       GameServices().selectFeature(
-                          roomId: 'test', featureSelect: featureSelect);
+                          roomId: fifties['hostId'] !=
+                                  FirebaseAuth.instance.currentUser!.uid
+                              ? Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .joinRoomId
+                              : Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .roomId,
+                          featureSelect: featureSelect);
                       HideStatus hide = HideStatus(statusHide: true);
-                      GameServices()
-                          .hideStatus(roomId: 'test', hideStatus: hide);
+                      GameServices().hideStatus(
+                          roomId: fifties['hostId'] !=
+                                  FirebaseAuth.instance.currentUser!.uid
+                              ? Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .joinRoomId
+                              : Provider.of<GameProvider>(context,
+                                      listen: false)
+                                  .roomId,
+                          hideStatus: hide);
                     },
               child: Row(children: [
                 Container(
@@ -756,7 +964,7 @@ class PlayerCardWidget extends StatelessWidget {
                   height: 65.sp,
                   padding: EdgeInsets.all(8.sp),
                   decoration: BoxDecoration(
-                      color: selectedFeature ==
+                      color: widget.selectedFeature ==
                                   '${hundredsAndFifties.fifties}-${index}' &&
                               fifties['selectedKey'] == 'fifties'
                           ? const Color(0xff2C7744)
@@ -820,28 +1028,52 @@ class PlayerCardWidget extends StatelessWidget {
                         GameServices().createSelectStats(
                             selectedKey: 'topScore',
                             selectedValue: highScoreAndWickets.topScore,
-                            currentPlayer: currentPlayer,
-                            selectedName: highScoreAndWickets.firstName);
-                        onFeatureSelect(
+                            currentPlayer: widget.currentPlayer,
+                            selectedName: highScoreAndWickets.firstName,
+                            roomId: topScore['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId);
+                        widget.onFeatureSelect(
                           '${highScoreAndWickets.topScore}-${index}',
                         );
                         FeatureSelect featureSelect = FeatureSelect(
-                            selectStats: selectedFeature ==
+                            selectStats: widget.selectedFeature ==
                                     '${highScoreAndWickets.topScore}-${index}'
                                 ? true
                                 : false);
                         GameServices().selectFeature(
-                            roomId: 'test', featureSelect: featureSelect);
+                            roomId: topScore['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId,
+                            featureSelect: featureSelect);
                         HideStatus hide = HideStatus(statusHide: true);
-                        GameServices()
-                            .hideStatus(roomId: 'test', hideStatus: hide);
+                        GameServices().hideStatus(
+                            roomId: topScore['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId,
+                            hideStatus: hide);
                       },
                 child: Container(
                     width: 120.sp,
                     height: 65.sp,
                     padding: EdgeInsets.all(8.sp),
                     decoration: BoxDecoration(
-                        color: selectedFeature ==
+                        color: widget.selectedFeature ==
                                     '${highScoreAndWickets.topScore}-${index}' &&
                                 topScore['selectedKey'] == 'topScore'
                             ? const Color(0xff2C7744)
@@ -899,20 +1131,44 @@ class PlayerCardWidget extends StatelessWidget {
                         GameServices().createSelectStats(
                             selectedKey: 'wickets',
                             selectedValue: highScoreAndWickets.wickets,
-                            currentPlayer: currentPlayer,
-                            selectedName: highScoreAndWickets.firstName);
-                        onFeatureSelect(
+                            currentPlayer: widget.currentPlayer,
+                            selectedName: highScoreAndWickets.firstName,
+                            roomId: wickets['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId);
+                        widget.onFeatureSelect(
                             '${highScoreAndWickets.wickets}-${index}');
                         FeatureSelect featureSelect = FeatureSelect(
-                            selectStats: selectedFeature ==
+                            selectStats: widget.selectedFeature ==
                                     '${highScoreAndWickets.wickets}-${index}'
                                 ? true
                                 : false);
                         GameServices().selectFeature(
-                            roomId: 'test', featureSelect: featureSelect);
+                            roomId: wickets['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId,
+                            featureSelect: featureSelect);
                         HideStatus hide = HideStatus(statusHide: true);
-                        GameServices()
-                            .hideStatus(roomId: 'test', hideStatus: hide);
+                        GameServices().hideStatus(
+                            roomId: wickets['hostId'] !=
+                                    FirebaseAuth.instance.currentUser!.uid
+                                ? Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .joinRoomId
+                                : Provider.of<GameProvider>(context,
+                                        listen: false)
+                                    .roomId,
+                            hideStatus: hide);
                       },
                 child: Row(children: [
                   Container(
@@ -920,7 +1176,7 @@ class PlayerCardWidget extends StatelessWidget {
                     height: 65.sp,
                     padding: EdgeInsets.all(8.sp),
                     decoration: BoxDecoration(
-                        color: selectedFeature ==
+                        color: widget.selectedFeature ==
                                     '${highScoreAndWickets.wickets}-${index}' &&
                                 wickets['selectedKey'] == 'wickets'
                             ? const Color(0xff2C7744)

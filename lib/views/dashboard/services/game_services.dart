@@ -27,7 +27,6 @@ class GameServices {
     try {
       var uuid = const Uuid();
       String roomId = uuid.v4().toString();
-      roomId = 'test';
       DatabaseReference reference =
           FirebaseDatabase.instance.ref('Room').child('/$roomId');
       await reference.set(roomModel.toJson());
@@ -122,47 +121,48 @@ class GameServices {
   }
 
   /// For Player Shown
-  Future<DatabaseReference> getMyPlayer() async {
+  Future<DatabaseReference> getMyPlayer({required String roomId}) async {
     //TODO::Change actual room ID;
     DatabaseReference reference = FirebaseDatabase.instance.ref('Room').child(
-        'test/players/${FirebaseAuth.instance.currentUser!.uid}/playerCharacters');
+        '$roomId/players/${FirebaseAuth.instance.currentUser!.uid}/playerCharacters');
     return reference;
   }
 
   /// auto nav select
-  Future<DatabaseReference> autoNavSelectToss() async {
+  Future<DatabaseReference> autoNavSelectToss({required String roomId}) async {
     // TODO::Change actual room ID;
     DatabaseReference reference =
-        FirebaseDatabase.instance.ref('Room').child('test/selectToss');
+        FirebaseDatabase.instance.ref('Room/$roomId/selectToss');
     return reference;
   }
 
   /// join total select card
-  Future<DatabaseReference> joinSelectOfCard() async {
+  Future<DatabaseReference> joinSelectOfCard(String roomId) async {
     // TODO::Change actual room ID;
-    DatabaseReference reference =
-        FirebaseDatabase.instance.ref('Room').child('test/totalCards');
+    DatabaseReference reference = FirebaseDatabase.instance
+        .ref('Room')
+        .child('/$roomId')
+        .child('totalCards');
     return reference;
   }
 
   /// For Player Shown
-  Future<DatabaseReference> getCurrentPlayer() async {
-    //TODO::Change actual room ID;
+  Future<DatabaseReference> getCurrentPlayer({required String roomId}) async {
     DatabaseReference reference =
-        FirebaseDatabase.instance.ref('Room').child('test/currentPlayer');
+        FirebaseDatabase.instance.ref('Room').child('$roomId/currentPlayer');
     return reference;
   }
 
   /// For Select Player Stats
   createSelectStats(
-      //TODO::Change actual room ID;
       {required String selectedKey,
       required String selectedValue,
       required String currentPlayer,
-      required String selectedName}) async {
+      required String selectedName,
+      required String roomId}) async {
     try {
       DatabaseEvent snap =
-          await FirebaseDatabase.instance.ref('Room').child('test').once();
+          await FirebaseDatabase.instance.ref('Room').child('/$roomId').once();
       var map = Map<dynamic, dynamic>.from(
           snap.snapshot.value as Map<dynamic, dynamic>);
       var playerAValue = "0";
@@ -188,14 +188,16 @@ class GameServices {
               loser: playerBCharacter,
               winner: playerACharacter,
               winnerId: playerAId,
-              loserId: playerBId);
+              loserId: playerBId,
+              gameRoomId: roomId);
         });
         drawPlayer(
             loser: playerACharacter,
             winner: playerBCharacter,
             winnerId: playerBId,
-            loserId: playerAId);
-        return FirebaseDatabase.instance.ref('Room').child('test').update({
+            loserId: playerAId,
+            gameRoomId: roomId);
+        return FirebaseDatabase.instance.ref('Room').child('/$roomId').update({
           'selectedKey': selectedKey,
           'selectedValue': selectedValue,
           'matchDrawn': true,
@@ -210,19 +212,20 @@ class GameServices {
                 loser: playerBCharacter,
                 winner: playerACharacter,
                 winnerId: playerAId,
-                loserId: playerBId);
+                loserId: playerBId,
+                gameRoomId: roomId);
           });
         } else {
           Future.delayed(const Duration(seconds: 3), () async {
             movePlayer(
-              loser: playerACharacter,
-              winner: playerBCharacter,
-              winnerId: playerBId,
-              loserId: playerAId,
-            );
+                loser: playerACharacter,
+                winner: playerBCharacter,
+                winnerId: playerBId,
+                loserId: playerAId,
+                gameRoomId: roomId);
           });
         }
-        return FirebaseDatabase.instance.ref('Room').child('test').update({
+        return FirebaseDatabase.instance.ref('Room').child('/$roomId').update({
           'selectedKey': selectedKey,
           'selectedValue': selectedValue,
           'currentPlayer': isPlayerAWon ? map['hostId'] : playerBId,
@@ -238,19 +241,20 @@ class GameServices {
                 loser: playerBCharacter,
                 winner: playerACharacter,
                 winnerId: playerAId,
-                loserId: playerBId);
+                loserId: playerBId,
+                gameRoomId: roomId);
           });
         } else {
           Future.delayed(const Duration(seconds: 3), () async {
             movePlayer(
-              loser: playerACharacter,
-              winner: playerBCharacter,
-              winnerId: playerBId,
-              loserId: playerAId,
-            );
+                loser: playerACharacter,
+                winner: playerBCharacter,
+                winnerId: playerBId,
+                loserId: playerAId,
+                gameRoomId: roomId);
           });
         }
-        return FirebaseDatabase.instance.ref('Room').child('test').update({
+        return FirebaseDatabase.instance.ref('Room').child('/$roomId').update({
           'selectedKey': selectedKey,
           'selectedValue': selectedValue,
           'currentPlayer': isPlayerAWon ? map['hostId'] : playerBId,
@@ -266,19 +270,20 @@ class GameServices {
                 loser: playerBCharacter,
                 winner: playerACharacter,
                 winnerId: playerAId,
-                loserId: playerBId);
+                loserId: playerBId,
+                gameRoomId: roomId);
           });
         } else {
           Future.delayed(const Duration(seconds: 3), () async {
             movePlayer(
-              loser: playerACharacter,
-              winner: playerBCharacter,
-              winnerId: playerBId,
-              loserId: playerAId,
-            );
+                loser: playerACharacter,
+                winner: playerBCharacter,
+                winnerId: playerBId,
+                loserId: playerAId,
+                gameRoomId: roomId);
           });
         }
-        return FirebaseDatabase.instance.ref('Room').child('test').update({
+        return FirebaseDatabase.instance.ref('Room').child('/$roomId').update({
           'selectedKey': selectedKey,
           'selectedValue': selectedValue,
           'currentPlayer': isPlayerAWon ? map['hostId'] : playerBId,
@@ -297,7 +302,8 @@ class GameServices {
       {required List<dynamic> loser,
       required List<dynamic> winner,
       required String winnerId,
-      required String loserId}) {
+      required String loserId,
+      required String gameRoomId}) {
     Future.delayed(const Duration(seconds: 2), () async {
       Map<dynamic, dynamic> winnerFinalMap = {};
       for (int i = 1; i < winner.length; i++) {
@@ -311,14 +317,14 @@ class GameServices {
       loserFinalMap[(loser.length - 1).toString()] = loser[0];
       await FirebaseDatabase.instance
           .ref('Room')
-          .child('test')
+          .child(gameRoomId)
           .child('players')
           .child(winnerId)
           .child('playerCharacters')
           .set(winnerFinalMap);
       await FirebaseDatabase.instance
           .ref('Room')
-          .child('test')
+          .child(gameRoomId)
           .child('players')
           .child(loserId)
           .child('playerCharacters')
@@ -331,7 +337,8 @@ class GameServices {
       {required List<dynamic> loser,
       required List<dynamic> winner,
       required String winnerId,
-      required String loserId}) {
+      required String loserId,
+      required String gameRoomId}) {
     var winnerUpdated = [];
     for (var value in winner) {
       winnerUpdated.add(value);
@@ -350,21 +357,21 @@ class GameServices {
     }
     FirebaseDatabase.instance
         .ref('Room')
-        .child('test')
+        .child(gameRoomId)
         .child('players')
         .child(winnerId)
         .child('playerCharacters')
         .set(winnerFinalMap);
     FirebaseDatabase.instance
         .ref('Room')
-        .child('test')
+        .child(gameRoomId)
         .child('players')
         .child(winnerId)
         .child('recentlyWon')
         .set(loser[0]);
     FirebaseDatabase.instance
         .ref('Room')
-        .child('test')
+        .child(gameRoomId)
         .child('players')
         .child(loserId)
         .child('playerCharacters')
@@ -373,7 +380,7 @@ class GameServices {
     Future.delayed(const Duration(seconds: 2), () async {
       DatabaseReference reference1 = FirebaseDatabase.instance
           .ref('Room')
-          .child('test')
+          .child(gameRoomId)
           .child('players')
           .child(winnerId)
           .child('recentlyWon');

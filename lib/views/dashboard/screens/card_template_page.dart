@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer' as dev;
 import 'dart:math';
 import 'package:ds_game/views/authentication/screens/success_page.dart';
+import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/screens/player-card.widget.dart';
 import 'package:ds_game/views/dashboard/screens/total_player_visible_screen.dart';
@@ -16,6 +17,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
 class CardTemplatePage extends StatefulWidget {
   const CardTemplatePage({Key? key}) : super(key: key);
@@ -68,7 +70,16 @@ class _CardTemplatePageState extends State<CardTemplatePage>
   String currentPlayer = '';
 
   getData() async {
-    GameServices().getCurrentPlayer().asStream().listen((event) {
+    GameServices()
+        .getCurrentPlayer(
+            roomId:
+                Provider.of<GameProvider>(context, listen: false).host == true
+                    ? Provider.of<GameProvider>(context, listen: false).roomId
+                    : Provider.of<GameProvider>(context, listen: false)
+                        .joinRoomId
+                        .toString())
+        .asStream()
+        .listen((event) {
       event.onValue.listen((event) {
         currentPlayer = event.snapshot.value.toString();
         dev.log(currentPlayer);
@@ -76,10 +87,21 @@ class _CardTemplatePageState extends State<CardTemplatePage>
         setState(() {});
       });
     });
-    GameServices().getMyPlayer().asStream().listen((event) {
+    GameServices()
+        .getMyPlayer(
+            roomId:
+                Provider.of<GameProvider>(context, listen: false).host == true
+                    ? Provider.of<GameProvider>(context, listen: false).roomId
+                    : Provider.of<GameProvider>(context, listen: false)
+                        .joinRoomId
+                        .toString())
+        .asStream()
+        .listen((event) {
       event.onValue.listen((event) {
         dev.log("Player Details Changed");
         try {
+          dev.log(playerList.length.toString());
+          dev.log('TotalPlayerList');
           playerList.clear();
           if (event.snapshot.value != null) {
             if (event.snapshot.value is List<Object?>) {
@@ -110,7 +132,8 @@ class _CardTemplatePageState extends State<CardTemplatePage>
   String selectedPlayerFeature = '';
 
   DatabaseReference getTotalCard() {
-    DatabaseReference refDb = FirebaseDatabase.instance.ref('Room/test');
+    DatabaseReference refDb = FirebaseDatabase.instance.ref(
+        'Room/${Provider.of<GameProvider>(context, listen: false).host == true ? Provider.of<GameProvider>(context, listen: false).roomId : Provider.of<GameProvider>(context, listen: false).joinRoomId.toString()}');
     return refDb;
   }
 
@@ -149,8 +172,8 @@ class _CardTemplatePageState extends State<CardTemplatePage>
                         color: Colors.red,
                         onPressed: () {
                           SystemNavigator.pop();
-                          DatabaseReference refDb = FirebaseDatabase.instance
-                              .ref('Room/test/players');
+                          DatabaseReference refDb = FirebaseDatabase.instance.ref(
+                              'Room/${Provider.of<GameProvider>(context, listen: false).host == true ? Provider.of<GameProvider>(context, listen: false).roomId : Provider.of<GameProvider>(context, listen: false).joinRoomId.toString()}/players');
                           return refDb.remove();
                         }),
                   ],

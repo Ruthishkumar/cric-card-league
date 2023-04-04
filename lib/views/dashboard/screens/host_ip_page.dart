@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:delayed_display/delayed_display.dart';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
+import 'package:ds_game/views/authentication/services/storage_services.dart';
 import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:ds_game/views/dashboard/screens/coin_flip_page.dart';
@@ -38,17 +39,26 @@ class _HostIpPageState extends State<HostIpPage> {
     super.initState();
   }
 
-  getCardSelectData() {
-    GameServices().joinSelectOfCard().asStream().listen((event) {
+  String getJoinRoomId = "";
+
+  getCardSelectData() async {
+    getJoinRoomId = await StorageServices().getJoinRoomId();
+    log(Provider.of<GameProvider>(context, listen: false).joinRoomId);
+    log('**********JOINROOMID**********');
+    log(getJoinRoomId);
+    GameServices()
+        .joinSelectOfCard("ed57972a-c596-4766-b7bb-6e50306ee29f")
+        .asStream()
+        .listen((event) {
       event.onValue.listen((event) {
         log(event.snapshot.value.toString());
         log("Message");
-        log(Provider.of<GameProvider>(context, listen: false).joinRoomId);
-        log('**********JOINROOMID**********');
         if (event.snapshot.value == "15") {
           getJoinFifteenCards();
+          setState(() {});
         } else if (event.snapshot.value == "25") {
           twentyFiveCardsPlayers();
+          setState(() {});
         } else if (event.snapshot.value == "30") {
           thirtyCardsPlayers();
           setState(() {});
@@ -223,7 +233,7 @@ class _HostIpPageState extends State<HostIpPage> {
                             return GameStartButton(
                                 text: 'Begin',
                                 color: Colors.blue,
-                                onPressed: () {
+                                onPressed: () async {
                                   log(joinValidate['roomId'].toString());
                                   if (hostIpController.text == '') {
                                     Fluttertoast.showToast(
@@ -258,6 +268,15 @@ class _HostIpPageState extends State<HostIpPage> {
                                                 : true);
                                     GameServices().waitingCardSelect(
                                         waitCardJoin: status);
+                                    await StorageServices()
+                                        .setJoinRoomId(hostIpController.text);
+                                    // Future.delayed(const Duration(seconds: 3),
+                                    //     () {
+                                    //   NavigationRoute().animationRoute(
+                                    //       context,
+                                    //       CoinFlipScreen(
+                                    //           roomId: hostIpController.text));
+                                    // });
                                   } else {
                                     showDialog(
                                         context: context,

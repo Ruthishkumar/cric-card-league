@@ -146,8 +146,6 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                       ),
                       SizedBox(height: 20.sp),
                       Consumer<GameProvider>(builder: (context, ip, child) {
-                        log(ip.roomId);
-                        log('ROOMID');
                         return Column(
                           children: [
                             Container(
