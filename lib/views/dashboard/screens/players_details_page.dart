@@ -289,11 +289,7 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
         setState(() {
           selectCardValue = options['cardId'];
           selectCardNumbers = options['cardValue'];
-          NavigationRoute().animationRoute(
-              context,
-              const CoinFlipScreen(
-                roomId: '',
-              ));
+          NavigationRoute().animationRoute(context, const CoinFlipScreen());
           Provider.of<NameProvider>(context, listen: false)
               .addCards(value: selectCardValue);
           Provider.of<NameProvider>(context, listen: false)
@@ -306,6 +302,7 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
         GameServices().selectCard(
             roomId: Provider.of<GameProvider>(context, listen: false).roomId,
             selectCardModel: selectCardModel);
+        GameServices().createSelectCard(card: true);
         if (selectCardValue == 0) {
           fifteenCardPlayers();
         } else if (selectCardValue == 1) {

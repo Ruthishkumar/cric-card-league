@@ -20,8 +20,7 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class CoinFlipScreen extends StatefulWidget {
-  final String roomId;
-  const CoinFlipScreen({super.key, required this.roomId});
+  const CoinFlipScreen({super.key});
 
   @override
   _CoinFlipScreenState createState() => _CoinFlipScreenState();
@@ -75,12 +74,6 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
   void dispose() {
     super.dispose();
     player.clearAll();
-  }
-
-  DatabaseReference getToss() {
-    DatabaseReference refDb =
-        FirebaseDatabase.instance.ref('Room/${widget.roomId}/selectToss');
-    return refDb;
   }
 
   DatabaseReference getRoom() {
@@ -169,6 +162,13 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
                                   roomData['chooseCall'] == "Heads"
                                       ? 'assets/images/tails.png'
                                       : 'assets/images/heads.png'),
+                            ),
+                            SizedBox(height: 30.sp),
+                            Text(
+                              roomData['chooseCall'] == "Heads"
+                                  ? 'Tails'.toUpperCase()
+                                  : 'Heads'.toUpperCase(),
+                              style: AppTextStyles.instance.tossHeader,
                             ),
                             SizedBox(height: 30.sp),
                             Text(

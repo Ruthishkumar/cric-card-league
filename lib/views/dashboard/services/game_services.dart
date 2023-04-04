@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ds_game/views/authentication/services/storage_services.dart';
 import 'package:ds_game/views/dashboard/model/game_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -41,6 +42,11 @@ class GameServices {
   Future createRoomId({required String roomId}) async {
     DatabaseReference reference = FirebaseDatabase.instance.ref('Room');
     await reference.update({'roomId': roomId});
+  }
+
+  Future createSelectCard({required bool card}) async {
+    DatabaseReference reference = FirebaseDatabase.instance.ref('Room');
+    await reference.update({'cardUpdate': card});
   }
 
   /// For Join Room
@@ -122,7 +128,6 @@ class GameServices {
 
   /// For Player Shown
   Future<DatabaseReference> getMyPlayer({required String roomId}) async {
-    //TODO::Change actual room ID;
     DatabaseReference reference = FirebaseDatabase.instance.ref('Room').child(
         '$roomId/players/${FirebaseAuth.instance.currentUser!.uid}/playerCharacters');
     return reference;
@@ -130,19 +135,18 @@ class GameServices {
 
   /// auto nav select
   Future<DatabaseReference> autoNavSelectToss({required String roomId}) async {
-    // TODO::Change actual room ID;
     DatabaseReference reference =
         FirebaseDatabase.instance.ref('Room/$roomId/selectToss');
     return reference;
   }
 
   /// join total select card
-  Future<DatabaseReference> joinSelectOfCard(String roomId) async {
-    // TODO::Change actual room ID;
-    DatabaseReference reference = FirebaseDatabase.instance
-        .ref('Room')
-        .child('/$roomId')
-        .child('totalCards');
+  joinSelectOfCard(String roomId) async {
+    // String roomId = await StorageServices().getJoinRoomId();
+    // log(roomId);
+    log('message');
+    DatabaseReference reference =
+        FirebaseDatabase.instance.ref('Room/$roomId/totalCards');
     return reference;
   }
 

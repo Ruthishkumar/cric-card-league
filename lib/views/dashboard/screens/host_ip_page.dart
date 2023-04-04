@@ -35,24 +35,28 @@ class _HostIpPageState extends State<HostIpPage> {
 
   @override
   void initState() {
-    getCardSelectData();
+    // getCardSelectData();
     super.initState();
   }
 
   String getJoinRoomId = "";
 
   getCardSelectData() async {
-    getJoinRoomId = await StorageServices().getJoinRoomId();
-    log(Provider.of<GameProvider>(context, listen: false).joinRoomId);
-    log('**********JOINROOMID**********');
-    log(getJoinRoomId);
-    GameServices()
-        .joinSelectOfCard("ed57972a-c596-4766-b7bb-6e50306ee29f")
+    var PPPP = Provider.of<GameProvider>(context, listen: false).joinRoomId;
+    log(PPPP);
+    await GameServices()
+        .joinSelectOfCard(
+            Provider.of<GameProvider>(context, listen: false).host == true
+                ? Provider.of<GameProvider>(context, listen: false).roomId
+                : Provider.of<GameProvider>(context, listen: false)
+                    .joinRoomId
+                    .toString())
         .asStream()
         .listen((event) {
       event.onValue.listen((event) {
         log(event.snapshot.value.toString());
         log("Message");
+        log(Provider.of<GameProvider>(context, listen: false).joinRoomId);
         if (event.snapshot.value == "15") {
           getJoinFifteenCards();
           setState(() {});
@@ -65,8 +69,11 @@ class _HostIpPageState extends State<HostIpPage> {
         }
         event.snapshot.value != null
             ? Future.delayed(const Duration(seconds: 3), () {
-                NavigationRoute().animationRoute(
-                    context, CoinFlipScreen(roomId: hostIpController.text));
+                NavigationRoute()
+                    .animationRoute(context, const CoinFlipScreen());
+                DatabaseReference refDb = FirebaseDatabase.instance.ref(
+                    'Room/${Provider.of<GameProvider>(context, listen: false).joinRoomId}/playerWaiting');
+                return refDb.remove();
               })
             : null;
         setState(() {});
@@ -180,6 +187,7 @@ class _HostIpPageState extends State<HostIpPage> {
                               controller: hostIpController,
                               keyboardType: TextInputType.text,
                               textAlign: TextAlign.center,
+                              textInputAction: TextInputAction.done,
                               style: GoogleFonts.openSans(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,
@@ -230,87 +238,86 @@ class _HostIpPageState extends State<HostIpPage> {
                           if (snapShot.data != null) {
                             var joinValidate = snapShot.data!.snapshot.value
                                 as Map<dynamic, dynamic>;
-                            return GameStartButton(
-                                text: 'Begin',
-                                color: Colors.blue,
-                                onPressed: () async {
-                                  log(joinValidate['roomId'].toString());
-                                  if (hostIpController.text == '') {
-                                    Fluttertoast.showToast(
-                                        msg: "Please enter host ip",
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                        timeInSecForIosWeb: 1,
-                                        backgroundColor: Colors.blueGrey,
-                                        textColor: Colors.white,
-                                        fontSize: 16.0);
-                                    return false;
-                                  } else if (joinValidate['roomId'] ==
-                                      hostIpController.text) {
-                                    GamePlayerModel joinGame = GamePlayerModel(
-                                        name: Provider.of<NameProvider>(context,
+                            return joinValidate['cardUpdate'] == true
+                                ? Container()
+                                : GameStartButton(
+                                    text: 'Begin',
+                                    color: Colors.blue,
+                                    onPressed: () async {
+                                      log(joinValidate['roomId'].toString());
+                                      if (hostIpController.text == '') {
+                                        Fluttertoast.showToast(
+                                            msg: "Please enter host ip",
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.BOTTOM,
+                                            timeInSecForIosWeb: 1,
+                                            backgroundColor: Colors.blueGrey,
+                                            textColor: Colors.white,
+                                            fontSize: 16.0);
+                                        return false;
+                                      } else if (joinValidate['roomId'] ==
+                                          hostIpController.text) {
+                                        GamePlayerModel joinGame =
+                                            GamePlayerModel(
+                                                name: Provider.of<NameProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .playerName,
+                                                timestamp: DateTime.now()
+                                                    .millisecondsSinceEpoch);
+                                        Provider.of<GameProvider>(context,
                                                 listen: false)
-                                            .playerName,
-                                        timestamp: DateTime.now()
-                                            .millisecondsSinceEpoch);
-                                    Provider.of<GameProvider>(context,
-                                            listen: false)
-                                        .joinRoom(
-                                            joinGame, hostIpController.text);
-                                    Provider.of<GameProvider>(context,
-                                            listen: false)
-                                        .createJoinRoomId(
-                                            value: hostIpController.text);
-                                    WaitCardJoin status = WaitCardJoin(
-                                        playerWaiting:
-                                            hostIpController.text == ''
-                                                ? false
-                                                : true);
-                                    GameServices().waitingCardSelect(
-                                        waitCardJoin: status);
-                                    await StorageServices()
-                                        .setJoinRoomId(hostIpController.text);
-                                    // Future.delayed(const Duration(seconds: 3),
-                                    //     () {
-                                    //   NavigationRoute().animationRoute(
-                                    //       context,
-                                    //       CoinFlipScreen(
-                                    //           roomId: hostIpController.text));
-                                    // });
-                                  } else {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10.sp))),
-                                            clipBehavior: Clip.none,
-                                            title: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text('Invalid Code',
-                                                    style: AppTextStyles
-                                                        .instance.popError),
-                                                SizedBox(height: 4.sp),
-                                                Text('Game does not exist',
-                                                    style: AppTextStyles
-                                                        .instance.popError),
-                                                SizedBox(height: 15.sp),
-                                                HeadTailsButton(
-                                                    text: 'Okay',
-                                                    color: Colors.red,
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    })
-                                              ],
-                                            ),
-                                          );
-                                        });
-                                  }
-                                });
+                                            .joinRoom(joinGame,
+                                                hostIpController.text);
+                                        Provider.of<GameProvider>(context,
+                                                listen: false)
+                                            .createJoinRoomId(
+                                                value: hostIpController.text);
+                                        WaitCardJoin status = WaitCardJoin(
+                                            playerWaiting:
+                                                hostIpController.text == ''
+                                                    ? false
+                                                    : true);
+                                        GameServices().waitingCardSelect(
+                                            waitCardJoin: status);
+                                        await StorageServices().setJoinRoomId(
+                                            hostIpController.text);
+                                      } else {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                10.sp))),
+                                                clipBehavior: Clip.none,
+                                                title: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text('Invalid Code',
+                                                        style: AppTextStyles
+                                                            .instance.popError),
+                                                    SizedBox(height: 4.sp),
+                                                    Text('Game does not exist',
+                                                        style: AppTextStyles
+                                                            .instance.popError),
+                                                    SizedBox(height: 15.sp),
+                                                    HeadTailsButton(
+                                                        text: 'Okay',
+                                                        color: Colors.red,
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        })
+                                                  ],
+                                                ),
+                                              );
+                                            });
+                                      }
+                                    });
                           }
                           return const RefreshProgressIndicator();
                         },
@@ -324,31 +331,116 @@ class _HostIpPageState extends State<HostIpPage> {
                                   as Map<dynamic, dynamic>;
                               return getStatus['playerWaiting'] == null
                                   ? Container()
-                                  : DelayedDisplay(
-                                      slidingBeginOffset:
-                                          const Offset(0.0, 0.35),
-                                      delay: const Duration(milliseconds: 1),
-                                      child: Container(
-                                        width: 200.sp,
-                                        padding: EdgeInsets.all(16.sp),
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(12.sp)),
-                                            color: const Color(0xff243b55),
-                                            border: Border.all(
-                                                color: Colors.white)),
-                                        child: Text(
-                                          getStatus['playerWaiting'] == true
-                                              ? 'Please wait your Opponent has select the card'
-                                              : '',
-                                          style:
-                                              AppTextStyles.instance.tossHeader,
-                                        ),
-                                      ),
-                                    );
+                                  : Provider.of<GameProvider>(context,
+                                                  listen: false)
+                                              .joinRoomId ==
+                                          ''
+                                      ? Container()
+                                      : getStatus[Provider.of<GameProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .joinRoomId]['selectCard'] ==
+                                              true
+                                          ? Container()
+                                          : DelayedDisplay(
+                                              slidingBeginOffset:
+                                                  const Offset(0.0, 0.35),
+                                              delay: const Duration(
+                                                  milliseconds: 1),
+                                              child: Container(
+                                                width: 200.sp,
+                                                padding: EdgeInsets.all(16.sp),
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                12.sp)),
+                                                    color:
+                                                        const Color(0xff243b55),
+                                                    border: Border.all(
+                                                        color: Colors.white)),
+                                                child: Text(
+                                                  getStatus['playerWaiting'] ==
+                                                          true
+                                                      ? 'Please wait your Opponent has select the card'
+                                                      : '',
+                                                  style: AppTextStyles
+                                                      .instance.tossHeader,
+                                                ),
+                                              ),
+                                            );
                             }
                             return Container();
-                          })
+                          }),
+                      SizedBox(height: 20.sp),
+                      StreamBuilder(
+                          stream: getBegin().onValue,
+                          builder: (context, snapShot) {
+                            if (snapShot.data != null) {
+                              var cardUpdate = snapShot.data!.snapshot.value
+                                  as Map<dynamic, dynamic>;
+                              return cardUpdate['cardUpdate'] == null
+                                  ? Container()
+                                  : cardUpdate['cardUpdate'] == false
+                                      ? Container()
+                                      : GameStartButton(
+                                          text: "Let's Toss",
+                                          color: Colors.blue,
+                                          onPressed: () {
+                                            log(Provider.of<GameProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .joinRoomId);
+                                            if (cardUpdate[Provider.of<
+                                                                GameProvider>(
+                                                            context,
+                                                            listen: false)
+                                                        .joinRoomId]
+                                                    ['totalCards'] ==
+                                                "15") {
+                                              getJoinFifteenCards();
+                                              NavigationRoute().animationRoute(
+                                                  context,
+                                                  const CoinFlipScreen());
+                                              DatabaseReference refDb =
+                                                  FirebaseDatabase.instance
+                                                      .ref('Room/cardUpdate');
+                                              return refDb.remove();
+                                            } else if (cardUpdate[Provider.of<
+                                                                GameProvider>(
+                                                            context,
+                                                            listen: false)
+                                                        .joinRoomId]
+                                                    ['totalCards'] ==
+                                                "25") {
+                                              twentyFiveCardsPlayers();
+                                              NavigationRoute().animationRoute(
+                                                  context,
+                                                  const CoinFlipScreen());
+                                              DatabaseReference refDb =
+                                                  FirebaseDatabase.instance
+                                                      .ref('Room/cardUpdate');
+                                              return refDb.remove();
+                                            } else if (cardUpdate[Provider.of<
+                                                                GameProvider>(
+                                                            context,
+                                                            listen: false)
+                                                        .joinRoomId]
+                                                    ['totalCards'] ==
+                                                "30") {
+                                              thirtyCardsPlayers();
+                                              NavigationRoute().animationRoute(
+                                                  context,
+                                                  const CoinFlipScreen());
+                                              DatabaseReference refDb =
+                                                  FirebaseDatabase.instance
+                                                      .ref('Room/cardUpdate');
+                                              return refDb.remove();
+                                            }
+                                          });
+                            }
+                            return Container();
+                          }),
                     ],
                   ),
                 ],
