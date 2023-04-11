@@ -1,6 +1,3 @@
-import 'dart:developer';
-import 'dart:ui';
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
@@ -11,7 +8,6 @@ import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
 import 'package:ds_game/widgets/screen_container.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

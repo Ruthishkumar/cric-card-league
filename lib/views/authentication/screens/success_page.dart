@@ -21,7 +21,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
 
 class SuccessPage extends StatefulWidget {
   const SuccessPage({Key? key}) : super(key: key);

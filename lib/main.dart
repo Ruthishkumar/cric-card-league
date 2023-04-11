@@ -1,12 +1,7 @@
-import 'dart:developer';
-
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
-import 'package:ds_game/views/authentication/screens/login_page.dart';
 import 'package:ds_game/views/authentication/screens/splash_screen.dart';
-import 'package:ds_game/views/authentication/screens/success_page.dart';
 import 'package:ds_game/views/authentication/services/storage_services.dart';
 import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
