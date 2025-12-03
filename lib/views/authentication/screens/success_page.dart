@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:delayed_display/delayed_display.dart';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/authentication/services/storage_services.dart';
@@ -39,8 +40,14 @@ class _SuccessPageState extends State<SuccessPage> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 1), () {
+        showDialogIfFirstLoaded(context);
+      });
+    });
     getData();
     getStatusChecking();
+
     super.initState();
   }
 
@@ -60,8 +67,6 @@ class _SuccessPageState extends State<SuccessPage> {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(milliseconds: 1),
-        () => showDialogIfFirstLoaded(context));
     return WillPopScope(
       onWillPop: () async {
         setState(() {
@@ -106,7 +111,9 @@ class _SuccessPageState extends State<SuccessPage> {
         context: context,
         builder: (BuildContext context) {
           Future.delayed(const Duration(seconds: 1), () async {
-            Navigator.of(context).pop(true);
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            }
             prefs.setBool(keyIsFirstLoaded, false);
           });
           return AlertDialog(

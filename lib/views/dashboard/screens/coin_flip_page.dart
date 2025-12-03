@@ -1,6 +1,7 @@
-import 'dart:math';
 import 'dart:developer' as dev;
+import 'dart:math';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
 import 'package:ds_game/views/dashboard/game_provider/game_provider.dart';
@@ -14,7 +15,6 @@ import 'package:ds_game/widgets/screen_container.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -351,7 +351,7 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
   void _flipCoin(String face) async {
     setState(() {
       if (soundOn) {
-        player.play('images/flip.wav');
+        player.loadPath('images/flip.wav');
       }
       _distanceFromBottom = 380;
       _showFrontSide = !_showFrontSide;
@@ -359,7 +359,7 @@ class _CoinFlipScreenState extends State<CoinFlipScreen> {
     });
     Future.delayed(const Duration(milliseconds: 3000)).then((value) {
       if (soundOn) {
-        player.play('images/$face.mp3');
+        player.loadPath('images/$face.mp3');
       }
       setState(() {
         afterTossOpacity = 1.0;

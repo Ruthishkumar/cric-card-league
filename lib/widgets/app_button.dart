@@ -13,10 +13,10 @@ class AppButton extends StatelessWidget {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
           elevation: 15,
-          onPrimary: Colors.grey, // foreground
+          foregroundColor: Colors.grey, // foreground
           enabledMouseCursor: MouseCursor.defer,
           surfaceTintColor: Colors.white,
-          primary: Colors.black,
+          backgroundColor: Colors.black,
           minimumSize: Size.fromHeight(50.sp),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),

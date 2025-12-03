@@ -1,4 +1,3 @@
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:ds_game/widgets/fancy_button.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +36,7 @@ class LoginFancyButton extends StatelessWidget {
       color: color,
       onPressed: () {
         final player = AudioCache();
-        player.play('images/button_sound.mp3');
+        player.loadPath('images/button_sound.mp3');
         onPressed();
       },
     );
@@ -76,7 +75,7 @@ class HostingButton extends StatelessWidget {
       color: color,
       onPressed: () {
         final player = AudioCache();
-        player.play('images/button_sound.mp3');
+        player.loadPath('images/button_sound.mp3');
         onPressed();
       },
     );
@@ -115,7 +114,7 @@ class GameStartButton extends StatelessWidget {
       color: color,
       onPressed: () {
         final player = AudioCache();
-        player.play('images/button_sound.mp3');
+        player.loadPath('images/button_sound.mp3');
         onPressed();
       },
     );
@@ -191,7 +190,7 @@ class ShareIdButton extends StatelessWidget {
       color: color,
       onPressed: () {
         final player = AudioCache();
-        player.play('images/button_sound.mp3');
+        player.loadPath('images/button_sound.mp3');
         onPressed();
       },
     );

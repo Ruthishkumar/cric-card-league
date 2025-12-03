@@ -11,9 +11,9 @@ import 'package:ds_game/widgets/screen_container.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_share/flutter_share.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PlayersDetailsPage extends StatefulWidget {
   const PlayersDetailsPage({Key? key}) : super(key: key);
@@ -174,11 +174,14 @@ class _PlayersDetailsPageState extends State<PlayersDetailsPage> {
                               text: 'Click To Share Id',
                               color: Colors.blue,
                               onPressed: () async {
-                                await FlutterShare.share(
-                                    title: 'Cric Card League',
-                                    text: '',
-                                    linkUrl: ip.roomId,
-                                    chooserTitle: 'Cric Card League');
+                                await Share.share(
+                                  ip.roomId,
+                                  // subject: 'Cric Card League',
+                                  // title: 'Cric Card League',
+                                  // text: '',
+                                  // linkUrl: ip.roomId,re
+                                  // chooserTitle: 'Cric Card League'
+                                );
                               },
                             ),
                           ],
