@@ -1,8 +1,11 @@
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:ds_game/widgets/fancy_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+final AudioPlayer player = AudioPlayer();
 
 class LoginFancyButton extends StatelessWidget {
   final String text;
@@ -35,8 +38,7 @@ class LoginFancyButton extends StatelessWidget {
       size: 45,
       color: color,
       onPressed: () {
-        final player = AudioCache();
-        player.loadPath('images/button_sound.mp3');
+        player.play(AssetSource('images/button_sound.mp3'));
         onPressed();
       },
     );
@@ -74,8 +76,7 @@ class HostingButton extends StatelessWidget {
       size: 45,
       color: color,
       onPressed: () {
-        final player = AudioCache();
-        player.loadPath('images/button_sound.mp3');
+        player.play(AssetSource('images/button_sound.mp3'));
         onPressed();
       },
     );
@@ -113,8 +114,7 @@ class GameStartButton extends StatelessWidget {
       size: 45,
       color: color,
       onPressed: () {
-        final player = AudioCache();
-        player.loadPath('images/button_sound.mp3');
+        player.play(AssetSource('images/button_sound.mp3'));
         onPressed();
       },
     );
@@ -189,8 +189,7 @@ class ShareIdButton extends StatelessWidget {
       size: 45,
       color: color,
       onPressed: () {
-        final player = AudioCache();
-        player.loadPath('images/button_sound.mp3');
+        player.play(AssetSource('images/button_sound.mp3'));
         onPressed();
       },
     );
