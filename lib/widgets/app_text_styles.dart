@@ -35,6 +35,13 @@ class AppTextStyles {
     fontSize: 15.sp,
   );
 
+  final TextStyle? emailVerificationLinkSubHeader = GoogleFonts.prompt(
+    color: const Color(0xff2c3e50),
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w400,
+    fontSize: 15.sp,
+  );
+
   final TextStyle? hostAndJoinName = GoogleFonts.prompt(
     color: Colors.white,
     fontStyle: FontStyle.normal,

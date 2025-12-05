@@ -2,10 +2,9 @@ import 'dart:developer';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:ds_game/views/authentication/provider/name_provider.dart';
-import 'package:ds_game/views/authentication/screens/otp_page.dart';
+import 'package:ds_game/views/authentication/screens/email_verification_page.dart';
 import 'package:ds_game/views/authentication/screens/success_page.dart';
 import 'package:ds_game/views/authentication/services/storage_services.dart';
-import 'package:ds_game/widgets/animation_route.dart';
 import 'package:ds_game/widgets/app_input_text_outline.dart';
 import 'package:ds_game/widgets/app_text_styles.dart';
 import 'package:ds_game/widgets/login_fancy_button.dart';
@@ -30,9 +29,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   late final myFocusNode = FocusNode()
+    ..addListener(() {
+      setState(() {});
+    });
+  late final myFocusNodeOne = FocusNode()
     ..addListener(() {
       setState(() {});
     });
@@ -115,11 +119,42 @@ class _LoginPageState extends State<LoginPage> {
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w400,
                           color: Colors.black),
-                  inputController: phoneNumberController,
-                  hintText: 'Enter Your Phone Number',
+                  inputController: emailController,
+                  hintText: 'Email',
                   focusNode: myFocusNode,
-                  isNumber: true,
+                  // isNumber: true,
                   fillColor: myFocusNode.hasFocus
+                      ? Colors.grey
+                      : Colors.black.withOpacity(0.2),
+                  textInputAction: TextInputAction.done,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter Valid name' : null),
+              SizedBox(height: 20.h),
+              AppInputTextOutline(
+                  isPassword: true,
+                  hintTextStyle: myFocusNodeOne.hasFocus
+                      ? GoogleFonts.openSans(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white)
+                      : GoogleFonts.openSans(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black),
+                  hintFontStyle: myFocusNodeOne.hasFocus
+                      ? GoogleFonts.openSans(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white)
+                      : GoogleFonts.openSans(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black),
+                  inputController: passwordController,
+                  hintText: 'Password',
+                  focusNode: myFocusNodeOne,
+                  // isNumber: true,
+                  fillColor: myFocusNodeOne.hasFocus
                       ? Colors.grey
                       : Colors.black.withOpacity(0.2),
                   textInputAction: TextInputAction.done,
@@ -127,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                       value!.isEmpty ? 'Enter Valid name' : null),
               SizedBox(height: 40.sp),
               LoginFancyButton(
-                text: 'Send the Code',
+                text: 'Login',
                 color: const Color(0xffFF951A),
                 onPressed: _onSummitLogin,
               ),
@@ -148,14 +183,14 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 20.sp),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
                       onTap: _googleLogin,
                       child: SvgPicture.asset('assets/images/google.svg')),
-                  GestureDetector(
-                      onTap: _faceBookSignIn,
-                      child: SvgPicture.asset('assets/images/facebook.svg')),
+                  // GestureDetector(
+                  //     onTap: _faceBookSignIn,
+                  //     child: SvgPicture.asset('assets/images/facebook.svg')),
                 ],
               )
             ],
@@ -173,36 +208,59 @@ class _LoginPageState extends State<LoginPage> {
   _onSummitLogin() async {
     if (validate()) {
       try {
-        await FirebaseAuth.instance.verifyPhoneNumber(
-          phoneNumber: '+91 ${phoneNumberController.text}',
-          verificationCompleted: (PhoneAuthCredential credential) async {
-            await auth1.signInWithCredential(credential).then((value) {
-              log("You are logged in successfully");
-            });
-          },
-          verificationFailed: (FirebaseAuthException e) {
-            log(e.toString());
-          },
-          codeSent: (String verificationId, int? resendToken) {
-            verificationID = verificationId;
-            log('Code Sent');
-            auth1.setSettings(appVerificationDisabledForTesting: true);
-            NavigationRoute().animationRoute(
-                context,
-                OtpPage(
-                  mobileNumber: phoneNumberController.text,
-                  verifyId: verificationID,
-                  auth: auth1,
-                ));
-          },
-          timeout: const Duration(seconds: 0),
-          codeAutoRetrievalTimeout: (String verificationId) {
-            verificationID = verificationId;
-          },
-        );
-      } catch (e, stack) {
-        log(e.toString());
-        log(stack.toString());
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+                email: emailController.text, password: passwordController.text);
+
+        User user = userCredential.user!;
+
+        if (user.emailVerified) {
+          log(FirebaseAuth.instance.currentUser!.uid.toString());
+          log(user.uid.toString());
+          await StorageServices().setUserId(user.uid.toString());
+          await StorageServices().setUserActive(user.uid != '' ? true : false);
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const SuccessPage()),
+              (route) => false);
+        } else {
+          FirebaseAuth.instance.signOut();
+        }
+        // await FirebaseAuth.instance.verifyPhoneNumber(
+        //   phoneNumber: '+91 ${emailController.text}',
+        //   verificationCompleted: (PhoneAuthCredential credential) async {
+        //     await auth1.signInWithCredential(credential).then((value) {
+        //       log("You are logged in successfully");
+        //     });
+        //   },
+        //   verificationFailed: (FirebaseAuthException e) {
+        //     log(e.toString());
+        //   },
+        //   codeSent: (String verificationId, int? resendToken) {
+        //     verificationID = verificationId;
+        //     log('Code Sent');
+        //     auth1.setSettings(appVerificationDisabledForTesting: true);
+        //     NavigationRoute().animationRoute(
+        //         context,
+        //         OtpPage(
+        //           mobileNumber: emailController.text,
+        //           verifyId: verificationID,
+        //           auth: auth1,
+        //         ));
+        //   },
+        //   timeout: const Duration(seconds: 0),
+        //   codeAutoRetrievalTimeout: (String verificationId) {
+        //     verificationID = verificationId;
+        //   },
+        // );
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+              email: emailController.text, password: passwordController.text);
+          await FirebaseAuth.instance.currentUser!.sendEmailVerification();
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => const EmailVerificationPage(),
+          ));
+        }
       }
     }
   }
@@ -256,9 +314,9 @@ class _LoginPageState extends State<LoginPage> {
 
   /// controller validation
   bool validate() {
-    if (phoneNumberController.text == '') {
+    if (emailController.text == '') {
       Fluttertoast.showToast(
-          msg: "Please enter mobile number",
+          msg: "Please enter email",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -266,7 +324,15 @@ class _LoginPageState extends State<LoginPage> {
           textColor: Colors.white,
           fontSize: 16.0);
       return false;
-    } else if (!phoneNumberController.text.hasValidPhoneNumber()) {
+    } else if (!emailController.text.isValidEmail()) {
+      Fluttertoast.showToast(
+          msg: "Please enter password",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black87,
+          textColor: Colors.white,
+          fontSize: 16.0);
       return false;
     } else {
       return true;
